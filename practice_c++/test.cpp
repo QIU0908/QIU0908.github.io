@@ -1,6 +1,6 @@
 #include <iostream>
 using namespace std;
 int main(void){
-    cout<<"fuck the word";
-    return 0;
-    }
+cout << "fuck this would";
+return 0;
+}
