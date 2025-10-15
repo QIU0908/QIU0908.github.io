@@ -1,0 +1,31 @@
+# Project: Project9
+# Makefile created by Embarcadero Dev-C++ 6.3
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+OBJ      = main.o Untitled10.o
+LINKOBJ  = main.o Untitled10.o
+LIBS     = -L"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib32" -static-libgcc -m32 -g3
+INCS     = -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/include" -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include"
+CXXINCS  = -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/include" -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"E:/portable_wcm2025/data/tmp/qiu/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++"
+BIN      = Project1.exe
+CXXFLAGS = $(CXXINCS) -m32 -g3
+CFLAGS   = $(INCS) -m32 -g3
+DEL      = E:\portable_wcm2025\data\tmp\qiu\Dev-Cpp\devcpp.exe INTERNAL_DEL
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${DEL} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+Untitled10.o: Untitled10.cpp
+	$(CPP) -c Untitled10.cpp -o Untitled10.o $(CXXFLAGS)

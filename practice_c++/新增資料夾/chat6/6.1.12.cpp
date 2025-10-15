@@ -1,0 +1,23 @@
+#include<iostream>
+using namespace std;
+
+double f(double );
+
+int main(void){
+	char b;
+	do{
+		float x;
+		cin>>x;
+		cout<<f(x)<<endl;
+		cin>>b;
+	}while(b != 'n');
+	return 0;
+	
+}
+
+
+double f(double x){
+	float f;
+	f=3*x*x*x+2*x-1;
+	return f;
+}
