@@ -1,17 +1,18 @@
 #include<iostream>
 using namespace std;
 
-void display(const char**,int );
+void display(const char *,int );
 
 int main(void){
 	const char *prt="out of sight, out of mind";
 	int n=14;
 	cout<<prt<<endl;
-	display(&prt,n);
+	display(prt,n);
 	cout<<prt;
 }
 
 
-void display(const char**prt,int n){
-	*prt+=n;
+void display(const char *prt,int n){
+	prt+=n;
+	cout<<prt<<endl;
 }

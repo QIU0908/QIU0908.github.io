@@ -2,18 +2,18 @@
 using namespace std;
 
 int main() {
-    char prt[100];  
+    char a[100];  
     cout << "input:";
-    cin.getline(prt, 100);
+    cin.getline(a, 100);
 
-    char *p = prt;  
+    char *prt = a;  
 
-    while (*p != '\0') {  
-        if (*p >= 'a' && *p <= 'z') {
-            *p = *p - ('a' - 'A');  
+    while (*prt != '\0') {  
+        if (*prt >= 'a' && *prt <= 'z') {
+            *prt = *prt - ('a' - 'A');  
         }
-        cout << *p;  
-        p++;        
+        cout << *prt;  
+        prt++;        
     }
 
     cout << endl;
