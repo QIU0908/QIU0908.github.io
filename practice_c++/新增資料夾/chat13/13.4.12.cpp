@@ -1,0 +1,55 @@
+#include<iostream>
+using namespace std;
+ 
+#define p 5
+ 
+ class CBodyfit{
+ 	private:
+ 		char id;
+ 		double height;
+ 		double weight;
+ 	public:
+ 		CBodyfit(char i,double h,double w){
+ 			id=i;
+ 			height=h;
+ 			weight=w;
+ 			cout<<"use\n";
+		 }
+		 
+		void show(void){
+			cout<<id<<"\t"<<height<<"\t"<<weight<<"\t"<<"bmi\t"<<weight/(height*height/10000.)<<endl;
+		}
+		
+		double bmi(void){
+			return weight/(height*height/10000.);
+		}
+		
+		static double average(CBodyfit w[]){
+			double all;
+			for(int i=0;i<p;i++){
+				all+=w[i].bmi();
+			}
+			return all/p;
+		}
+ };
+ 
+ 
+ 
+
+ int main(void){
+ 	
+ 	CBodyfit cb[p]{
+ 		CBodyfit('a',160.9,50.8),
+ 		CBodyfit('b',180.3,78.2),
+ 		CBodyfit('c',160.5,45.5),
+ 		CBodyfit('d',152.7,65.6),
+ 		CBodyfit('e',192.7,95.1),	
+	 };
+	 
+	 
+	 for(int i=0;i<p;i++){
+	 	cb[i].show();
+	 }
+	 
+ 	cout<<CBodyfit::average(cb);
+ }
