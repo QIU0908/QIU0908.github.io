@@ -1,0 +1,19 @@
+{
+  "$schema": "Language.Schema.json",
+  "locale": "de",
+  "localizedText": {
+    "MESSAGE_INIT": "Initialisierung der Extension TcXtsHmiServerExtension war Erfolgreich.",
+    "ERROR_INIT": "Initialisierung der Extension TcXtsHmiServerExtension ist fehlgeschlagen. Zus�tzliche Informationen: {0}",
+
+    "MESSAGE_SHUTDOWN": "Das Herunterfahren der Extension TcXtsHmiServerExtension war erfolgreich.",
+    "ERROR_SHUTDOWN": "Das Herunterfahren der Extension TcXtsHmiServerExtension ist fehlgeschlagen. Zus�tzliche Informationen: {0}",
+
+    "ERROR_REQUEST": "Anfrage fehlgeschlagen! Zus�tzliche Informationen: {0}",
+    "ERROR_CALL_COMMAND": "Aufruf '{0}' is fehlgeschlagen! Zus�tzliche Informationen: {1}",
+
+    "XPU_COUNT_DESC": "Anzahl der erwarteten XTS Processing Units",
+    "TARGET_SYSTEMS_DESC": "XTS Zielsysteme",
+    "UPDATE_RATE_SERVER_DESC": "Aktualisierungsrate der Daten, in Millisekunden.",
+    "UPDATE_RATE_DIAGDATA_DESC": "Aktualisierungsrate der Diagnosedaten, in Millisekunden."
+  }
+}

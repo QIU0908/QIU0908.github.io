@@ -1,0 +1,182 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsInfoBars": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "type": "array",
+      "title": "XtsInfoBars",
+      "items": {
+        "type": "object",
+        "title": "XtsInfoBar",
+        "propertiesMeta": [
+          {
+            "name": "ProcessingUnitIndex",
+            "displayName": "ProcessingUnitIndex",
+            "category": "General",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "PartIndex",
+            "displayName": "PartIndex",
+            "category": "General",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "PartStartPosition",
+            "displayName": "PartStartPosition",
+            "category": "General",
+            "defaultValue": 10,
+            "defaultValueInternal": 10
+          },
+          {
+            "name": "PartEndPosition",
+            "displayName": "PartEndPosition",
+            "category": "General",
+            "defaultValue": 200,
+            "defaultValueInternal": 200
+          },
+          {
+            "name": "InfoBarThickness",
+            "displayName": "InfoBarThickness",
+            "category": "Layout",
+            "defaultValue": 8,
+            "defaultValueInternal": 8
+          },
+          {
+            "name": "InfoBarDisplacement",
+            "displayName": "InfoBarDisplacement",
+            "category": "Layout",
+            "defaultValue": 100,
+            "defaultValueInternal": 100
+          },
+          {
+            "name": "InfoBarColor",
+            "displayName": "InfoBarColor",
+            "category": "Layout",
+            "defaultValue": {
+              "color": "black"
+            },
+            "defaultValueInternal": {
+              "color": "black"
+            }
+          },
+          {
+            "name": "Visible",
+            "displayName": "Visible",
+            "category": "Layout",
+            "defaultValue": true,
+            "defaultValueInternal": true
+          },
+          {
+            "name": "zIndex",
+            "displayName": "zIndex",
+            "category": "Layout",
+            "defaultValue": 1000,
+            "defaultValueInternal": 1000
+          },
+          {
+            "name": "InfoBarText",
+            "displayName": "InfoBarText",
+            "category": "Text",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "TextPlacement",
+            "displayName": "TextPlacement",
+            "category": "Text",
+            "defaultValue": "Left",
+            "defaultValueInternal": "Left"
+          },
+          {
+            "name": "TextDisplacement",
+            "displayName": "TextDisplacement",
+            "category": "Text",
+            "defaultValue": 15,
+            "defaultValueInternal": 15
+          },
+          {
+            "name": "TextOptions",
+            "displayName": "TextOptions",
+            "category": "Text",
+            "defaultValue": {
+              "Color": {
+                "color": "black"
+              },
+              "FontStyle": "Normal",
+              "FontWeight": "Normal",
+              "FontFamily": "",
+              "HorizontalAlignment": "Left",
+              "VerticalAlignment": "Bottom",
+              "FontSize": 20.0
+            },
+            "defaultValueInternal": {
+              "Color": {
+                "color": "black"
+              },
+              "FontStyle": "Normal",
+              "FontWeight": "Normal",
+              "FontFamily": "",
+              "HorizontalAlignment": "Left",
+              "VerticalAlignment": "Bottom",
+              "FontSize": 20.0
+            }
+          },
+          {
+            "name": "Marker",
+            "displayName": "Marker",
+            "category": "Marker",
+            "defaultValue": [],
+            "defaultValueInternal": []
+          }
+        ],
+        "properties": {
+          "ProcessingUnitIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "PartIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "PartStartPosition": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "PartEndPosition": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "InfoBarThickness": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "InfoBarDisplacement": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "InfoBarColor": {
+            "$ref": "tchmi:framework#/definitions/SolidColor"
+          },
+          "Visible": {
+            "type": "boolean"
+          },
+          "zIndex": {
+            "type": "integer"
+          },
+          "InfoBarText": {
+            "type": "string"
+          },
+          "TextPlacement": {
+            "$ref": "tchmi:framework#/definitions/HorizontalAlignment"
+          },
+          "TextDisplacement": {
+            "type": "integer"
+          },
+          "TextOptions": {
+            "$ref": "tchmi:framework#/definitions/TextOptions"
+          },
+          "Marker": {
+            "$ref": "tchmi:framework#/definitions/XtsInfoBarMarkers"
+          }
+        }
+      }     
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "TextOptions": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "type": "object",
+      "title": "TextOptions",
+      "propertiesMeta": [
+        {
+          "name": "Color",
+          "displayName": "Color",
+          "defaultValue": {
+            "color": "Transparent"
+          },
+          "defaultValueInternal": {
+            "color": "Transparent"
+          }
+        },
+        {
+          "name": "FontStyle",
+          "displayName": "FontStyle",
+          "defaultValue": "Normal",
+          "defaultValueInternal": "Normal"
+        },
+        {
+          "name": "FontWeight",
+          "displayName": "FontWeight",
+          "defaultValue": "Normal",
+          "defaultValueInternal": "Normal"
+        },
+        {
+          "name": "FontFamily",
+          "displayName": "FontFamily",
+          "defaultValue": null,
+          "defaultValueInternal": null
+        },
+        {
+          "name": "HorizontalAlignment",
+          "displayName": "HorizontalAlignment",
+          "defaultValue": "Left",
+          "defaultValueInternal": "Left"
+        },
+        {
+          "name": "VerticalAlignment",
+          "displayName": "VerticalAlignment",
+          "defaultValue": "Top",
+          "defaultValueInternal": "Top"
+        },
+        {
+          "name": "FontSize",
+          "displayName": "FontSize",
+          "defaultValue": 20,
+          "defaultValueInternal": 20
+        }
+      ],
+      "properties": {
+        "Color": {
+          "$ref": "tchmi:framework#/definitions/SolidColor"
+        },
+        "FontStyle": {
+          "$ref": "tchmi:framework#/definitions/FontStyle"
+        },
+        "FontWeight": {
+          "$ref": "tchmi:framework#/definitions/FontWeight"
+        },
+        "FontFamily": {
+          "$ref": "tchmi:framework#/definitions/FontFamily"
+        },
+        "HorizontalAlignment": {
+          "$ref": "tchmi:framework#/definitions/HorizontalAlignment"
+        },
+        "VerticalAlignment": {
+          "$ref": "tchmi:framework#/definitions/VerticalAlignment"
+        },
+        "FontSize": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+[
+  {
+    "ProductName": "Beckhoff TwinCAT HMI XTS Controls",
+    "MsiName": "TwinCAT-HMI-XTS-Controls",
+    "PackageName": "TwinCAT.HMI.XTS.Controls",
+    "Description": "TwinCAT HMI Controls for XTS.",
+    "Dependency": [
+
+    ]
+  }
+]

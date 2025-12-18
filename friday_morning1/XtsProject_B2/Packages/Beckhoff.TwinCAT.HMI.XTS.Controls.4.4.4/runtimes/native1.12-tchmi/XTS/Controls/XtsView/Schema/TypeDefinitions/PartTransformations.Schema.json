@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "PartTransformations": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "Part Transformations",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "Part Transformation",
+        "propertiesMeta": [
+          {
+            "name": "ProcessingUnitIndex",
+            "category": "General",
+            "displayName": "ProcessingUnitIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "PartIndex",
+            "category": "General",
+            "displayName": "PartIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "OffsetX",
+            "category": "X-Transformation",
+            "displayName": "Offset",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "ValueScaleX",
+            "category": "X-Transformation",
+            "displayName": "ValueScale",
+            "defaultValue": 1,
+            "defaultValueInternal": 1
+          },
+          {
+            "name": "AxisBindingX",
+            "category": "X-Transformation",
+            "displayName": "AxisBinding",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "OffsetY",
+            "category": "Y-Transformation",
+            "displayName": "Offset",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "ValueScaleY",
+            "category": "Y-Transformation",
+            "displayName": "ValueScale",
+            "defaultValue": 1,
+            "defaultValueInternal": 1
+          },
+          {
+            "name": "AxisBindingY",
+            "category": "Y-Transformation",
+            "displayName": "AxisBinding",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "Rotation",
+            "category": "General",
+            "displayName": "Rotation",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "PartSide",
+            "category": "General",
+            "displayName": "PartSide",
+            "defaultValue": "Default",
+            "defaultValueInternal": "Default"
+          },
+          {
+            "name": "Visible",
+            "category": "General",
+            "displayName": "Visible",
+            "defaultValue": true,
+            "defaultValueInternal": true
+          }
+        ],
+        "properties": {
+          "ProcessingUnitIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "PartIndex": {
+            "type": "number"
+          },
+          "OffsetX": {
+            "type": "number"
+          },
+          "ValueScaleX": {
+            "type": "number"
+          },
+          "AxisBindingX": {
+            "$ref": "tchmi:general#/definitions/LREAL"
+          },
+          "OffsetY": {
+            "type": "number"
+          },
+          "ValueScaleY": {
+            "type": "number"
+          },
+          "AxisBindingY": {
+            "$ref": "tchmi:general#/definitions/LREAL"
+          },
+          "Rotation": {
+            "type": "number"
+          },
+          "PartSide": {
+            "$ref": "tchmi:framework#/definitions/PartSide"
+          },
+          "Visible": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

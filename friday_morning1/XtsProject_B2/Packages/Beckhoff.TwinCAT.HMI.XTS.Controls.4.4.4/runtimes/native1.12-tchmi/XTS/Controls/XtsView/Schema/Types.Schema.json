@@ -1,0 +1,28 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "TcHmi.XTS.Controls.XtsView": {
+      "type": "object",
+      "frameworkInstanceOf": "TcHmi.Controls.System.TcHmiControl",
+      "frameworkControlType": "XtsView",
+      "frameworkControlNamespace": "TcHmi.XTS.Controls"
+    },
+    "Matrix": {
+      "title": "Matrix",
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "number"
+        }
+      }
+    },
+    "BoolArray": {
+      "title": "BoolArray",
+      "type": "array",
+      "items": {
+        "type": "boolean"
+      }
+    }
+  }
+}

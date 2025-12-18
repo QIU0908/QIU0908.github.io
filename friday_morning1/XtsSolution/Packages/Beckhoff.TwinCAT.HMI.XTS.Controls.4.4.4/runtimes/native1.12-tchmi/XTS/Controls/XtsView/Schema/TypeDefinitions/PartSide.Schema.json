@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "PartSide": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "PartSide",
+      "type": "string",
+      "enum": ["Default", "Front", "Back"]
+    }
+  }
+}

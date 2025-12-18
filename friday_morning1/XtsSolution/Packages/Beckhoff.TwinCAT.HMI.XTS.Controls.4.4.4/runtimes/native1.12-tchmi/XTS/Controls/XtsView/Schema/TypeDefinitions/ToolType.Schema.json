@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "ToolType": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "ToolType",
+      "type": "string",
+      "enum": [ "Image", "Text"]
+    }
+  }
+}

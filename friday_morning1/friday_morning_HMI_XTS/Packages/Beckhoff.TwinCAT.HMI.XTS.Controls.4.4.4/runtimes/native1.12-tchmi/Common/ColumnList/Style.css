@@ -1,0 +1,64 @@
+﻿.TcHmi_Common_ColumnList-list_item {
+    border: 1px solid rgb(199, 199, 199);
+    background: white;
+    border-radius: 3px;
+    height: fit-content;
+    display: grid;
+    grid-template-columns: 4px auto;
+    box-shadow: 2px 2px 4px gray;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.TcHmi_Common_ColumnList-list_item:hover {
+    box-shadow: 2px 2px 6px rgb(90, 90, 90);
+}
+
+.TcHmi_Common_ColumnList-list_item.highlight {
+    box-shadow: 4px 4px 8px rgb(90, 90, 90);
+}
+
+.TcHmi_Common_ColumnList-text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    color: rgb(30, 30, 30);
+    margin: auto;
+}
+
+.TcHmi_Common_ColumnList-item_container {
+    display: grid;
+    padding: 15px;
+}
+
+.TcHmi_Common_ColumnList-img {
+    margin: auto;
+    height: 40px;
+}
+
+.TcHmi_Common_ColumnList-svg {
+    height: 32px;
+    width: 32px;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.TcHmi_Common_ColumnList-svg:hover circle {
+    fill: rgb(104, 104, 104);
+}
+
+.TcHmi_Common_ColumnList-svg:active circle {
+    fill: rgb(91, 91, 91);
+}
+
+.TcHmi_Common_ColumnList-indicator {
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.TcHmi_Common_ColumnList-indicator.error {
+    background: red;
+}
+
+.TcHmi_Common_ColumnList-indicator.neutral {
+    background: transparent;
+}

@@ -1,0 +1,150 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "DimensionOptions": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "type": "object",
+      "title": "DimensionOptions",
+      "propertiesMeta": [
+        {
+          "name": "Displacement",
+          "displayName": "Displacement",
+          "category": "Layout",
+          "defaultValue": 100,
+          "defaultValueInternal": 100
+        },
+        {
+          "name": "InfoBarThickness",
+          "displayName": "Thickness",
+          "category": "Layout",
+          "defaultValue": 8,
+          "defaultValueInternal": 8
+        },
+        {
+          "name": "MarkerType",
+          "displayName": "MarkerType",
+          "category": "Layout",
+          "defaultValue": "Tick",
+          "defaultValueInternal": "Tick"
+        },
+        {
+          "name": "MarkerThickness",
+          "displayName": "MarkerThickness",
+          "category": "Layout",
+          "defaultValue": 5,
+          "defaultValueInternal": 5
+        },
+        {
+          "name": "MarkerSize",
+          "displayName": "MarkerSize",
+          "category": "Layout",
+          "defaultValue": 25,
+          "defaultValueInternal": 25
+        },
+        {
+          "name": "zIndex",
+          "displayName": "zIndex",
+          "category": "Layout",
+          "defaultValue": 1200,
+          "defaultValueInternal": 1200
+        },
+        {
+          "name": "TextPattern",
+          "displayName": "TextPattern",
+          "category": "Text",
+          "defaultValue": 2,
+          "defaultValueInternal": 2
+        },
+        {
+          "name": "TextDisplacement",
+          "displayName": "TextDisplacement",
+          "category": "Text",
+          "defaultValue": 10,
+          "defaultValueInternal": 10
+        },
+        {
+          "name": "TextOptions",
+          "displayName": "TextOptions",
+          "category": "Text",
+          "defaultValue": {
+            "FontStyle": "Normal",
+            "FontWeight": "Normal",
+            "FontFamily": "",
+            "HorizontalAlignment": "Center",
+            "VerticalAlignment": "Bottom",
+            "FontSize": 20,
+            "Color": {
+              "color": "#ff000000"
+            }
+          },
+          "defaultValueInternal": {
+            "FontStyle": "Normal",
+            "FontWeight": "Normal",
+            "FontFamily": "",
+            "HorizontalAlignment": "Center",
+            "VerticalAlignment": "Bottom",
+            "FontSize": 20,
+            "Color": {
+              "color": "#ff000000"
+            }
+          }
+        },
+        {
+          "name": "InfoBarColor",
+          "displayName": "InfoBarColor",
+          "defaultValue": {
+            "color": "#ff000000"
+          },
+          "defaultValueInternal": {
+            "color": "#ff000000"
+          }
+        },
+        {
+          "name": "MarkerColor",
+          "displayName": "MarkerColor",
+          "defaultValue": {
+            "color": "#ff000000"
+          },
+          "defaultValueInternal": {
+            "color": "#ff000000"
+          }
+        }
+      ],
+      "properties": {
+        "Displacement": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "InfoBarThickness": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "MarkerThickness": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "MarkerSize": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "MarkerType": {
+          "$ref": "tchmi:framework#/definitions/MarkerType"
+        },
+        "zIndex": {
+          "type":  "integer"
+        },
+        "TextPattern": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "TextDisplacement": {
+          "type": "number"
+        },
+        "InfoBarColor": {
+          "$ref": "tchmi:framework#/definitions/SolidColor"
+        },
+        "MarkerColor": {
+          "$ref": "tchmi:framework#/definitions/SolidColor"
+        },
+        "TextOptions": {
+          "$ref": "tchmi:framework#/definitions/TextOptions"
+        }
+      }
+    }
+  }
+}

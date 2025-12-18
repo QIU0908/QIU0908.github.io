@@ -1,0 +1,15 @@
+{
+  "name": "tcxtshmicontrols",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "rollup": "^2.38.5",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}

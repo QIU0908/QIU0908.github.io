@@ -1,0 +1,104 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "MarkerOptions": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "type": "object",
+      "title": "MarkerOptions",
+      "propertiesMeta": [
+        {
+          "name": "MarkerType",
+          "displayName": "MarkerType",
+          "category": "Layout",
+          "defaultValue": "None",
+          "defaultValueInternal": "None"
+        },
+        {
+          "name": "Size",
+          "displayName": "Size",
+          "category": "Layout",
+          "defaultValue": 20,
+          "defaultValueInternal": 20
+        },
+        {
+          "name": "Thickness",
+          "displayName": "Thickness",
+          "category": "Layout",
+          "defaultValue": 8,
+          "defaultValueInternal": 8
+        },
+        {
+          "name": "zIndex",
+          "displayName": "zIndex",
+          "category": "Layout",
+          "defaultValue": 1100,
+          "defaultValueInternal": 1100
+        },
+        {
+          "name": "Text",
+          "displayName": "Text",
+          "category": "Text",
+          "defaultValue": "None",
+          "defaultValueInternal": "None"
+        },
+        {
+          "name": "TextDisplacement",
+          "displayName": "TextDisplacement",
+          "category": "Text",
+          "defaultValue": 20,
+          "defaultValueInternal": 20
+        },
+        {
+          "name": "TextOptions",
+          "displayName": "TextOptions",
+          "category": "Text",
+          "defaultValue": {
+            "FontStyle": "Normal",
+            "FontWeight": "Normal",
+            "FontFamily": "",
+            "HorizontalAlignment": "Center",
+            "VerticalAlignment": "Bottom",
+            "FontSize": 20,
+            "Color": {
+              "color": "black"
+            }
+          },
+          "defaultValueInternal": {
+            "FontStyle": "Normal",
+            "FontWeight": "Normal",
+            "FontFamily": "",
+            "HorizontalAlignment": "Center",
+            "VerticalAlignment": "Bottom",
+            "FontSize": 20,
+            "Color": {
+              "color": "black"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "MarkerType": {
+          "$ref": "tchmi:framework#/definitions/MarkerType"
+        },
+        "Size": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "Thickness": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "zIndex": {
+          "type": "integer"
+        },
+        "Text": {
+          "$ref": "tchmi:framework#/definitions/MarkerText"
+        },
+        "TextDisplacement": {
+          "type": "number"
+        },
+        "TextOptions": {
+          "$ref": "tchmi:framework#/definitions/TextOptions"
+        }
+      }
+    }
+  }
+}

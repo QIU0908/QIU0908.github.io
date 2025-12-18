@@ -1,0 +1,114 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "CustomMoverLayout": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "CustomMoverLayout",
+      "type": "object",
+      "propertiesMeta": [
+        {
+          "name": "ImageSrcFrontSide",
+          "category": "FrontSide",
+          "displayName": "ImageSrcFrontSide",
+          "defaultValue": null,
+          "defaultValueInternal": null
+        },
+        {
+          "name": "ImageWidthFrontSide",
+          "category": "FrontSide",
+          "displayName": "ImageWidthFrontSide",
+          "defaultValue": 70,
+          "defaultValueInternal": 70
+        },
+        {
+          "name": "ImageHeightFrontSide",
+          "category": "FrontSide",
+          "displayName": "ImageHeightFrontSide",
+          "defaultValue": 126,
+          "defaultValueInternal": 126
+        },
+        {
+          "name": "XOffsetFrontSide",
+          "category": "FrontSide",
+          "displayName": "XOffsetFrontSide",
+          "defaultValue": 0,
+          "defaultValueInternal": 0
+        },
+        {
+          "name": "YOffsetFrontSide",
+          "category": "FrontSide",
+          "displayName": "YOffsetFrontSide",
+          "defaultValue": 0,
+          "defaultValueInternal": 0
+        },
+        {
+          "name": "ImageSrcBackSide",
+          "category": "BackSide",
+          "displayName": "ImageSrcBackSide",
+          "defaultValue": null,
+          "defaultValueInternal": null
+        },
+        {
+          "name": "ImageWidthBackSide",
+          "category": "BackSide",
+          "displayName": "ImageWidthBackSide",
+          "defaultValue": 70,
+          "defaultValueInternal": 70
+        },
+        {
+          "name": "ImageHeightBackSide",
+          "category": "BackSide",
+          "displayName": "ImageHeightBackSide",
+          "defaultValue": 80,
+          "defaultValueInternal": 80
+        },
+        {
+          "name": "XOffsetBackSide",
+          "category": "BackSide",
+          "displayName": "XOffsetBackSide",
+          "defaultValue": 0,
+          "defaultValueInternal": 0
+        },
+        {
+          "name": "YOffsetBackSide",
+          "category": "BackSide",
+          "displayName": "YOffsetBackSide",
+          "defaultValue": 0,
+          "defaultValueInternal": 0
+        }
+      ],
+      "properties": {
+        "ImageSrcFrontSide": {
+          "$ref": "tchmi:framework#/definitions/Path"
+        },
+        "ImageWidthFrontSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "ImageHeightFrontSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "XOffsetFrontSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "YOffsetFrontSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "ImageSrcBackSide": {
+          "$ref": "tchmi:framework#/definitions/Path"
+        },
+        "ImageWidthBackSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "ImageHeightBackSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "XOffsetBackSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        },
+        "YOffsetBackSide": {
+          "$ref": "tchmi:framework#/definitions/MeasurementValue"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,634 @@
+{
+  "$schema": "ExtensionSettings.Schema.json",
+  "guid": "ad469e32-48e8-4f48-a30c-471852068d9b",
+  "version": "1.0.0.10",
+  "configVersion": "1.0.0.112",
+  "symbols": {
+    "MoverPositions": {
+      "writeValue": {
+        "type": "object",
+        "properties": {
+          "targetSystem": {
+            "$ref": "tchmi:general#/definitions/String"
+          }
+        }
+      },
+      "readValue": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "PartPosition": {
+                "$ref": "tchmi:general#/definitions/DOUBLE"
+              },
+              "PartOid": {
+                "$ref": "tchmi:general#/definitions/UINT"
+              }
+            }
+          }
+        }
+      },
+      "hidden": true,
+      "userGroups": [
+        "__SystemUsers"
+      ]
+    },
+    "ModuleDriveStates": {
+      "writeValue": {
+        "type": "object",
+        "properties": {
+          "targetSystem": {
+            "$ref": "tchmi:general#/definitions/String"
+          }
+        }
+      },
+      "readValue": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        }
+      },
+      "hidden": true,
+      "userGroups": [
+        "__SystemUsers"
+      ]
+    },
+    "PartTransformations": {
+      "writeValue": {
+        "type": "object",
+        "properties": {
+          "targetSystem": {
+            "type": "string"
+          }
+        }
+      },
+      "readValue": {
+        "type": "array",
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "OffsetX": {
+                "$ref": "tchmi:general#/definitions/FLOAT"
+              },
+              "OffsetY": {
+                "$ref": "tchmi:general#/definitions/FLOAT"
+              },
+              "Rotation": {
+                "$ref": "tchmi:general#/definitions/FLOAT"
+              }
+            }
+          }
+        }
+      },
+      "hidden": true,
+      "userGroups": [
+        "__SystemUsers"
+      ]
+    },
+    "XtsModel": {
+      "writeValue": {
+        "type": "object",
+        "properties": {
+          "targetSystem": {
+            "type": "string"
+          }
+        }
+      },
+      "readValue": {
+        "type": "object",
+        "properties": {
+          "ProcessingUnits": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "MoverType": {
+                  "$ref": "tchmi:general#/definitions/DINT"
+                },
+                "Movers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ObjectId": {
+                        "$ref": "tchmi:general#/definitions/UINT"
+                      },
+                      "Id": {
+                        "$ref": "tchmi:general#/definitions/String"
+                      },
+                      "Name": {
+                        "$ref": "tchmi:general#/definitions/String"
+                      }
+                    }
+                  }
+                },
+                "Parts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "Name": {
+                        "$ref": "tchmi:general#/definitions/String"
+                      },
+                      "ObjectId": {
+                        "$ref": "tchmi:general#/definitions/UINT"
+                      },
+                      "ModuleSide": {
+                        "$ref": "tchmi:general#/definitions/DINT"
+                      },
+                      "OriginTransform": {
+                        "type": "object",
+                        "properties": {
+                          "OffsetX": {
+                            "$ref": "tchmi:general#/definitions/FLOAT"
+                          },
+                          "OffsetY": {
+                            "$ref": "tchmi:general#/definitions/FLOAT"
+                          },
+                          "Rotation": {
+                            "$ref": "tchmi:general#/definitions/FLOAT"
+                          }
+                        }
+                      },
+                      "Modules": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "Name": {
+                              "$ref": "tchmi:general#/definitions/String"
+                            },
+                            "ObjectId": {
+                              "$ref": "tchmi:general#/definitions/UINT"
+                            },
+                            "ModuleType": {
+                              "$ref": "tchmi:general#/definitions/UINT"
+                            },
+                            "Gap": {
+                              "$ref": "tchmi:general#/definitions/DOUBLE"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "Tracks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ObjectId": {
+                        "$ref": "tchmi:general#/definitions/UINT"
+                      },
+                      "PartConfigs": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "ObjectId": {
+                              "$ref": "tchmi:general#/definitions/UINT"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "InfoServer": {
+            "type": "object",
+            "properties": {
+              "Stations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Parts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "tchmi:general#/definitions/UINT"
+                      }
+                    },
+                    "Description": {
+                      "$ref": "tchmi:general#/definitions/String"
+                    },
+                    "EndPositionOnPart": {
+                      "$ref": "tchmi:general#/definitions/DOUBLE"
+                    },
+                    "IsEnabled": {
+                      "$ref": "tchmi:general#/definitions/BOOL"
+                    },
+                    "StationColor": {
+                      "$ref": "tchmi:general#/definitions/UINT"
+                    },
+                    "StationId": {
+                      "$ref": "tchmi:general#/definitions/UINT"
+                    },
+                    "StartPositionOnPart": {
+                      "$ref": "tchmi:general#/definitions/DOUBLE"
+                    },
+                    "StopPositions": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "tchmi:general#/definitions/DOUBLE"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "hidden": true,
+      "userGroups": [
+        "__SystemUsers"
+      ]
+    },
+    "DiagnosticData": {
+      "readValue": {
+        "function": true,
+        "type": "object",
+        "readOnly": true,
+        "properties": {
+          "Targets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "Name": {
+                  "type": "string"
+                },
+                "AmsNetId": {
+                  "type": "string"
+                },
+                "System": {
+                  "type": "object",
+                  "properties": {
+                    "ProcessingUnits": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "ActiveMoverCount": {
+                            "type": "integer"
+                          },
+                          "AreAllPositionsValid": {
+                            "type": "boolean"
+                          },
+                          "DetectedMoverCount": {
+                            "type": "integer"
+                          },
+                          "DetectionState": {
+                            "type": "string"
+                          },
+                          "DriveState": {
+                            "type": "string"
+                          },
+                          "ExpectedMoverCount": {
+                            "type": "integer"
+                          },
+                          "HasIdDetectionError": {
+                            "type": "boolean"
+                          },
+                          "HasInputCheckError": {
+                            "type": "boolean"
+                          },
+                          "IdDetectionMode": {
+                            "type": "string"
+                          },
+                          "IsDefaultTeachingAvailable": {
+                            "type": "boolean"
+                          },
+                          "IsIdDetectionActive": {
+                            "type": "boolean"
+                          },
+                          "IsIdDetectionValid": {
+                            "type": "boolean"
+                          },
+                          "IsTeachingEnabled": {
+                            "type": "boolean"
+                          },
+                          "IsTeachingValid": {
+                            "type": "boolean"
+                          },
+                          "MagnetPlateType": {
+                            "type": "string"
+                          },
+                          "MinMechanicalMoverDistance": {
+                            "type": "number"
+                          },
+                          "Movers": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Id": {
+                                  "type": "string"
+                                },
+                                "Name": {
+                                  "type": "string"
+                                },
+                                "NcModuloPos": {
+                                  "type": "number"
+                                },
+                                "NcPos": {
+                                  "type": "number"
+                                },
+                                "ObjectId": {
+                                  "type": "integer"
+                                },
+                                "ScopeVariables": {
+                                  "type": "object",
+                                  "properties": {
+                                    "Status": {
+                                      "type": "integer"
+                                    },
+                                    "Control": {
+                                      "type": "integer"
+                                    },
+                                    "SetCurr": {
+                                      "type": "number"
+                                    },
+                                    "SetAccItp": {
+                                      "type": "number"
+                                    },
+                                    "SetVeloItp": {
+                                      "type": "number"
+                                    },
+                                    "SetPosItp": {
+                                      "type": "number"
+                                    },
+                                    "ActVeloError": {
+                                      "type": "number"
+                                    },
+                                    "ActPosError": {
+                                      "type": "number"
+                                    },
+                                    "ActVelo": {
+                                      "type": "number"
+                                    },
+                                    "ActPos": {
+                                      "type": "number"
+                                    }
+                                  }
+                                },
+                                "SimulatedStartUpPart": {
+                                  "type": "integer"
+                                },
+                                "SimulatedStartUpId": {
+                                  "type": "string"
+                                },
+                                "SimulatedStartUpPosition": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "MoverSortOrder": {
+                            "type": "string"
+                          },
+                          "MoverType": {
+                            "type": "string"
+                          },
+                          "OperationMode": {
+                            "type": "string"
+                          },
+                          "Parts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Length": {
+                                  "type": "number"
+                                },
+                                "Modules": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "Name": {
+                                        "$ref": "tchmi:general#/definitions/String"
+                                      },
+                                      "ObjectId": {
+                                        "$ref": "tchmi:general#/definitions/UINT"
+                                      },
+                                      "ModuleType": {
+                                        "type": "string"
+                                      },
+                                      "Gap": {
+                                        "$ref": "tchmi:general#/definitions/DOUBLE"
+                                      },
+                                      "MinDcLinkVoltage": {
+                                        "type": "number"
+                                      },
+                                      "MaxOverallCurrentLast500ms": {
+                                        "type": "number"
+                                      },
+                                      "MaxDcLinkVoltageLast500ms": {
+                                        "type": "number"
+                                      },
+                                      "Length": {
+                                        "type": "number"
+                                      },
+                                      "MaxDcLinkVoltage": {
+                                        "type": "number"
+                                      },
+                                      "I2TWarnLevel": {
+                                        "type": "integer"
+                                      },
+                                      "I2TErrorLevel": {
+                                        "type": "number"
+                                      },
+                                      "OverallCurrent": {
+                                        "type": "number"
+                                      },
+                                      "PcbTemperatures": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "number"
+                                        }
+                                      },
+                                      "TemperatureErrorLevel": {
+                                        "type": "number"
+                                      },
+                                      "TemperatureWarnLevel": {
+                                        "type": "number"
+                                      },
+                                      "DriveState": {
+                                        "type": "string"
+                                      },
+                                      "AmplifierI2T": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "integer"
+                                        }
+                                      },
+                                      "AuxiliaryVoltage5V": {
+                                        "type": "number"
+                                      },
+                                      "AuxiliaryVoltage10V": {
+                                        "type": "number"
+                                      },
+                                      "AuxiliaryVoltage24V": {
+                                        "type": "number"
+                                      },
+                                      "ChipId": {
+                                        "type": "number"
+                                      },
+                                      "CurrentScaling": {
+                                        "type": "number"
+                                      },
+                                      "DriveHardwareVersion": {
+                                        "type": "string"
+                                      },
+                                      "DriveDeviceType": {
+                                        "type": "number"
+                                      },
+                                      "DriveBtn": {
+                                        "type": "string"
+                                      },
+                                      "DriveControlValue": {
+                                        "type": "number"
+                                      },
+                                      "DriveStatusValue": {
+                                        "type": "number"
+                                      },
+                                      "HasDriveError": {
+                                        "type": "boolean"
+                                      },
+                                      "HasDriveWarning": {
+                                        "type": "boolean"
+                                      },
+                                      "DcLinkVoltage": {
+                                        "type": "number"
+                                      }
+                                    }
+                                  }
+                                },
+                                "ModuleSide": {
+                                  "type": "string"
+                                },
+                                "Name": {
+                                  "$ref": "tchmi:general#/definitions/String"
+                                },
+                                "ObjectId": {
+                                  "$ref": "tchmi:general#/definitions/UINT"
+                                },
+                                "OriginTransform": {
+                                  "type": "object",
+                                  "properties": {
+                                    "OffsetX": {
+                                      "$ref": "tchmi:general#/definitions/FLOAT"
+                                    },
+                                    "OffsetY": {
+                                      "$ref": "tchmi:general#/definitions/FLOAT"
+                                    },
+                                    "Rotation": {
+                                      "$ref": "tchmi:general#/definitions/FLOAT"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "Tracks": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "Name": {
+                                  "type": "string"
+                                },
+                                "ObjectId": {
+                                  "$ref": "tchmi:general#/definitions/UINT"
+                                },
+                                "PartConfigs": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "ObjectId": {
+                                        "$ref": "tchmi:general#/definitions/UINT"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "VersionString": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "InfoServer": {
+                      "type": "object",
+                      "properties": {
+                        "Stations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "Parts": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "tchmi:general#/definitions/UINT"
+                                }
+                              },
+                              "Description": {
+                                "$ref": "tchmi:general#/definitions/String"
+                              },
+                              "EndPositionOnPart": {
+                                "$ref": "tchmi:general#/definitions/DOUBLE"
+                              },
+                              "IsEnabled": {
+                                "$ref": "tchmi:general#/definitions/BOOL"
+                              },
+                              "StationColor": {
+                                "$ref": "tchmi:general#/definitions/UINT"
+                              },
+                              "StationId": {
+                                "$ref": "tchmi:general#/definitions/UINT"
+                              },
+                              "StartPositionOnPart": {
+                                "$ref": "tchmi:general#/definitions/DOUBLE"
+                              },
+                              "StopPositions": {
+                                "type": "array",
+                                "items": {
+                                  "$ref": "tchmi:general#/definitions/DOUBLE"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "hidden": false,
+      "automap": false
+    }
+  },
+  "dotNetTargetFramework": "net48",
+  "dotNetTargetFrameworkVersion": "v4.8",
+  "dotNetPlatformTarget": "AnyCPU",
+  "dotNetConfiguration": "Release"
+}

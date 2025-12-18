@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "SelectionMode": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "SelectionMode",
+      "type": "string",
+      "enum": [ "Off", "SingleSelection", "MultiSelection" ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "ModuleSide": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "ModuleSide",
+      "type": "string",
+      "enum": [ "Front", "Back" ]
+    }
+  }
+}

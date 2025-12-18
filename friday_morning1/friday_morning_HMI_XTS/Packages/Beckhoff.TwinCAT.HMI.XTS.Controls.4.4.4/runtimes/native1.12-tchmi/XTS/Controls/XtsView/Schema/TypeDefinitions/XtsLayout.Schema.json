@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsLayout": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "XtsLayout",
+      "type": "string",
+      "enum": [ "SystemView", "InvertedSystemView", "Custom" ]
+    }
+  }
+}

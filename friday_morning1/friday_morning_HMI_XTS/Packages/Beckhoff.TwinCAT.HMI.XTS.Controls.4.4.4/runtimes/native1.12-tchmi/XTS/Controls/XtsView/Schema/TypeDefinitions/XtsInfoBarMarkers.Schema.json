@@ -1,0 +1,132 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsInfoBarMarkers": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "type": "array",
+      "title": "XtsInfoBarMarkers",
+      "items": {
+        "type": "object",
+        "title": "XtsInfoBarMarker",
+        "propertiesMeta": [
+          {
+            "name": "InfoBarPosition",
+            "displayName": "InfoBarPosition",
+            "category": "General",
+            "defaultValue": 100,
+            "defaultValueInternal": 100
+          },
+          {
+            "name": "MarkerType",
+            "displayName": "MarkerType",
+            "category": "Layout",
+            "defaultValue": "Diamond",
+            "defaultValueInternal": "Diamond"
+          },
+          {
+            "name": "MarkerThickness",
+            "displayName": "MarkerThickness",
+            "category": "Layout",
+            "defaultValue": 5,
+            "defaultValueInternal": 5
+          },
+          {
+            "name": "MarkerSize",
+            "displayName": "MarkerSize",
+            "category": "Layout",
+            "defaultValue": 25,
+            "defaultValueInternal": 25
+          },
+          {
+            "name": "MarkerColor",
+            "displayName": "MarkerColor",
+            "category": "Layout",
+            "defaultValue": {
+              "color": "black"
+            },
+            "defaultValueInternal": {
+              "color": "black"
+            }
+          },
+          {
+            "name": "zIndex",
+            "category": "Layout",
+            "displayName": "zIndex",
+            "defaultValue": 1001,
+            "defaultValueInternal": 1001
+          },
+          {
+            "name": "MarkerText",
+            "displayName": "MarkerText",
+            "category": "Text",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "TextDisplacement",
+            "displayName": "TextDisplacement",
+            "category": "Text",
+            "defaultValue": 15,
+            "defaultValueInternal": 15
+          },
+          {
+            "name": "TextOptions",
+            "displayName": "TextOptions",
+            "category": "Text",
+            "defaultValue": {
+              "FontStyle": "Normal",
+              "FontWeight": "Normal",
+              "FontFamily": "",
+              "HorizontalAlignment": "Center",
+              "VerticalAlignment": "Bottom",
+              "FontSize": 20,
+              "Color": {
+                "color": "black"
+              }
+            },
+            "defaultValueInternal": {
+              "FontStyle": "Normal",
+              "FontWeight": "Normal",
+              "FontFamily": "",
+              "HorizontalAlignment": "Center",
+              "VerticalAlignment": "Bottom",
+              "FontSize": 20,
+              "Color": {
+                "color": "black"
+              }
+            }
+          }
+        ],
+        "properties": {
+          "InfoBarPosition": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "MarkerType": {
+            "$ref": "tchmi:framework#/definitions/MarkerType"
+          },
+          "MarkerThickness": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "MarkerSize": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "MarkerColor": {
+            "$ref": "tchmi:framework#/definitions/SolidColor"
+          },
+          "zIndex": {
+            "type": "integer"
+          },
+          "MarkerText": {
+            "type": "string"
+          },
+          "TextDisplacement": {
+            "type": "number"
+          },
+          "TextOptions": {
+            "$ref": "tchmi:framework#/definitions/TextOptions"
+          }
+        }
+      }
+    }
+  }
+}

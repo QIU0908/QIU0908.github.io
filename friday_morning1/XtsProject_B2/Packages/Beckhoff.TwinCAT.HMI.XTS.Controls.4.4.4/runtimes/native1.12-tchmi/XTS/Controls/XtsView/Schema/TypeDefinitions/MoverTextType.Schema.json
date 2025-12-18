@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "MoverTextType": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "MoverTextType",
+      "type": "string",
+      "enum": [ "Custom", "MoverId", "MoverIndex", "MoverPosition" ]
+    }
+  }
+}

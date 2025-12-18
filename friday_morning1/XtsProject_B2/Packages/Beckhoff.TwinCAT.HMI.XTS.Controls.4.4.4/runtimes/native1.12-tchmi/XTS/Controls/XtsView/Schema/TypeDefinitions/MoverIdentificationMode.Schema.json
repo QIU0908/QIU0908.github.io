@@ -1,0 +1,12 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "MoverIdentificationMode": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "MoverIdentificationMode",
+      "type": "string",
+      "enum": [ "All","MoverId", "MoverIndex" ],
+      "id": "tchmi:framework#/definitions/MoverIdentificationMode"
+    }
+  }
+}

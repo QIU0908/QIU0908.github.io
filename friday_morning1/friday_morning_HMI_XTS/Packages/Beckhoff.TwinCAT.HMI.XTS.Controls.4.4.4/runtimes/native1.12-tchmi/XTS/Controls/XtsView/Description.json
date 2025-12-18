@@ -1,0 +1,922 @@
+{
+  "$schema": "../../../.hmiframework/Schema/ControlDescription.Schema.json",
+  "apiVersion": 1,
+  "name": "XtsView",
+  "namespace": "TcHmi.XTS.Controls",
+  "displayName": "XTS View",
+  "version": {
+    "full": "4.4.4.0",
+    "major": 4,
+    "minor": 4,
+    "revision": 4,
+    "build": 0
+  },
+  "visible": true,
+  "themeable": "Standard",
+  "base": "TcHmi.Controls.System.TcHmiControl",
+  "description": "Shows a Beckhoff XTS",
+  "properties": {
+    "containerControl": false,
+    "geometry": {
+      "width": 150,
+      "height": 150
+    }
+  },
+  "template": "Template.html",
+  "icons": [
+    {
+      "name": "Icons/XtsView16px.png",
+      "width": 16,
+      "height": 16
+    },
+    {
+      "name": "Icons/XtsView32px.png",
+      "width": 32,
+      "height": 32
+    },
+    {
+      "name": "Icons/XtsView64px.png",
+      "width": 64,
+      "height": 64
+    }
+  ],
+  "dependencyFiles": [
+    {
+      "name": "bin/TcXtsHmiView.js",
+      "type": "JavaScript"
+    },
+    {
+      "name": "Style.css",
+      "type": "Stylesheet"
+    }
+  ],
+  "themes": {
+    "Base": {
+      "resources": [
+        {
+          "name": "Themes/Base/Style.css",
+          "type": "Stylesheet",
+          "description": "Theme dependent style"
+        }
+      ]
+    }
+  },
+  "attributes": [
+    {
+      "name": "data-tchmi-type",
+      "displayName": "",
+      "propertyName": "type",
+      "propertySetterName": "",
+      "propertyGetterName": "getType",
+      "visible": false,
+      "type": "tchmi:framework#/definitions/ControlType",
+      "category": "None",
+      "description": "Type of the control.",
+      "requiredOnCompile": true,
+      "readOnly": true,
+      "bindable": false,
+      "heritable": false,
+      "defaultValue": "TcHmi.XTS.Controls.XtsView",
+      "defaultValueInternal": null
+    },
+    {
+      "name": "data-tchmi-targetName",
+      "displayName": "TargetName",
+      "propertyName": "TargetName",
+      "propertySetterName": "SetTargetName",
+      "propertyGetterName": "GetTargetName",
+      "visible": true,
+      "type": "tchmi:general#/definitions/String",
+      "category": "Connection",
+      "description": "Target name of target system",
+      "requiredOnCompile": true,
+      "readOnly": false,
+      "bindable": false,
+      "heritable": false,
+      "defaultValue": "Local",
+      "defaultValueInternal": "Local"
+    },
+    {
+      "name": "data-tchmi-refreshRate",
+      "displayName": "RefreshRate",
+      "propertyName": "RefreshRate",
+      "propertySetterName": "SetRefreshRate",
+      "propertyGetterName": "GetRefreshRate",
+      "visible": true,
+      "type": "tchmi:general#/definitions/INT",
+      "category": "Connection",
+      "description": "Set the data refresh rate of control (in ms)",
+      "requiredOnCompile": true,
+      "readOnly": false,
+      "bindable": false,
+      "heritable": false,
+      "defaultValue": 16,
+      "defaultValueInternal": 16
+    },
+    {
+      "name": "data-tchmi-toolArray",
+      "displayName": "Tools",
+      "propertyName": "Tools",
+      "propertySetterName": "SetToolArray",
+      "propertyGetterName": "GetToolArray",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/XtsTools",
+      "category": "Mover Layout",
+      "description": "Show tools on XTS-Mover",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-lockZoom",
+      "displayName": "LockZoomGesture",
+      "propertyName": "LockZoom",
+      "propertySetterName": "SetLockZoom",
+      "propertyGetterName": "GetLockZoom",
+      "visible": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Pan & Zoom",
+      "description": "Lock zoom gesture",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": false,
+      "defaultValueInternal": false
+    },
+    {
+      "name": "data-tchmi-lockPan",
+      "displayName": "LockPanGesture",
+      "propertyName": "LockPan",
+      "propertySetterName": "SetLockPan",
+      "propertyGetterName": "GetLockPan",
+      "visible": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Pan & Zoom",
+      "description": "Lock zoom gesture",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": false,
+      "defaultValueInternal": false
+    },
+    {
+      "name": "data-tchmi-padding",
+      "displayName": "Padding",
+      "propertyName": "Padding",
+      "propertySetterName": "SetPadding",
+      "propertyGetterName": "GetPadding",
+      "visible": true,
+      "type": "tchmi:framework#/definitions/Padding",
+      "category": "Pan & Zoom",
+      "description": "Set padding for xts",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": null,
+      "defaultValueInternal": null
+    },
+    {
+      "name": "data-tchmi-layout",
+      "displayName": "Layout",
+      "propertyName": "Layout",
+      "propertySetterName": "SetLayout",
+      "propertyGetterName": "GetLayout",
+      "visible": true,
+      "type": "tchmi:framework#/definitions/XtsLayout",
+      "category": "System Layout",
+      "description": "Switch between back and front side of modules",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": "SystemView",
+      "defaultValueInternal": "SystemView"
+    },
+    {
+      "name": "data-tchmi-infoImages",
+      "displayName": "InfoImages",
+      "propertyName": "InfoImages",
+      "propertySetterName": "SetInfoImages",
+      "propertyGetterName": "GetInfoImages",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/XtsInfoImages",
+      "category": "System Layout",
+      "description": "Add custom images to the layout",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-partTransformation",
+      "displayName": "PartTransformations",
+      "propertyName": "PartTransformations",
+      "propertySetterName": "SetPartTransformations",
+      "propertyGetterName": "GetPartTransformations",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/PartTransformations",
+      "category": "System Layout",
+      "description": "",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-viewRotation",
+      "displayName": "ViewRotation",
+      "propertyName": "ViewRotation",
+      "propertySetterName": "SetViewRotation",
+      "propertyGetterName": "GetViewRotation",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:general#/definitions/Number",
+      "category": "System Layout",
+      "description": "",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": 0,
+      "defaultValueInternal": 0
+    },
+    {
+      "name": "data-tchmi-transformation",
+      "displayName": "Transformation",
+      "propertyName": "Transformation",
+      "propertySetterName": "SetTransformation",
+      "propertyGetterName": "GetTransformation",
+      "visible": true,
+      "type": "tchmi:framework#/definitions/Matrix",
+      "category": "System Layout",
+      "displayPriority": 51,
+      "description": "Get/set the transformation of the view.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-moverType",
+      "displayName": "MoverType",
+      "propertyName": "MoverType",
+      "propertySetterName": "SetMoverType",
+      "propertyGetterName": "GetMoverType",
+      "visible": true,
+      "type": "tchmi:framework#/definitions/MoverType",
+      "category": "Mover Layout",
+      "description": "Get/set the mover type of the XTS Control.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": "SystemView",
+      "defaultValueInternal": "SystemView"
+    },
+    {
+      "name": "data-tchmi-customMoverLayout",
+      "displayName": "CustomMoverLayout",
+      "propertyName": "CustomMoverLayout",
+      "propertySetterName": "SetCustomMoverLayout",
+      "propertyGetterName": "GetCustomMoverLayout",
+      "visible": true,
+      "type": "tchmi:framework#/definitions/CustomMoverLayout",
+      "category": "Mover Layout",
+      "description": "Get/set the mover layout for a custom mover.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "ImageSrcFrontSide": null,
+        "ImageWidthFrontSide": 70,
+        "ImageHeightFrontSide": 126,
+        "XOffsetFrontSide": 0,
+        "YOffsetFrontSide": 0,
+        "ImageSrcBackSide": "",
+        "ImageWidthBackSide": 70,
+        "ImageHeightBackSide": 80,
+        "XOffsetBackSide": 0,
+        "YOffsetBackSide": 0
+      },
+      "defaultValueInternal": {
+        "ImageSrcFrontSide": null,
+        "ImageWidthFrontSide": 70,
+        "ImageHeightFrontSide": 126,
+        "XOffsetFrontSide": 0,
+        "YOffsetFrontSide": 0,
+        "ImageSrcBackSide": "",
+        "ImageWidthBackSide": 70,
+        "ImageHeightBackSide": 80,
+        "XOffsetBackSide": 0,
+        "YOffsetBackSide": 0
+      }
+    },
+    {
+      "name": "data-tchmi-selectionMode",
+      "displayName": "SelectionMode",
+      "propertyName": "SelectionMode",
+      "propertySetterName": "SetSelectionMode",
+      "propertyGetterName": "GetSelectionMode",
+      "visible": true,
+      "allowSymbolExpressionsInObject": false,
+      "type": "tchmi:framework#/definitions/SelectionMode",
+      "category": "Selections",
+      "description": "",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": "Off",
+      "defaultValueInternal": "Off"
+    },
+    {
+      "name": "data-tchmi-moverSelection",
+      "displayName": "MoverSelection",
+      "propertyName": "MoverSelection",
+      "propertySetterName": "SetMoverSelection",
+      "propertyGetterName": "GetMoverSelection",
+      "visible": true,
+      "allowSymbolExpressionsInObject": false,
+      "type": "tchmi:framework#/definitions/XtsMoverList",
+      "category": "Selections",
+      "description": "",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-moduleSelection",
+      "displayName": "ModuleSelection",
+      "propertyName": "ModuleSelection",
+      "propertySetterName": "SetModuleSelection",
+      "propertyGetterName": "GetModuleSelection",
+      "visible": true,
+      "allowSymbolExpressionsInObject": false,
+      "type": "tchmi:framework#/definitions/XtsModuleList",
+      "category": "Selections",
+      "description": "",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-moduleSelectionColor",
+      "displayName": "ModuleSelectionColor",
+      "propertyName": "ModuleSelectionColor",
+      "propertySetterName": "SetModuleSelectionColor",
+      "propertyGetterName": "GetModuleSelectionColor",
+      "visible": true,
+      "allowSymbolExpressionsInObject": false,
+      "type": "tchmi:framework#/definitions/SolidColor",
+      "category": "Selections",
+      "description": "Color of module selection",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "color": "Transparent"
+      },
+      "defaultValueInternal": {
+        "color": "Transparent"
+      }
+    },
+    {
+      "name": "data-tchmi-moverSelectionColor",
+      "displayName": "MoverSelectionColor",
+      "propertyName": "MoverSelectionColor",
+      "propertySetterName": "SetMoverSelectionColor",
+      "propertyGetterName": "GetMoverSelectionColor",
+      "visible": true,
+      "allowSymbolExpressionsInObject": false,
+      "type": "tchmi:framework#/definitions/SolidColor",
+      "category": "Selections",
+      "description": "Color of mover selection",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "color": "Transparent"
+      },
+      "defaultValueInternal": {
+        "color": "Transparent"
+      }
+    },
+    {
+      "name": "data-tchmi-displayStations",
+      "displayName": "DisplayStations",
+      "propertyName": "DisplayStations",
+      "propertySetterName": "SetDisplayStations",
+      "propertyGetterName": "GetDisplayStations",
+      "visible": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Station Layout",
+      "description": "Displays the stations configured in info server as info bar.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": true,
+      "defaultValueInternal": true
+    },
+    {
+      "name": "data-tchmi-stationOptions",
+      "displayName": "StationOptions",
+      "propertyName": "StationOptions",
+      "propertySetterName": "SetStationOptions",
+      "propertyGetterName": "GetStationOptions",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/StationOptions",
+      "category": "Station Layout",
+      "description": "Options for stations.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "DisplacementToFirst": 150,
+        "SpaceBetweenStackedStations": 25,
+        "Thickness": 8,
+        "Text": "None",
+        "TextInfoBarPlacement": "Left",
+        "TextDisplacement": 10,
+        "zIndex": 1000,
+        "TextOptions": {
+          "FontStyle": "Normal",
+          "FontWeight": "Normal",
+          "FontFamily": "",
+          "HorizontalAlignment": "Left",
+          "VerticalAlignment": "Bottom",
+          "FontSize": 20
+        }
+      },
+      "defaultValueInternal": {
+        "DisplacementToFirst": 150,
+        "SpaceBetweenStackedStations": 25,
+        "Thickness": 8,
+        "Text": "None",
+        "TextInfoBarPlacement": "Left",
+        "TextDisplacement": 10,
+        "zIndex": 1000,
+        "TextOptions": {
+          "FontStyle": "Normal",
+          "FontWeight": "Normal",
+          "FontFamily": "",
+          "HorizontalAlignment": "Left",
+          "VerticalAlignment": "Bottom",
+          "FontSize": 20
+        }
+      }
+    },
+    {
+      "name": "data-tchmi-stationMarkerOptions",
+      "displayName": "StationMarkerOptions",
+      "propertyName": "StationMarkerOptions",
+      "propertySetterName": "SetStationMarkerOptions",
+      "propertyGetterName": "GetStationMarkerOptions",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/MarkerOptions",
+      "category": "Station Layout",
+      "description": "Marker options for stations.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "MarkerType": "Diamond",
+        "Size": 20,
+        "Thickness": 8,
+        "Text": "None",
+        "TextDisplacement": 20,
+        "zIndex": 1100,
+        "TextOptions": {
+          "FontStyle": "Normal",
+          "FontWeight": "Normal",
+          "FontFamily": "",
+          "HorizontalAlignment": "Center",
+          "VerticalAlignment": "Bottom",
+          "FontSize": 20
+        }
+      },
+      "defaultValueInternal": {
+        "MarkerType": "None",
+        "Size": 20,
+        "Thickness": 8,
+        "Text": "None",
+        "TextDisplacement": 20,
+        "zIndex": 1100,
+        "TextOptions": {
+          "FontStyle": "Normal",
+          "FontWeight": "Normal",
+          "FontFamily": "",
+          "HorizontalAlignment": "Center",
+          "VerticalAlignment": "Bottom",
+          "FontSize": 20
+        }
+      }
+    },
+    {
+      "name": "data-tchmi-displayDimensions",
+      "displayName": "DisplayDimensions",
+      "propertyName": "DisplayDimensions",
+      "propertySetterName": "SetDisplayDimensions",
+      "propertyGetterName": "GetDisplayDimensions",
+      "visible": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Dimensions",
+      "description": "Displays dimensions of all xts parts.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": false,
+      "defaultValueInternal": false
+    },
+    {
+      "name": "data-tchmi-dimensionOptions",
+      "displayName": "DimensionOptions",
+      "propertyName": "DimensionOptions",
+      "propertySetterName": "SetDimensionOptions",
+      "propertyGetterName": "GetDimensionOptions",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/DimensionOptions",
+      "category": "Dimensions",
+      "description": "Marker options for stations.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "Displacement": 100,
+        "InfoBarThickness": 8,
+        "MarkerThickness": 5,
+        "MarkerSize": 25,
+        "MarkerType": "Tick",
+        "TextPattern": 2,
+        "TextDisplacement": 10,
+        "zIndex": 1200,
+        "InfoBarColor": {
+          "color": "black"
+        },
+        "MarkerColor": {
+          "color": "black"
+        },
+        "TextOptions": {
+          "FontStyle": "Normal",
+          "FontWeight": "Normal",
+          "FontFamily": "",
+          "HorizontalAlignment": "Center",
+          "VerticalAlignment": "Bottom",
+          "FontSize": 20,
+          "Color": {
+            "color": "black"
+          }
+        }
+      },
+      "defaultValueInternal": {
+        "Displacement": 100,
+        "InfoBarThickness": 8,
+        "MarkerThickness": 5,
+        "MarkerSize": 25,
+        "MarkerType": "Tick",
+        "TextPattern": 2,
+        "TextDisplacement": 10,
+        "zIndex": 1200,
+        "InfoBarColor": {
+          "color": "black"
+        },
+        "MarkerColor": {
+          "color": "black"
+        },
+        "TextOptions": {
+          "FontStyle": "Normal",
+          "FontWeight": "Normal",
+          "FontFamily": "",
+          "HorizontalAlignment": "Center",
+          "VerticalAlignment": "Bottom",
+          "FontSize": 20,
+          "Color": {
+            "color": "black"
+          }
+        }
+      }
+    },
+    {
+      "name": "data-tchmi-invertDimensions",
+      "displayName": "InvertDimensions",
+      "propertyName": "InvertDimensions",
+      "propertySetterName": "SetInvertDimensions",
+      "propertyGetterName": "GetInvertDimensions",
+      "visible": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Dimensions",
+      "description": "Invert direction of dimensions.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": false,
+      "defaultValueInternal": false
+    },
+    {
+      "name": "data-tchmi-infoBars",
+      "displayName": "InfoBars",
+      "propertyName": "InfoBars",
+      "propertySetterName": "SetInfoBars",
+      "propertyGetterName": "GetInfoBars",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/XtsInfoBars",
+      "category": "InfoBars",
+      "description": "Display customizable info bars on XTS.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": [],
+      "defaultValueInternal": []
+    },
+    {
+      "name": "data-tchmi-infoBarOptions",
+      "displayName": "InfoBarOptions",
+      "propertyName": "InfoBarOptions",
+      "propertySetterName": "SetInfoBarOptions",
+      "propertyGetterName": "GetInfoBarOptions",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:framework#/definitions/InfoBarOptions",
+      "category": "InfoBars",
+      "description": "Options for info bars.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": {
+        "DisplacementToFirst": 150,
+        "SpaceBetweenInfoBars": 25
+      },
+      "defaultValueInternal": {
+        "DisplacementToFirst": 150,
+        "SpaceBetweenInfoBars": 25
+      }
+    },
+    {
+      "name": "data-tchmi-showDriveWarnings",
+      "displayName": "ShowDriveWarnings",
+      "propertyName": "ShowDriveWarnings",
+      "propertySetterName": "SetShowDriveWarnings",
+      "propertyGetterName": "GetShowDriveWarnings",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Diagnostic",
+      "description": "Configure to show visuals for drive warnings on modules.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": true,
+      "defaultValueInternal": true
+    },
+    {
+      "name": "data-tchmi-showDriveErrors",
+      "displayName": "ShowDriveErrors",
+      "propertyName": "ShowDriveErrors",
+      "propertySetterName": "SetShowDriveErrors",
+      "propertyGetterName": "GetShowDriveErrors",
+      "visible": true,
+      "allowSymbolExpressionsInObject": true,
+      "type": "tchmi:general#/definitions/BOOL",
+      "category": "Diagnostic",
+      "description": "Configure to show visuals for drive errors on modules.",
+      "requiredOnCompile": false,
+      "readOnly": false,
+      "bindable": true,
+      "heritable": false,
+      "defaultValue": true,
+      "defaultValueInternal": true
+    }
+  ],
+  "attributeCategories": [
+    {
+      "name": "Connection",
+      "displayPriority": 10,
+      "defaultCollapsed": false,
+      "description": "Setup connection to target system"
+    },
+    {
+      "name": "System Layout",
+      "displayPriority": 11,
+      "defaultCollapsed": false,
+      "description": "Setup the system layout"
+    },
+    {
+      "name": "Mover Layout",
+      "displayPriority": 12,
+      "defaultCollapsed": false,
+      "description": "Setup the mover layout"
+    },
+    {
+      "name": "Pan & Zoom",
+      "displayPriority": 13,
+      "defaultCollapsed": false,
+      "description": ""
+    },
+    {
+      "name": "Selections",
+      "displayPriority": 14,
+      "defaultCollapsed": false,
+      "description": "Setup selections"
+    },
+    {
+      "name": "Station Layout",
+      "displayPriority": 15,
+      "defaultCollapsed": false,
+      "description": "Setup stations layout"
+    },
+    {
+      "name": "Dimensions",
+      "displayPriority": 16,
+      "defaultCollapsed": false,
+      "description": "Setup dimensions"
+    },
+    {
+      "name": "InfoBars",
+      "displayPriority": 17,
+      "defaultCollapsed": false,
+      "description": "Setup info bars"
+    },
+    {
+      "name": "Diagnostic",
+      "displayPriority": 18,
+      "defaultCollapsed": false,
+      "description": "Setup diagnostic visuals"
+    }
+  ],
+  "functions": [
+    {
+      "name": "ZoomToFit",
+      "displayName": "ZoomToDefault",
+      "visible": true,
+      "description": "This function zoomed the control to default",
+      "category": "Actions",
+      "params": [],
+      "type": null,
+      "heritable": false,
+      "searchTerms": []
+    }
+  ],
+  "events": [
+    {
+      "name": ".onSelectedModulesChanged",
+      "displayName": ".onSelectedModulesChanged",
+      "visible": true,
+      "displayPriority": 30,
+      "category": "Control",
+      "description": "Event when slected modules changed",
+      "heritable": true,
+      "allowsPreventDefault": false
+    },
+    {
+      "name": ".onSelectedMoverChanged",
+      "displayName": ".onSelectedMoverChanged",
+      "visible": true,
+      "displayPriority": 40,
+      "category": "Control",
+      "description": "Event when slected mover changed",
+      "heritable": true,
+      "allowsPreventDefault": false
+    }
+  ],
+  "dataTypes": [
+    {
+      "schema": "Schema/Types.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/PartTransformations",
+      "schema": "Schema/TypeDefinitions/PartTransformations.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsTools",
+      "schema": "Schema/TypeDefinitions/XtsTools.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsLayout",
+      "schema": "Schema/TypeDefinitions/XtsLayout.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/MoverIdentificationMode",
+      "schema": "Schema/TypeDefinitions/MoverIdentificationMode.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsInfoImages",
+      "schema": "Schema/TypeDefinitions/XtsInfoImages.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsMeasurementValue",
+      "schema": "Schema/TypeDefinitions/XtsMeasurementValue.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/PartSide",
+      "schema": "Schema/TypeDefinitions/PartSide.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/MoverTextType",
+      "schema": "Schema/TypeDefinitions/MoverTextType.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/ToolType",
+      "schema": "Schema/TypeDefinitions/ToolType.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/ModuleSide",
+      "schema": "Schema/TypeDefinitions/ModuleSide.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsModuleList",
+      "schema": "../../Schema/XtsModuleList.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsMoverList",
+      "schema": "../../Schema/XtsMoverList.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/SelectionMode",
+      "schema": "../../../Common/Schema/SelectionMode.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/MarkerType",
+      "schema": "Schema/TypeDefinitions/MarkerType.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/StationText",
+      "schema": "Schema/TypeDefinitions/StationText.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/TextOptions",
+      "schema": "Schema/TypeDefinitions/TextOptions.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/StationOptions",
+      "schema": "Schema/TypeDefinitions/StationOptions.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/MarkerText",
+      "schema": "Schema/TypeDefinitions/MarkerText.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/MarkerOptions",
+      "schema": "Schema/TypeDefinitions/MarkerOptions.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/DimensionOptions",
+      "schema": "Schema/TypeDefinitions/DimensionOptions.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsInfoBars",
+      "schema": "Schema/TypeDefinitions/XtsInfoBars.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/InfoBarOptions",
+      "schema": "Schema/TypeDefinitions/InfoBarOptions.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/XtsInfoBarMarkers",
+      "schema": "Schema/TypeDefinitions/XtsInfoBarMarkers.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/MoverType",
+      "schema": "Schema/TypeDefinitions/MoverType.Schema.json"
+    },
+    {
+      "name": "tchmi:framework#/definitions/CustomMoverLayout",
+      "schema": "Schema/TypeDefinitions/CustomMoverLayout.Schema.json"
+    }
+  ]
+}

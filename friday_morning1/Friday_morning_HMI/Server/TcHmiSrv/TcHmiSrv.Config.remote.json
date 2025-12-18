@@ -1,0 +1,11 @@
+{
+    "CERTIFICATEEXPIRATION": "P1095DT18H",
+    "REQUIREAUTH": 2,
+    "VIRTUALDIRECTORIES": {
+        "/": "www",
+        "/Beckhoff.TwinCAT.HMI.Controls": "..\\..\\XtsProject_B2\\Packages\\Beckhoff.TwinCAT.HMI.Controls.12.762.56\\runtimes\\native1.12-tchmi",
+        "/Beckhoff.TwinCAT.HMI.Functions": "..\\..\\XtsProject_B2\\Packages\\Beckhoff.TwinCAT.HMI.Functions.12.762.56\\runtimes\\native1.12-tchmi",
+        "/Beckhoff.TwinCAT.HMI.XTS.Controls": "..\\..\\XtsProject_B2\\Packages\\Beckhoff.TwinCAT.HMI.XTS.Controls.4.4.4\\runtimes\\native1.12-tchmi",
+        "/framework": "..\\..\\XtsProject_B2\\Packages\\Beckhoff.TwinCAT.HMI.Framework.12.762.56\\runtimes\\native1.12-tchmi"
+    }
+}

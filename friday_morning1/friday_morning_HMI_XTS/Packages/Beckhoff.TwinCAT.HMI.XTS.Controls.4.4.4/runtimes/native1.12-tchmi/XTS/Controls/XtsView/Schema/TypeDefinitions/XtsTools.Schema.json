@@ -1,0 +1,198 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsTools": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "XTS Tools",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "XTS Tool",
+        "propertiesMeta": [
+          {
+            "name": "ToolType",
+            "category": "General",
+            "displayName": "ToolType",
+            "defaultValue": "Image",
+            "defaultValueInternal": "Image"
+          },
+          {
+            "name": "MoverSide",
+            "category": "General",
+            "displayName": "MoverSide",
+            "defaultValue": "Front",
+            "defaultValueInternal": "Front"
+          },
+          {
+            "name": "ImageSrc",
+            "category": "Image",
+            "displayName": "ImageSource",
+            "defaultValue": "",
+            "defaultValueInternal": ""
+          },
+          {
+            "name": "ProcessingUnitIndex",
+            "category": "Mover Identification",
+            "displayName": "ProcessingUnitIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "IdentificationMode",
+            "category": "Mover Identification",
+            "displayName": "MoverIdentificationMode",
+            "defaultValue": "All",
+            "defaultValueInternal": "All"
+          },
+          {
+            "name": "IdentificationId",
+            "category": "Mover Identification",
+            "displayName": "MoverIdentification",
+            "defaultValue": "",
+            "defaultValueInternal": ""
+          },
+          {
+            "name": "OffsetX",
+            "category": "Transformation",
+            "displayName": "OffsetX",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "OffsetY",
+            "category": "Transformation",
+            "displayName": "OffsetY",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "ImageWidth",
+            "category": "Image",
+            "displayName": "ImageWidth",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "ImageHeight",
+            "category": "Image",
+            "displayName": "ImageHeight",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "Rotation",
+            "category": "Transformation",
+            "displayName": "Rotation",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "Visible",
+            "category": "Transformation",
+            "displayName": "Visible",
+            "defaultValue": true,
+            "defaultValueInternal": true
+          },
+          {
+            "name": "zIndex",
+            "displayName": "zIndex",
+            "category": "Transformation",
+            "defaultValue": 11000,
+            "defaultValueInternal": 11000
+          },
+          {
+            "name": "TextType",
+            "category": "Text",
+            "displayName": "TextType",
+            "defaultValue": "Custom",
+            "defaultValueInternal": "Custom"
+          },
+          {
+            "name": "CustomText",
+            "category": "Text",
+            "displayName": "CustomText",
+            "defaultValue": "",
+            "defaultValueInternal": ""
+          },
+          {
+            "name": "TextOptions",
+            "category": "Text",
+            "displayName": "TextOptions",
+            "defaultValue": {
+              "FontStyle": "Normal",
+              "FontWeight": "Normal",
+              "FontFamily": "",
+              "HorizontalAlignment": "Left",
+              "VerticalAlignment": "Top",
+              "FontSize": 20,
+              "Color": {
+                "color": "black"
+              }
+            },
+            "defaultValueInternal": {
+              "FontStyle": "Normal",
+              "FontWeight": "Normal",
+              "FontFamily": "",
+              "HorizontalAlignment": "Left",
+              "VerticalAlignment": "Top",
+              "FontSize": 20,
+              "Color": {
+                "color": "black"
+              }
+            }
+          }
+        ],
+        "properties": {
+          "ToolType": {
+            "$ref": "tchmi:framework#/definitions/ToolType"
+          },
+          "MoverSide": {
+            "$ref": "tchmi:framework#/definitions/ModuleSide"
+          },
+          "ImageSrc": {
+            "$ref": "tchmi:framework#/definitions/Path"
+          },
+          "ProcessingUnitIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "IdentificationId": {
+            "type": "string"
+          },
+          "IdentificationMode": {
+            "$ref": "tchmi:framework#/definitions/MoverIdentificationMode"
+          },
+          "OffsetX": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "OffsetY": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "ImageWidth": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "ImageHeight": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Rotation": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Visible": {
+            "type": "boolean"
+          },
+          "zIndex": {
+            "type": "integer"
+          },
+          "TextType": {
+            "$ref": "tchmi:framework#/definitions/MoverTextType"
+          },
+          "TextOptions": {
+            "$ref": "tchmi:framework#/definitions/TextOptions"
+          },
+          "CustomText": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

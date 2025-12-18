@@ -1,0 +1,108 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsInfoImages": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "XtsInfoImages",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "XtsInfoImage",
+        "propertiesMeta": [
+          {
+            "name": "ImageSrc",
+            "category": "General",
+            "displayName": "Image",
+            "defaultValue": "",
+            "defaultValueInternal": ""
+          },
+          {
+            "name": "View",
+            "category": "General",
+            "displayName": "View",
+            "defaultValue": "SystemView",
+            "defaultValueInternal": "SystemView"
+          },
+          {
+            "name": "PositionX",
+            "category": "Layout",
+            "displayName": "PositionX",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "PositionY",
+            "category": "Layout",
+            "displayName": "PositionY",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "Width",
+            "category": "Layout",
+            "displayName": "Width",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "Height",
+            "category": "Layout",
+            "displayName": "Height",
+            "defaultValue": null,
+            "defaultValueInternal": null
+          },
+          {
+            "name": "Rotation",
+            "category": "Layout",
+            "displayName": "Rotation",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "Visible",
+            "category": "Layout",
+            "displayName": "Visible",
+            "defaultValue": true,
+            "defaultValueInternal": true
+          },
+          {
+            "name": "zIndex",
+            "category": "Layout",
+            "displayName": "zIndex",
+            "defaultValue": 1000,
+            "defaultValueInternal": 1000
+          }
+        ],
+        "properties": {
+          "ImageSrc": {
+            "$ref": "tchmi:framework#/definitions/Path"
+          },
+          "View": {
+            "$ref": "tchmi:framework#/definitions/XtsLayout"
+          },
+          "PositionX": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "PositionY": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Width": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Height": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Rotation": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Visible": {
+            "type": "boolean"
+          },
+          "zIndex": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

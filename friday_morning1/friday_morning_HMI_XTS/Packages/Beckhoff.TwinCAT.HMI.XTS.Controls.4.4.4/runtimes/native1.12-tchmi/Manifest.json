@@ -1,0 +1,23 @@
+﻿{
+  "modules": [
+    {
+      "type": "Package",
+      "nugetId": "Beckhoff.TwinCAT.HMI.Framework"
+    },
+    {
+      "type": "Control",
+      "basePath": "./XTS/Controls/XtsView",
+      "descriptionFile": "Description.json",
+      "toolboxCategory": "TcXHmiControls:200"
+    }
+  ],
+  "provideMetadata": {
+    "toolbox": {
+      "TcXHmiControls": {
+        "200": "XTS Controls"
+      }
+    }
+  },
+  "$schema": ".hmiframework/Schema/Manifest.Schema.json",
+  "apiVersion": 1
+}

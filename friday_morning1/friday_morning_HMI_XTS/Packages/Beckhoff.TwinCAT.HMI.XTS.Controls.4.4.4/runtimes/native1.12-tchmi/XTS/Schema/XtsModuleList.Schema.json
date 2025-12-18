@@ -1,0 +1,48 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsModuleList": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "XTS Module List",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "XTS Module",
+        "propertiesMeta": [
+          {
+            "name": "ProcessingUnitIndex",
+            "category": "General",
+            "displayName": "ProcessingUnitIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "PartIndex",
+            "category": "General",
+            "displayName": "PartIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "ModuleIndex",
+            "category": "General",
+            "displayName": "ModuleIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          }
+        ],
+        "properties": {
+          "ProcessingUnitIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "ModuleIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "PartIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          }
+        }
+      }
+    }
+  }
+}

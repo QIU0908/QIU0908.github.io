@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "TARGET_SYSTEMS": {
+      "type": "object",
+      "configDescription": "TARGET_SYSTEMS_DESC",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "NETID": {
+            "type": "string",
+            "format": "amsnetid",
+            "optionMethod": {
+              "symbol": "ADS.ListRoutes"
+            },
+            "default": "127.0.0.1.1.1"
+          },
+          "UPDATE_RATE": {
+            "configDescription": "UPDATE_RATE_SERVER_DESC",
+            "type": "integer",
+            "minimum": 1,
+            "default": 8
+          },
+          "UPDATE_RATE_DIAG": {
+            "configDescription": "UPDATE_RATE_DIAGDATA_DESC",
+            "type": "integer",
+            "minimum": 10,
+            "default": 100
+          },
+          "EXPECTED_XPU_COUNT": {
+            "configDescription": "XPU_COUNT_DESC",
+            "type": "integer",
+            "minimum": 1,
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [ "NETID", "UPDATE_RATE", "UPDATE_RATE_DIAG", "EXPECTED_XPU_COUNT" ]
+      },
+      "default": {
+        "Local": {
+          "NETID": "127.0.0.1.1.1",
+          "UPDATE_RATE": 8,
+          "UPDATE_RATE_DIAG": 100,
+          "EXPECTED_XPU_COUNT": 1
+        }
+      },
+      "defaultConfigurable": true,
+      "propertyOrder": 1
+    }
+  },
+  "required": [ "TARGET_SYSTEMS" ],
+  "additionalProperties": false
+}

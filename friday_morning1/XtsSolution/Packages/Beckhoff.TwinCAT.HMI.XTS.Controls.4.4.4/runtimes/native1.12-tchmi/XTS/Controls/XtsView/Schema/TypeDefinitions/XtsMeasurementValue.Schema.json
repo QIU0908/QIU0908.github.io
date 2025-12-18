@@ -1,0 +1,41 @@
+﻿{
+  "$schema": "http://json-schema.org/schema#",
+  "definitions": {
+    "XtsMeasurementUnit": {
+      "type": "string",
+      "enum": ["mm", "px"],
+      "id": "tchmi:framework#/definitions/XtsMeasurementUnit",
+      "default": "mm"
+    },
+    "XtsMeasurementValue": {
+      "type": "object",
+      "id": "tchmi:framework#/definitions/XtsMeasurementValue",
+      "propertiesMeta": [
+        {
+          "name": "Value",
+          "description": "",
+          "defaultValue": null,
+          "defaultValueInternal": null,
+          "displayPriority": 10
+        },
+        {
+          "name": "Unit",
+          "description": "",
+          "defaultValue": "mm",
+          "defaultValueInternal": "mm",
+          "displayPriority": 10,
+          "referTo": "Value"
+        }
+      ],
+      "properties":
+        {
+          "Value": {
+            "$ref": "tchmi:framework#/definitions/MeasurementValue"
+          },
+          "Unit": {
+            "$ref": "tchmi:framework#/definitions/XtsMeasurementUnit"
+          }
+        }
+    }
+  }
+}

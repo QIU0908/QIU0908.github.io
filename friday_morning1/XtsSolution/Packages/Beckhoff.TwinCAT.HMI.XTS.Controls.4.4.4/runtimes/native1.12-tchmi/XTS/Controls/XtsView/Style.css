@@ -1,0 +1,17 @@
+﻿/* General theme independed control css. */
+
+.TcHmi_XTS_Controls_XtsView {
+    overflow: hidden;
+}
+
+.TcHmi_XTS_Controls_XtsView-Template {
+    width: 100%;
+    height: 100%;
+}
+.TcHmi_XTS_Controls_XtsView canvas {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+

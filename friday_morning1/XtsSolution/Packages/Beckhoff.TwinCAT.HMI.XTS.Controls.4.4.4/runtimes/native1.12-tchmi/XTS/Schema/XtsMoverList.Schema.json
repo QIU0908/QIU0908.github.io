@@ -1,0 +1,38 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "XtsMoverList": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "XTS Mover List",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "XTS Mover",
+        "propertiesMeta": [
+          {
+            "name": "MoverIndex",
+            "category": "General",
+            "displayName": "MoverIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          },
+          {
+            "name": "ProcessingUnitIndex",
+            "category": "General",
+            "displayName": "ProcessingUnitIndex",
+            "defaultValue": 0,
+            "defaultValueInternal": 0
+          }
+        ],
+        "properties": {
+          "ProcessingUnitIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          },
+          "MoverIndex": {
+            "$ref": "tchmi:general#/definitions/UINT"
+          }
+        }
+      }
+    }
+  }
+}

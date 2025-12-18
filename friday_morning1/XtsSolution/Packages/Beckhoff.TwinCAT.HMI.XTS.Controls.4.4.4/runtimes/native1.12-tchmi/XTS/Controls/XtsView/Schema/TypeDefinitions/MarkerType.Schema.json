@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "MarkerType": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "MarkerType",
+      "type": "string",
+      "enum": [ "None", "Diamond", "Tick"]
+    }
+  }
+}

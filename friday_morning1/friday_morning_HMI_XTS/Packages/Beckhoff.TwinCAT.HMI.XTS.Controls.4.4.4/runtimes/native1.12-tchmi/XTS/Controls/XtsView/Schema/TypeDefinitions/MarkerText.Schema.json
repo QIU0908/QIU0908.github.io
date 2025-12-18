@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "MarkerText": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "MarkerText",
+      "type": "string",
+      "enum": [ "None", "StopPosition"]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "MoverType": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "MoverType",
+      "type": "string",
+      "enum": [ "SystemView", "Custom" ]
+    }
+  }
+}

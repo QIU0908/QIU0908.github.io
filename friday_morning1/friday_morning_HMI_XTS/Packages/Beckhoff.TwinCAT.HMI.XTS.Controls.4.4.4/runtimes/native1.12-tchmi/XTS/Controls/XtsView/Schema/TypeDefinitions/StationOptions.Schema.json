@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "StationOptions": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "type": "object",
+      "title": "StationOptions",
+      "propertiesMeta": [
+        {
+          "name": "Thickness",
+          "displayName": "Thickness",
+          "category": "Layout",
+          "defaultValue": 8,
+          "defaultValueInternal": 8
+        },
+        {
+          "name": "zIndex",
+          "displayName": "zIndex",
+          "category": "Layout",
+          "defaultValue": 1000,
+          "defaultValueInternal": 1000
+        },
+        {
+          "name": "Text",
+          "displayName": "Text",
+          "category": "Text",
+          "defaultValue": "None",
+          "defaultValueInternal": "None"
+        },
+        {
+          "name": "TextInfoBarPlacement",
+          "displayName": "TextInfoBarPlacement",
+          "category": "Text",
+          "defaultValue": "Left",
+          "defaultValueInternal": "Left"
+        },
+        {
+          "name": "TextDisplacement",
+          "displayName": "TextDisplacement",
+          "category": "Text",
+          "defaultValue": 10,
+          "defaultValueInternal": 10
+        },
+        {
+          "name": "TextOptions",
+          "displayName": "TextOptions",
+          "category": "Text",
+          "defaultValue": {
+            "FontStyle": "Normal",
+            "FontWeight": "Normal",
+            "FontFamily": "",
+            "HorizontalAlignment": "Left",
+            "VerticalAlignment": "Bottom",
+            "FontSize": 20
+          },
+          "defaultValueInternal": {
+            "FontStyle": "Normal",
+            "FontWeight": "Normal",
+            "FontFamily": "",
+            "HorizontalAlignment": "Left",
+            "VerticalAlignment": "Bottom",
+            "FontSize": 20
+          }
+        }
+      ],
+      "properties": {
+        "Thickness": {
+          "$ref": "tchmi:general#/definitions/UINT"
+        },
+        "zIndex": {
+          "type": "integer"
+        },
+        "Text": {
+          "$ref": "tchmi:framework#/definitions/StationText"
+        },
+        "TextInfoBarPlacement": {
+          "$ref": "tchmi:framework#/definitions/HorizontalAlignment"
+        },
+        "TextDisplacement": {
+          "type": "number"
+        },
+        "TextOptions": {
+          "$ref": "tchmi:framework#/definitions/TextOptions"
+        }
+      }
+    }
+  }
+}

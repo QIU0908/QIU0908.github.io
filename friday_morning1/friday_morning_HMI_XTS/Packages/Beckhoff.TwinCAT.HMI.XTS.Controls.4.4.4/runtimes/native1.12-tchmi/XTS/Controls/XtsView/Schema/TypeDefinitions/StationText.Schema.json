@@ -1,0 +1,11 @@
+﻿{
+"$schema": "http://json-schema.org/draft-04/schema",
+  "definitions": {
+    "StationText": {
+      "$schema": "http://json-schema.org/draft-04/schema",
+      "title": "StationText",
+      "type": "string",
+      "enum": [ "None", "StationDescription", "StationId" ]
+    }
+  }
+}
