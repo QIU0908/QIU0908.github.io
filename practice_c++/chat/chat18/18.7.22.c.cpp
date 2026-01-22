@@ -1,0 +1,1 @@
+//std::cout<<"how many words "<<space<< std::endl;//betwin two words have one space;

@@ -1,0 +1,49 @@
+# Project: 18.7.22
+# Makefile created by Embarcadero Dev-C++ 6.3
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = 18.7.22.a.o 18.7.22.b.o 18.7.22.c.o 18.7.22.d.o 18.7.22.e.o 18.7.22.f.o 18.7.22.g.o mian.o
+LINKOBJ  = 18.7.22.a.o 18.7.22.b.o 18.7.22.c.o 18.7.22.d.o 18.7.22.e.o 18.7.22.f.o 18.7.22.g.o mian.o
+LIBS     = -L"Y:/Dev-Cpp/TDM-GCC-64/lib" -L"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc
+INCS     = -I"Y:/Dev-Cpp/TDM-GCC-64/include" -I"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"Y:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include"
+CXXINCS  = -I"Y:/Dev-Cpp/TDM-GCC-64/include" -I"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"Y:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"Y:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++"
+BIN      = 18.7.22.exe
+CXXFLAGS = $(CXXINCS) 
+CFLAGS   = $(INCS) 
+DEL      = Y:\Dev-Cpp\devcpp.exe INTERNAL_DEL
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${DEL} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+18.7.22.a.o: 18.7.22.a.cpp
+	$(CPP) -c 18.7.22.a.cpp -o 18.7.22.a.o $(CXXFLAGS)
+
+18.7.22.b.o: 18.7.22.b.cpp
+	$(CPP) -c 18.7.22.b.cpp -o 18.7.22.b.o $(CXXFLAGS)
+
+18.7.22.c.o: 18.7.22.c.cpp
+	$(CPP) -c 18.7.22.c.cpp -o 18.7.22.c.o $(CXXFLAGS)
+
+18.7.22.d.o: 18.7.22.d.cpp
+	$(CPP) -c 18.7.22.d.cpp -o 18.7.22.d.o $(CXXFLAGS)
+
+18.7.22.e.o: 18.7.22.e.cpp
+	$(CPP) -c 18.7.22.e.cpp -o 18.7.22.e.o $(CXXFLAGS)
+
+18.7.22.f.o: 18.7.22.f.cpp
+	$(CPP) -c 18.7.22.f.cpp -o 18.7.22.f.o $(CXXFLAGS)
+
+18.7.22.g.o: 18.7.22.g.cpp
+	$(CPP) -c 18.7.22.g.cpp -o 18.7.22.g.o $(CXXFLAGS)
+
+mian.o: mian.cpp
+	$(CPP) -c mian.cpp -o mian.o $(CXXFLAGS)
