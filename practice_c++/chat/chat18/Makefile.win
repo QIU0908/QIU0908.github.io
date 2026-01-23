@@ -1,17 +1,17 @@
-# Project: 18.7.22
+# Project: 18.7.26
 # Makefile created by Embarcadero Dev-C++ 6.3
 
-CPP      = g++.exe
-CC       = gcc.exe
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = 18.7.22.a.o 18.7.22.b.o 18.7.22.c.o 18.7.22.d.o 18.7.22.e.o 18.7.22.f.o 18.7.22.g.o mian.o
-LINKOBJ  = 18.7.22.a.o 18.7.22.b.o 18.7.22.c.o 18.7.22.d.o 18.7.22.e.o 18.7.22.f.o 18.7.22.g.o mian.o
-LIBS     = -L"Y:/Dev-Cpp/TDM-GCC-64/lib" -L"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc
+OBJ      = EX18_26.o circle.o
+LINKOBJ  = EX18_26.o circle.o
+LIBS     = -L"Y:/Dev-Cpp/TDM-GCC-64/lib" -L"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/lib" -static-libgcc -g3
 INCS     = -I"Y:/Dev-Cpp/TDM-GCC-64/include" -I"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"Y:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include"
 CXXINCS  = -I"Y:/Dev-Cpp/TDM-GCC-64/include" -I"Y:/Dev-Cpp/TDM-GCC-64/x86_64-w64-mingw32/include" -I"Y:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include" -I"Y:/Dev-Cpp/TDM-GCC-64/lib/gcc/x86_64-w64-mingw32/9.2.0/include/c++"
-BIN      = 18.7.22.exe
-CXXFLAGS = $(CXXINCS) 
-CFLAGS   = $(INCS) 
+BIN      = 18.7.26.exe
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
 DEL      = Y:\Dev-Cpp\devcpp.exe INTERNAL_DEL
 
 .PHONY: all all-before all-after clean clean-custom
@@ -24,26 +24,8 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
-18.7.22.a.o: 18.7.22.a.cpp
-	$(CPP) -c 18.7.22.a.cpp -o 18.7.22.a.o $(CXXFLAGS)
+EX18_26.o: EX18_26.cpp
+	$(CPP) -c EX18_26.cpp -o EX18_26.o $(CXXFLAGS)
 
-18.7.22.b.o: 18.7.22.b.cpp
-	$(CPP) -c 18.7.22.b.cpp -o 18.7.22.b.o $(CXXFLAGS)
-
-18.7.22.c.o: 18.7.22.c.cpp
-	$(CPP) -c 18.7.22.c.cpp -o 18.7.22.c.o $(CXXFLAGS)
-
-18.7.22.d.o: 18.7.22.d.cpp
-	$(CPP) -c 18.7.22.d.cpp -o 18.7.22.d.o $(CXXFLAGS)
-
-18.7.22.e.o: 18.7.22.e.cpp
-	$(CPP) -c 18.7.22.e.cpp -o 18.7.22.e.o $(CXXFLAGS)
-
-18.7.22.f.o: 18.7.22.f.cpp
-	$(CPP) -c 18.7.22.f.cpp -o 18.7.22.f.o $(CXXFLAGS)
-
-18.7.22.g.o: 18.7.22.g.cpp
-	$(CPP) -c 18.7.22.g.cpp -o 18.7.22.g.o $(CXXFLAGS)
-
-mian.o: mian.cpp
-	$(CPP) -c mian.cpp -o mian.o $(CXXFLAGS)
+circle.o: circle.cpp
+	$(CPP) -c circle.cpp -o circle.o $(CXXFLAGS)
