@@ -2,7 +2,7 @@
         <head>
         <title>cmsimde_site</title>
         <meta charset="utf-8">
-<meta property="head" content="H1">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
@@ -111,14 +111,14 @@ img.add_border {
             <header class="site-navbar py-4 bg-white" role="banner">
               <div class="container">
                 <div class="row align-items-center">
-                <h1>邱翼飛在虎尾學到什麼</h1>
+                <h1>How to make a  hakka FPV??</h1>
                 <div class="pl-4">
                     <form>
                     <input type="text" placeholder="Search" name="q" id="tipue_search_input" pattern=".{2,}" title="At least 2 characters" required>
                     </form>
                 </div>
                   <!-- <div class="col-11 col-xl-2">
-                    <h1 class="mb-0 site-logo"><a href="index.html" class="text-black h2 mb-0">邱翼飛在虎尾學到什麼</a></h1> 
+                    <h1 class="mb-0 site-logo"><a href="index.html" class="text-black h2 mb-0">How to make a  hakka FPV??</a></h1> 
                   </div>
                   -->
                   <div class="col-12 col-md-10 d-none d-xl-block">
@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li><a href='How to use github.html'>How to use github</a><li><a href='Courses.html'>Courses</a><li><a href='Certificates.html'>Certificates</a><li><a href='Licenses.html'>Licenses</a><li><a href='Contests.html'>Contests</a><li><a href='Misc.html'>Misc</a><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li><a href='Mind Map.html'>Mind Map</a><li class='has-children'><a href='SKY.html'>SKY</a><ul class='dropdown'><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li><a href='PTZ.html'>PTZ</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,8 +142,52 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">How to use github << <a href='How to use github.html'>Previous</a> <a href='Certificates.html'>Next</a> >> Certificates<br /><h1>Courses</h1>
-<br />How to use github << <a href='How to use github.html'>Previous</a> <a href='Certificates.html'>Next</a> >> Certificates</div>
+    <div id="tipue_search_content">cameraSistyem << <a href='cameraSistyem.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>PTZ</h1>
+<p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
+<p><strong>angle2Servo_ADC_Data</strong></p>
+<p>divide SG90 using a electric wire to contect Variable resistor</p>
+<p><img alt="" height="423" src="./../images/20260308_133616.jpg" width="800"/></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Servo.h&gt;
+
+Servo myservo;
+
+int pos = 0; 
+
+void setup(){
+  Serial.begin(115200);
+  myservo.attach(PA0);
+  
+  delay(1000);
+
+}
+
+void loop() {
+  for (pos = 60; pos &lt;= 150; pos +=30) { 
+    
+    myservo.write(pos);             
+    delay(1000);     
+
+    myservo.detach();
+
+    Serial.print(pos);
+    Serial.print(",");
+    Serial.println(analogRead(PA7));
+    delay(100);   
+    myservo.attach(PA0);                    
+  }
+  for (pos = 120; pos &gt;= 30; pos -= 30) {
+    myservo.write(pos);  
+    delay(1000);  
+
+    myservo.detach();
+    Serial.print(pos);
+    Serial.print(",");
+    Serial.println(analogRead(PA7));
+    delay(100);       
+    myservo.attach(PA0);               
+  }
+}</pre>
+<p></p><br />cameraSistyem << <a href='cameraSistyem.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
         
     <!-- footer -->
       <div class="container">

@@ -1,14 +1,57 @@
 <h1>About</h1>
-<p>this is cmsimde_site</p>
-<h1>How to use github</h1>
-<p>1.啟動動態:開啟codspace，終端機輸入 python main.py，在連接付埠即有連結可用。</p>
-<p>2.</p>
-<h1>Courses</h1>
-<h1>Certificates</h1>
-<h1>Licenses</h1>
-<h1>Contests</h1>
-<h1>Misc</h1>
-<h1>Brython</h1>
+<p>This wedsite just a noob student want to useing less money to make a FPV.</p>
+<p>I don't want to useing on sell TX/RX and fiy contrul chip ,I just useing SYM32 or cheap sensor to do everyting.</p>
+<p>I thing i will feel a lot of dfifficulties,May i have a good lock.</p>
+<h1>Mind Map</h1>
+<p><img alt="" height="299" src="/images/FPV.jpg" width="800"/>2026/03/08</p>
+<h1>SKY</h1>
+<h2>cameraSistyem</h2>
+<h3>PTZ</h3>
+<p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
+<p><strong>angle2Servo_ADC_Data</strong></p>
+<p>divide SG90 using a electric wire to contect Variable resistor</p>
+<p><img alt="" height="423" src="/images/20260308_133616.jpg" width="800"/></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Servo.h&gt;
+
+Servo myservo;
+
+int pos = 0; 
+
+void setup(){
+  Serial.begin(115200);
+  myservo.attach(PA0);
+  
+  delay(1000);
+
+}
+
+void loop() {
+  for (pos = 60; pos &lt;= 150; pos +=30) { 
+    
+    myservo.write(pos);             
+    delay(1000);     
+
+    myservo.detach();
+
+    Serial.print(pos);
+    Serial.print(",");
+    Serial.println(analogRead(PA7));
+    delay(100);   
+    myservo.attach(PA0);                    
+  }
+  for (pos = 120; pos &gt;= 30; pos -= 30) {
+    myservo.write(pos);  
+    delay(1000);  
+
+    myservo.detach();
+    Serial.print(pos);
+    Serial.print(",");
+    Serial.println(analogRead(PA7));
+    delay(100);       
+    myservo.attach(PA0);               
+  }
+}</pre>
+<p></p><h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>
