@@ -1,16 +1,15 @@
 <h1>About</h1>
-<p>This wedsite just a noob student want to useing less money to make a FPV.</p>
-<p>I don't want to useing on sell TX/RX and fiy contrul chip ,I just useing SYM32 or cheap sensor to do everyting.</p>
-<p>I thing i will feel a lot of dfifficulties,May i have a good lock.</p>
-<h1>Mind Map</h1>
+<p data-end="175" data-start="61">This website is created by a beginner student who wants to build an FPV system with as little money as possible.</p>
+<p data-end="348" data-start="183">I don't want to use commercially available TX/RX modules or flight control chips. Instead, I want to use <strong data-end="297" data-start="288">STM32</strong> and cheap sensors to build everything by myself.</p>
+<p data-end="462" data-start="356">I think I will face many difficulties, but I hope I will learn a lot from this project. Wish me good luck.</p><h1>Mind Map</h1>
 <p><img alt="" height="299" src="/images/FPV.jpg" width="800"/>2026/03/08</p>
 <h1>SKY</h1>
-<h2>cameraSistyem</h2>
-<h3>PTZ</h3>
+<h1>cameraSistyem</h1><h2>PTZ</h2>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
-<p><strong>angle2Servo_ADC_Data</strong></p>
-<p>divide SG90 using a electric wire to contect Variable resistor</p>
-<p><img alt="" height="423" src="/images/20260308_133616.jpg" width="800"/></p>
+<h3>angle2Servo_ADC_Data</h3>
+<p>divide SG90 and using a electric wire to contect Variable resistor</p>
+<p><img alt="" height="237" src="/images/20260308_133616.jpg" width="448"/></p>
+<p><strong>Code</strong></p>
 <pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Servo.h&gt;
 
 Servo myservo;
@@ -51,7 +50,74 @@ void loop() {
     myservo.attach(PA0);               
   }
 }</pre>
-<p></p><h1>Brython</h1>
+<p><strong>Result</strong></p>
+<p><strong><a href="/downloads/servo_angle_ADC.txt">/downloads/servo_angle_ADC.txt</a></strong></p>
+<p><strong>Matlab find avarge</strong></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">clc
+clear
+
+data = readmatrix('C:\Users\light\Desktop\servo_angle_ADC.txt', 'Delimiter', ',');
+angle = data(:,1);
+ADC   = data(:,2);
+
+target_angles = 30:10:150;
+
+% 初始化
+mean_ADC = zeros(size(target_angles));
+count    = zeros(size(target_angles));
+
+for i = 1:length(target_angles)
+    tgt = target_angles(i);
+    
+    % 直接用邏輯索引取出符合的 ADC
+    this_ADC = ADC(angle == tgt);
+    
+    % 如果有資料
+    if ~isempty(this_ADC)
+        % 移除可能的 NaN（
+        this_ADC = this_ADC(~isnan(this_ADC));
+        
+        if ~isempty(this_ADC)
+            mean_ADC(i) = mean(this_ADC);
+            count(i)    = length(this_ADC);
+            
+            % 顯示原始資料
+            fprintf('\n角度 %d° 的資料（共 %d 筆）：\n', tgt, count(i));
+            fprintf('angle = %g, ADC = %g\n', [tgt*ones(count(i),1) this_ADC]');
+        end
+    else
+        fprintf('角度 %d° 無資料\n', tgt);
+    end
+end
+
+% 顯示平均結果
+fprintf('\n=== 平均結果 ===\n');
+fprintf('角度\t筆數\t平均 ADC\n');
+for i = 1:length(target_angles)
+    if count(i) &gt; 0
+        fprintf('%d°\t%d\t%.2f\n', target_angles(i), count(i), mean_ADC(i));
+    else
+        fprintf('%d°\t0\t無資料\n', target_angles(i));
+    end
+end
+
+% 畫長條圖
+figure;
+bar(target_angles, mean_ADC, 'FaceColor', [0.3 0.7 0.9]);
+xlabel('角度 (度)');
+ylabel('平均 ADC 值');
+title('各角度平均 ADC 值');
+grid on;
+set(gca, 'XTick', target_angles, 'XTickLabelRotation', 45);
+
+
+text(target_angles, mean_ADC, sprintfc('%.1f', mean_ADC), ...
+     'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');</pre>
+<p>Result</p>
+<p><img alt="" height="355" src="/images/image.png" width="719"/></p>
+<div class="rtcContent">
+<div class="SAF44E6B70"><span>=== 平均結果 ===<br/>角度 筆數 平均 ADC<br/>30° 10 216.40<br/>40° 21 266.29<br/>50° 21 322.38<br/>60° 21 349.71<br/>70° 21 401.43<br/>80° 21 457.38<br/>90° 21 502.48<br/>100° 21 541.10<br/>110° 21 588.48<br/>120° 21 635.43<br/>130° 21 687.71<br/>140° 20 729.90<br/>150° 10 771.20</span></div>
+</div><h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>

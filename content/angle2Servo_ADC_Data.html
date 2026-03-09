@@ -2,6 +2,7 @@
         <head>
         <title>cmsimde_site</title>
         <meta charset="utf-8">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
@@ -95,6 +96,7 @@ img.add_border {
 </head>
 <body>
 <div class='container'><nav>
+        
     <div class="site-wrap">
 
     <div class="site-mobile-menu">
@@ -140,4 +142,165 @@ img.add_border {
           </div>
           
         </header>
-    </nav><section><h1>SMap</h1><div id="tipue_search_content"></div><ul><li><a href='About.html'>About</a><li><a href='Mind Map.html'>Mind Map</a><li><a href='SKY.html'>SKY</a><li><a href='cameraSistyem.html'>cameraSistyem</a><ul><li><a href='PTZ.html'>PTZ</a><ul><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li></ul></section></div></body></html>
+    <div id="tipue_search_content">PTZ << <a href='PTZ.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>angle2Servo_ADC_Data</h1>
+<p>divide SG90 and using a electric wire to contect Variable resistor</p>
+<p><img alt="" height="237" src="./../images/20260308_133616.jpg" width="448"/></p>
+<p><strong>Code</strong></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Servo.h&gt;
+
+Servo myservo;
+
+int pos = 0; 
+
+void setup(){
+  Serial.begin(115200);
+  myservo.attach(PA0);
+  
+  delay(1000);
+
+}
+
+void loop() {
+  for (pos = 60; pos &lt;= 150; pos +=30) { 
+    
+    myservo.write(pos);             
+    delay(1000);     
+
+    myservo.detach();
+
+    Serial.print(pos);
+    Serial.print(",");
+    Serial.println(analogRead(PA7));
+    delay(100);   
+    myservo.attach(PA0);                    
+  }
+  for (pos = 120; pos &gt;= 30; pos -= 30) {
+    myservo.write(pos);  
+    delay(1000);  
+
+    myservo.detach();
+    Serial.print(pos);
+    Serial.print(",");
+    Serial.println(analogRead(PA7));
+    delay(100);       
+    myservo.attach(PA0);               
+  }
+}</pre>
+<p><strong>Result</strong></p>
+<p><strong><a href="./../downloads/servo_angle_ADC.txt">/downloads/servo_angle_ADC.txt</a></strong></p>
+<p><strong>Matlab find avarge</strong></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">clc
+clear
+
+data = readmatrix('C:\Users\light\Desktop\servo_angle_ADC.txt', 'Delimiter', ',');
+angle = data(:,1);
+ADC   = data(:,2);
+
+target_angles = 30:10:150;
+
+% 初始化
+mean_ADC = zeros(size(target_angles));
+count    = zeros(size(target_angles));
+
+for i = 1:length(target_angles)
+    tgt = target_angles(i);
+    
+    % 直接用邏輯索引取出符合的 ADC
+    this_ADC = ADC(angle == tgt);
+    
+    % 如果有資料
+    if ~isempty(this_ADC)
+        % 移除可能的 NaN（
+        this_ADC = this_ADC(~isnan(this_ADC));
+        
+        if ~isempty(this_ADC)
+            mean_ADC(i) = mean(this_ADC);
+            count(i)    = length(this_ADC);
+            
+            % 顯示原始資料
+            fprintf('\n角度 %d° 的資料（共 %d 筆）：\n', tgt, count(i));
+            fprintf('angle = %g, ADC = %g\n', [tgt*ones(count(i),1) this_ADC]');
+        end
+    else
+        fprintf('角度 %d° 無資料\n', tgt);
+    end
+end
+
+% 顯示平均結果
+fprintf('\n=== 平均結果 ===\n');
+fprintf('角度\t筆數\t平均 ADC\n');
+for i = 1:length(target_angles)
+    if count(i) &gt; 0
+        fprintf('%d°\t%d\t%.2f\n', target_angles(i), count(i), mean_ADC(i));
+    else
+        fprintf('%d°\t0\t無資料\n', target_angles(i));
+    end
+end
+
+% 畫長條圖
+figure;
+bar(target_angles, mean_ADC, 'FaceColor', [0.3 0.7 0.9]);
+xlabel('角度 (度)');
+ylabel('平均 ADC 值');
+title('各角度平均 ADC 值');
+grid on;
+set(gca, 'XTick', target_angles, 'XTickLabelRotation', 45);
+
+
+text(target_angles, mean_ADC, sprintfc('%.1f', mean_ADC), ...
+     'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');</pre>
+<p>Result</p>
+<p><img alt="" height="355" src="./../images/image.png" width="719"/></p>
+<div class="rtcContent">
+<div class="SAF44E6B70"><span>=== 平均結果 ===<br/>角度 筆數 平均 ADC<br/>30° 10 216.40<br/>40° 21 266.29<br/>50° 21 322.38<br/>60° 21 349.71<br/>70° 21 401.43<br/>80° 21 457.38<br/>90° 21 502.48<br/>100° 21 541.10<br/>110° 21 588.48<br/>120° 21 635.43<br/>130° 21 687.71<br/>140° 20 729.90<br/>150° 10 771.20</span></div>
+</div><br />PTZ << <a href='PTZ.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        
+<!-- 啟用 LaTeX equations 編輯 -->
+  <!-- <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\(', '\)']]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>-->
+    </body></html>
+        
