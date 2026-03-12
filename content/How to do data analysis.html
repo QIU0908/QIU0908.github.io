@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li><a href='Mind Map.html'>Mind Map</a><li><a href='SKY.html'>SKY</a><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li><a href='How to do data analysis.html'>How to do data analysis</a><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,8 +142,45 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">Mind Map << <a href='Mind Map.html'>Previous</a> <a href='cameraSistyem.html'>Next</a> >> cameraSistyem<br /><h1>SKY</h1>
-<br />Mind Map << <a href='Mind Map.html'>Previous</a> <a href='cameraSistyem.html'>Next</a> >> cameraSistyem</div>
+    <div id="tipue_search_content">About << <a href='About.html'>Previous</a> <a href='cameraSistyem.html'>Next</a> >> cameraSistyem<br /><h1>How to do data analysis</h1>
+<ol>
+<li dir="auto">拿到原始數據。</li>
+<li dir="auto">
+<p dir="auto">先看一眼數據長什麼樣，知道有沒有亂七八糟的東西（例如數字被當文字、很多空值、極端怪值）。</p>
+</li>
+<li dir="auto">
+<p dir="auto">把數據洗乾淨，明顯錯的極端值，用箱型圖或簡單規則刪/修正（例如電力消耗量負值就刪）。</p>
+</li>
+<li dir="auto">
+<p dir="auto">決定目標（y）和特徵（X），機器學習就是要用 X 猜 y。</p>
+</li>
+<li dir="auto">
+<p dir="auto">（選做）把數據做一些調整（特徵工程）EX:數字太大或太小 → 標準化（減平均除標準差)。目標 y 如果差很大 → 可以先取 log（之後再轉回來。</p>
+</li>
+<li dir="auto">
+<p dir="auto">把資料分成「訓練用」和「測試用」，把 70～80% 當訓練，20～30% 當測試，測試資料不能拿來訓練，這樣才能知道模型在「沒看過的資料」上表現如何</p>
+</li>
+<li dir="auto">
+<p dir="auto">選一個模型 + 訓練它</p>
+</li>
+<li dir="auto">
+<p dir="auto">用測試資料做預測</p>
+</li>
+<li dir="auto">
+<p dir="auto">算誤差指標 MAE MSE RMSE MAPE MPE R²</p>
+</li>
+<li dir="auto">
+<p dir="auto">看結果 + 決定下一步</p>
+<p dir="auto">看數字：MAE/RMSE 夠小嗎？R² 有沒有超過 0.7～0.8？</p>
+<p dir="auto">如果不好 → 回到第 3～7 步改（加特徵、換模型、調參數、清洗更乾淨…）</p>
+</li>
+</ol>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<br />About << <a href='About.html'>Previous</a> <a href='cameraSistyem.html'>Next</a> >> cameraSistyem</div>
         
     <!-- footer -->
       <div class="container">

@@ -1,10 +1,50 @@
 <h1>About</h1>
 <p data-end="175" data-start="61">This website is created by a beginner student who wants to build an FPV system with as little money as possible.</p>
 <p data-end="348" data-start="183">I don't want to use commercially available TX/RX modules or flight control chips. Instead, I want to use <strong data-end="297" data-start="288">STM32</strong> and cheap sensors to build everything by myself.</p>
-<p data-end="462" data-start="356">I think I will face many difficulties, but I hope I will learn a lot from this project. Wish me good luck.</p><h1>Mind Map</h1>
+<p data-end="462" data-start="356">I think I will face many difficulties, but I hope I will learn a lot from this project. Wish me good luck,BTW my english is not well ,so sometime i will use wrong word or chinese .</p>
 <p><img alt="" height="299" src="/images/FPV.jpg" width="800"/>2026/03/08</p>
-<h1>SKY</h1>
-<h1>cameraSistyem</h1><h2>PTZ</h2>
+<h1>How to do data analysis?</h1>
+<p></p>
+<p></p>
+<ol>
+<li dir="auto">拿到原始數據。</li>
+<li dir="auto">
+<p dir="auto">先看一眼數據長什麼樣，知道有沒有亂七八糟的東西（例如數字被當文字、很多空值、極端怪值）。</p>
+</li>
+<li dir="auto">
+<p dir="auto">把數據洗乾淨，明顯錯的極端值，用箱型圖或簡單規則刪/修正（例如電力消耗量負值就刪）。</p>
+</li>
+<li dir="auto">
+<p dir="auto">決定目標（y）和特徵（X），機器學習就是要用 X 猜 y。</p>
+</li>
+<li dir="auto">
+<p dir="auto">（選做）把數據做一些調整（特徵工程）EX:數字太大或太小 → 標準化（減平均除標準差)。目標 y 如果差很大 → 可以先取 log（之後再轉回來。</p>
+</li>
+<li dir="auto">
+<p dir="auto">把資料分成「訓練用」和「測試用」，把 70～80% 當訓練，20～30% 當測試，測試資料不能拿來訓練，這樣才能知道模型在「沒看過的資料」上表現如何</p>
+</li>
+<li dir="auto">
+<p dir="auto">選一個模型 + 訓練它</p>
+</li>
+<li dir="auto">
+<p dir="auto">用測試資料做預測</p>
+</li>
+<li dir="auto">
+<p dir="auto">算誤差指標 MAE MSE RMSE MAPE MPE R²</p>
+</li>
+<li dir="auto">
+<p dir="auto">看結果 + 決定下一步</p>
+<p dir="auto">看數字：MAE/RMSE 夠小嗎？R² 有沒有超過 0.7～0.8？</p>
+<p dir="auto">如果不好 → 回到第 3～7 步改（加特徵、換模型、調參數、清洗更乾淨…）</p>
+</li>
+</ol>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<h1>cameraSistyem</h1>
+<h2>PTZ</h2>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
 <h3>angle2Servo_ADC_Data</h3>
 <p>divide SG90 and using a electric wire to contect Variable resistor</p>
@@ -114,7 +154,11 @@ set(gca, 'XTick', target_angles, 'XTickLabelRotation', 45);
 text(target_angles, mean_ADC, sprintfc('%.1f', mean_ADC), ...
      'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');</pre>
 <p>Result</p>
-<p><img alt="" height="355" src="/images/image.png" width="719"/></p><h1>Brython</h1>
+<p><img alt="" height="355" src="/images/image.png" width="719"/></p>
+<div class="rtcContent">
+<div class="SAF44E6B70"><span>=== 平均結果 ===<br/>角度 筆數 平均 ADC<br/>30° 10 216.40<br/>40° 21 266.29<br/>50° 21 322.38<br/>60° 21 349.71<br/>70° 21 401.43<br/>80° 21 457.38<br/>90° 21 502.48<br/>100° 21 541.10<br/>110° 21 588.48<br/>120° 21 635.43<br/>130° 21 687.71<br/>140° 20 729.90<br/>150° 10 771.20</span></div>
+</div>
+<h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>
