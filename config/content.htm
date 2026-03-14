@@ -38,69 +38,175 @@
 </li>
 </ol>
 <p></p>
+<p></p>
+<p>迴歸模型誤差指標完整教學</p>
+<!-- KaTeX CSS -->
+<p></p>
+<!-- KaTeX JS -->
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$$", right: "$$", display: true},
+          {left: "\\[", right: "\\]", display: true},
+          {left: "$", right: "$", display: false},
+          {left: "\\(", right: "\\)", display: false}
+        ],
+        throwOnError: false
+      });
+    });
+  
+</script>
 <h2>regression error index</h2>
+<p></p>
 <p>1.error index</p>
 <ul>
-<li><span><span>MAE   </span></span>平均絕對誤差  :<span>對誤差</span>取絕對值後(直線距離)相加，<span>再</span>平均。 </li>
-<li><img alt="" height="365" src="/images/MAE.png" width="499"/></li>
-<li><span><span>MSE   </span></span>均方誤差  :<span>對誤差平方(正方形面積)相加後再平均。 </span></li>
-<li><span><img alt="" height="365" src="/images/MSE.png" width="500"/>           </span></li>
-<li><span><span>RMSE </span></span>均方根誤差  :<span>對誤差平方(正方形面積)相加後，平均再開根號。</span></li>
-<li><span><img alt="" height="365" src="/images/RMSE.png" width="500"/></span></li>
-<li><span>MPE   </span>平均百分比誤差      :(實際值-預測值)/<span>實際值*100%</span>後取平均</li>
-<li><img alt="" height="366" src="/images/MPE.png" width="500"/></li>
-<li><span><span>MAPE </span></span>平均絕對百分比誤差 :abs(<span>(實際值-預測值</span><span>)/</span><span>實際值*100%</span><span>後取平均</span><span></span></li>
-<li><img alt="" height="366" src="/images/MAPE.png" width="500"/></li>
+<li><span><span>MAE </span></span>平均絕對誤差 :<span>對真實值-預測值(誤差)</span>取絕對值後(黃色直線距離)相加，<span>再</span>平均。<br/>
+<p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>MAE</mtext><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo fence="true">∣</mo><msub><mtext>真實值</mtext><mi>i</mi></msub><mo>−</mo><msub><mtext>預測值</mtext><mi>i</mi></msub><mo fence="true">∣</mo></mrow></mrow><annotation encoding="application/x-tex">\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left| \text{真實值}_i - \text{預測值}_i \right|</annotation></semantics></math></span></span></p>
+</li>
 </ul>
+<p><img alt="" height="365" src="/images/MAE.png" width="499"/></p>
+<p></p>
+<ul>
+<li><span><span>MSE<span style="background-color: #aaaaaa;"> </span></span></span>均方誤差 :<span>對誤差平方(正方形面積)相加後再平均。</span><br/>
+<p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>MSE</mtext><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mrow><mo fence="true">(</mo><msub><mtext>真實值</mtext><mi>i</mi></msub><mo>−</mo><msub><mtext>預測值</mtext><mi>i</mi></msub><mo fence="true">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} \left( \text{真實值}_i - \text{預測值}_i \right)^2</annotation></semantics></math></span></span></p>
+</li>
+</ul>
+<p><img alt="" height="365" src="/images/MSE.png" width="500"/>           </p>
+<ul>
+<li><span><span>RMSE </span></span>均方根誤差:<span>對誤差平方(正方形面積)相加後，平均再開根號。</span><br/>
+<p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>RMSE</mtext><mo>=</mo><msqrt><mrow><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msup><mrow><mo fence="true">(</mo><msub><mtext>真實值</mtext><mi>i</mi></msub><mo>−</mo><msub><mtext>預測值</mtext><mi>i</mi></msub><mo fence="true">)</mo></mrow><mn>2</mn></msup></mrow></msqrt></mrow><annotation encoding='"applica' li=""> </annotation></semantics></math></span></span></p>
+</li>
+</ul>
+<p><img alt="" height="365" src="/images/RMSE.png" width="500"/></p>
+<ul>
+<li><span>MPE</span>平均百分比誤差:(實際值-預測值)/<span>實際值*100%</span>後取平均。<br/>
+<p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>MPE</mtext><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mfrac><mrow><msub><mtext>真實值</mtext><mi>i</mi></msub><mo>−</mo><msub><mtext>預測值</mtext><mi>i</mi></msub></mrow><msub><mtext>真實值</mtext><mi>i</mi></msub></mfrac><mo>×</mo><mn>100</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">\text{MPE} = \frac{1}{n} \sum_{i=1}^{n} \frac{\text{真實值}_i - \text{預測值}_i}{\text{真實值}_i} \times 100\%</annotation></semantics></math></span></span></p>
+</li>
+</ul>
+<p><img alt="" height="366" src="/images/MPE.png" width="500"/></p>
+<ul>
+<li><span><span>MAPE </span></span>平均絕對百分比誤差 :abs(<span>(實際值-預測值</span><span>)/</span><span>實際值*100%</span><span>後取平均</span><span></span><span></span><br/>
+<p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>MAPE</mtext><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo fence="true">∣</mo><mfrac><mrow><msub><mtext>真實值</mtext><mi>i</mi></msub><mo>−</mo><msub><mtext>預測值</mtext><mi>i</mi></msub></mrow><msub><mtext>真實值</mtext><mi>i</mi></msub></mfrac><mo fence="true">∣</mo></mrow><mo>×</mo><mn>100</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">\text{MAPE} = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{\text{真實值}_i - \text{預測值}_i}{\text{真實值}_i} \right| \times 100\%</annotation></semantics></math></span></span></p>
+</li>
+</ul>
+<p><span><img alt="" height="366" src="/images/MAPE.png" width="500"/></span></p>
 <p><span>2.goodness of fit</span></p>
 <ul>
 <li><span> R²決定係數</span></li>
 </ul>
-<table class="min-w-full border-collapse text-sm leading-[1.7] whitespace-normal" style="width: 591px;">
+<table border="2" class="min-w-full border-collapse text-sm leading-[1.7] whitespace-normal" style="width: 591px; border-color: #211717; background-color: #daecf2; margin-left: auto; margin-right: auto;">
 <thead class="text-left">
 <tr style="height: 16px;">
-<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 40.0938px; text-align: center; height: 16px;"><strong>符號</strong></th>
-<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 162.906px; text-align: center; height: 16px;"><strong>全名</strong></th>
-<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 182px; text-align: center; height: 16px;"><strong>公式</strong></th>
-<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 175px; text-align: center; height: 16px;"><strong>意思</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 40px; height: 16px;"><strong>符號</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 161.703px; height: 16px;"><strong>全名</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 181.297px; height: 16px;"><strong>公式</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 175px; height: 16px;"><strong>意思</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr style="height: 22px;">
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40.0938px; text-align: center; height: 22px;">SST</td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 162.906px; text-align: center; height: 22px;">Total Sum of Squares</td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 182px; text-align: left; height: 22px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y - mean(y)).^2)</code></td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22px; text-align: left;">y 的<strong>總變異</strong></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40px; height: 22px;">SST</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 161.703px; height: 22px;">Total Sum of Squares</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 181.297px; height: 22px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y - mean(y)).^2)</code></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22px;">y 的總變異</td>
+</tr>
+<tr style="height: 22.125px;">
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40px; height: 22.125px;">SSR</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 161.703px; height: 22.125px;">Regression Sum of Squares</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 181.297px; height: 22.125px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y_pred - mean(y)).^2)</code></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22.125px;">模型解釋到的變異</td>
 </tr>
 <tr style="height: 22px;">
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40.0938px; text-align: center; height: 22px;">SSR</td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 162.906px; text-align: center; height: 22px;">Regression Sum of Squares</td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 182px; text-align: left; height: 22px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y_pred - mean(y)).^2)</code></td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22px; text-align: left;">模型<strong>解釋到</strong>的變異</td>
-</tr>
-<tr style="height: 22.6875px;">
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40.0938px; text-align: center; height: 22.6875px;">SSE</td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 162.906px; text-align: center; height: 22.6875px;">Error Sum of Squares</td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 182px; text-align: left; height: 22.6875px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y - y_pred).^2)</code></td>
-<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22.6875px; text-align: left;">模型<strong>沒解釋到</strong>的變異（殘差）</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40px; height: 22px;">SSE</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 161.703px; height: 22px;">Error Sum of Squares</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 181.297px; height: 22px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y - y_pred).^2)</code></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22px;">模型沒解釋到的變異（殘差）</td>
 </tr>
 </tbody>
 </table>
-<p>*<span>mean(y)為原始數據取平均，y為某一點的原始數據,y_pred為某一點預測方程式的值</span></p>
+<p><span style="color: #ff6600;">*mean(y)為原始數據取平均， </span><span style="color: #ff6600;">y為某一點的原始數據, y_pred為某一點預測方程式的值。</span></p>
+<p>SST=SSR+SSE;</p>
+<p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>R</mi><mn>2</mn></msup><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mrow><mo>∑</mo><msup><mrow><mo fence="true">(</mo><mtext>某一點的原始數據</mtext><mo>−</mo><mtext>某一點預測方程式的值</mtext><mo fence="true">)</mo></mrow><mn>2</mn></msup></mrow><mrow><mo>∑</mo><msup><mrow><mo fence="true">(</mo><mtext>某一點的原始數據</mtext><mo>−</mo><mtext>原始數據取平均</mtext><mo fence="true">)</mo></mrow><mn>2</mn></msup></mrow></mfrac><mo>=</mo><mn>1</mn><mo>−</mo><mfrac><mtext>殘差平方和 (SSR)</mtext><mtext>總平方和 (SST)</mtext></mfrac></mrow><annotation encoding="application/x-tex">R^2 = 1 - \frac{\sum \left( \text{某一點的原始數據} - \text{某一點預測方程式的值} \right)^2}{\sum \left( \text{某一點的原始數據} - \text{原始數據取平均} \right)^2} = 1 - \frac{\text{殘差平方和 (SSR)}}{\text{總平方和 (SST)}}</annotation></semantics></math></span></span></p>
 <p><span><img alt="" height="365" src="/images/RR.png" width="500"/></span></p>
 <p><span></span></p>
 <p><span></span></p>
-<p><span></span></p>
-<p><span></span></p>
-<p>////////////////////////////</p>
-<p>數值多少算好</p>
-<p></p>
-<p></p>
-<p><span>MAE RMSE 數值會差不多嗎?</span></p>
-<p><span>情況一：誤差都差不多大 <span>err = [1, 1, 1, 1, 1] </span><span>MAE = 1.0 </span><span>RMSE = 1.0 ← 幾乎一樣</span></span></p>
+<hr/>
+<p><strong>Q:數值多少算好</strong></p>
+<p><strong>A:</strong></p>
+<table border="2" height="232" style="border-color: #000000; background-color: #daecf2; height: 232px; margin-left: auto; margin-right: auto;" width="848">
+<thead>
+<tr>
+<th data-col-size="sm" style="width: 35.1406px; text-align: center;"><strong>指標</strong></th>
+<th data-col-size="md" style="width: 70.2656px; text-align: center;"><strong>單位</strong></th>
+<th data-col-size="xs" style="width: 59.2188px; text-align: center;"><strong>越小越好？</strong></th>
+<th data-col-size="lg" style="width: 153.562px; text-align: center;"><strong>對大誤差（outlier）的敏感度</strong></th>
+<th data-col-size="xl" style="width: 324.172px; text-align: center;"><strong>什麼情況下「看起來小」才算好？</strong></th>
+<th data-col-size="lg" style="width: 165.641px; text-align: center;"><strong>常見應用場景建議</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-col-size="sm" style="width: 35.1406px; text-align: center;">MAE</td>
+<td data-col-size="md" style="width: 70.2656px; text-align: center;">跟 y 相同單位</td>
+<td data-col-size="xs" style="width: 59.2188px; text-align: center;">是</td>
+<td data-col-size="lg" style="width: 153.562px; text-align: center;">低（robust）</td>
+<td data-col-size="xl" style="width: 324.172px; text-align: center;">跟 y 的平均值或範圍比，小於 5–15% 左右常被接受</td>
+<td data-col-size="lg" style="width: 165.641px; text-align: center;">業務容易理解、對大錯不特別懲罰</td>
+</tr>
+<tr>
+<td data-col-size="sm" style="width: 35.1406px; text-align: center;">MSE</td>
+<td data-col-size="md" style="width: 70.2656px; text-align: center;">y 單位的平方</td>
+<td data-col-size="xs" style="width: 59.2188px; text-align: center;">是</td>
+<td data-col-size="lg" style="width: 153.562px; text-align: center;">極高</td>
+<td data-col-size="xl" style="width: 324.172px; text-align: center;">很難直接看，通常只跟其他模型比</td>
+<td data-col-size="lg" style="width: 165.641px; text-align: center;">訓練時用（可微分）</td>
+</tr>
+<tr>
+<td data-col-size="sm" style="width: 35.1406px; text-align: center;">RMSE</td>
+<td data-col-size="md" style="width: 70.2656px; text-align: center;">跟 y 相同單位</td>
+<td data-col-size="xs" style="width: 59.2188px; text-align: center;">是</td>
+<td data-col-size="lg" style="width: 153.562px; text-align: center;">高</td>
+<td data-col-size="xl" style="width: 324.172px; text-align: center;">常比 MAE 大一點，跟 y 平均值比，小於 10–20% 常被接受</td>
+<td data-col-size="lg" style="width: 165.641px; text-align: center;">最常用（平衡解釋力與懲罰大錯）</td>
+</tr>
+<tr>
+<td data-col-size="sm" style="width: 35.1406px; text-align: center;">MAPE</td>
+<td data-col-size="md" style="width: 70.2656px; text-align: center;">百分比 (%)</td>
+<td data-col-size="xs" style="width: 59.2188px; text-align: center;">是</td>
+<td data-col-size="lg" style="width: 153.562px; text-align: center;">中等（但 y 接近 0 會爆炸）</td>
+<td data-col-size="xl" style="width: 324.172px; text-align: center;">&lt;10% 優秀、10–20% 好、20–50% 可接受、&gt;50% 通常偏差</td>
+<td data-col-size="lg" style="width: 165.641px; text-align: center;">銷售、需求預測（規模無關）</td>
+</tr>
+<tr>
+<td data-col-size="sm" style="width: 35.1406px; text-align: center;">MPE</td>
+<td data-col-size="md" style="width: 70.2656px; text-align: center;">百分比 (%)</td>
+<td data-col-size="xs" style="width: 59.2188px; text-align: center;">接近 0 最好</td>
+<td data-col-size="lg" style="width: 153.562px; text-align: center;">中等（有正負）</td>
+<td data-col-size="xl" style="width: 324.172px; text-align: center;">接近 0（有系統性偏誤時會遠離 0）</td>
+<td data-col-size="lg" style="width: 165.641px; text-align: center;">檢查是否有 bias</td>
+</tr>
+</tbody>
+</table>
+<p><strong></strong></p>
+<p><strong>Q:MAE RMSE 數值會差不多嗎?</strong></p>
+<p><strong>A:</strong></p>
+<p>情況一：誤差都差不多大 err = [1, 1, 1, 1, 1] MAE = 1.0 RMSE = 1.0 ← 幾乎一樣</p>
 <p><span><span>情況二：有一個很大的離群誤差 <span>err = [1, 1, 1, 1, 10] </span><span>MAE = 2.8 </span><span>RMSE = 4.6 ← 差很多，因為 10² = 100 被放大了</span></span></span></p>
+<p><span><span><span></span></span></span></p>
+<p><strong>Q:R² 決定係數 — 多少算好？</strong></p>
+<p><strong>A:</strong></p>
+<ul>
+<li>R² &gt; 0.9–0.95：優秀（物理模型強的領域）</li>
+<li>R² 0.8–0.9：良好（大多數工程應用）</li>
+<li>R² 0.6–0.8：可接受（現場數據噪音大）</li>
+<li>R² &lt; 0.6：通常不夠好，除非是極端複雜系統</li>
+</ul>
 <p></p>
-<p></p>
+<p dir="auto"></p>
+<p dir="auto"></p>
 <p></p><h1>cameraSistyem</h1>
 <h2>PTZ</h2>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
