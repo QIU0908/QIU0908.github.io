@@ -41,15 +41,59 @@
 <h2>regression error index</h2>
 <p>1.error index</p>
 <ul>
-<li><span><span>MAE   </span></span>平均絕對誤差 </li>
-<li><span><span>MSE   </span></span>均方誤差</li>
-<li><span><span>RMSE </span></span>均方根誤差</li>
-<li><span><span>MAPE </span></span>平均絕對百分比誤差</li>
-<li><span><span> MPE   </span></span>平均百分比誤差</li>
+<li><span><span>MAE   </span></span>平均絕對誤差  :<span>對誤差</span>取絕對值後(直線距離)相加，<span>再</span>平均。 <img alt="" height="365" src="/images/MAE.png" width="499"/></li>
+<li><span><span>MSE   </span></span>均方誤差  :<span>對誤差平方(正方形面積)相加後再平均。 </span><span><img alt="" height="365" src="/images/MSE.png" width="500"/>           </span></li>
+<li><span><span>RMSE </span></span>均方根誤差  :<span>對誤差平方(正方形面積)相加後，平均再開根號。</span></li>
+<li><span></span></li>
+<li><span>MPE   </span>平均百分比誤差      :(實際值-預測值)/<span>實際值*100%</span>後取平均</li>
+<li><span><span>MAPE </span></span>平均絕對百分比誤差 :abs(<span>(實際值-預測值</span><span>)/</span><span>實際值*100%</span><span>後取平均</span></li>
 </ul>
-<p><span></span></p>
 <p><span>2.goodness of fit</span></p>
-<p><span> R²</span></p>
+<ul>
+<li><span> R²決定係數</span></li>
+</ul>
+<table class="min-w-full border-collapse text-sm leading-[1.7] whitespace-normal" style="width: 591px;">
+<thead class="text-left">
+<tr style="height: 16px;">
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 40.0938px; text-align: center; height: 16px;"><strong>符號</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 162.906px; text-align: center; height: 16px;"><strong>全名</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 182px; text-align: center; height: 16px;"><strong>公式</strong></th>
+<th class="text-text-100 border-b-0.5 border-border-300/60 py-2 pr-4 align-top font-bold" scope="col" style="width: 175px; text-align: center; height: 16px;"><strong>意思</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr style="height: 22px;">
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40.0938px; text-align: center; height: 22px;">SST</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 162.906px; text-align: center; height: 22px;">Total Sum of Squares</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 182px; text-align: left; height: 22px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y - mean(y)).^2)</code></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22px; text-align: left;">y 的<strong>總變異</strong></td>
+</tr>
+<tr style="height: 22px;">
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40.0938px; text-align: center; height: 22px;">SSR</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 162.906px; text-align: center; height: 22px;">Regression Sum of Squares</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 182px; text-align: left; height: 22px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y_pred - mean(y)).^2)</code></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22px; text-align: left;">模型<strong>解釋到</strong>的變異</td>
+</tr>
+<tr style="height: 22.6875px;">
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 40.0938px; text-align: center; height: 22.6875px;">SSE</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 162.906px; text-align: center; height: 22.6875px;">Error Sum of Squares</td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 182px; text-align: left; height: 22.6875px;"><code class="bg-text-200/5 border border-0.5 border-border-300 text-danger-000 whitespace-pre-wrap rounded-[0.4rem] px-1 py-px text-[0.9rem]">sum((y - y_pred).^2)</code></td>
+<td class="border-b-0.5 border-border-300/30 py-2 pr-4 align-top" style="width: 175px; height: 22.6875px; text-align: left;">模型<strong>沒解釋到</strong>的變異（殘差）</td>
+</tr>
+</tbody>
+</table>
+<p>*<span>mean(y)為原始數據取平均，y為某一點的原始數據,y_pred為某一點預測方程式的值</span></p>
+<p><span></span></p>
+<p><span></span></p>
+<p><span></span></p>
+<p><span></span></p>
+<p>////////////////////////////</p>
+<p>數值多少算好</p>
+<p></p>
+<p></p>
+<p><span>MAE RMSE 數值會差不多嗎?</span></p>
+<p><span>情況一：誤差都差不多大 <span>err = [1, 1, 1, 1, 1] </span><span>MAE = 1.0 </span><span>RMSE = 1.0 ← 幾乎一樣</span></span></p>
+<p><span><span>情況二：有一個很大的離群誤差 <span>err = [1, 1, 1, 1, 10] </span><span>MAE = 2.8 </span><span>RMSE = 4.6 ← 差很多，因為 10² = 100 被放大了</span></span></span></p>
 <p></p>
 <p></p>
 <p></p><h1>cameraSistyem</h1>
