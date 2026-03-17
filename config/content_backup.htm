@@ -61,7 +61,7 @@
 </script>
 <h2>regression error metric</h2>
 <p></p>
-<p>1.error index</p>
+<p>1.error metric</p>
 <ul>
 <li><span><span>MAE </span></span>平均絕對誤差 :<span>對真實值-預測值(誤差)</span>取絕對值後(黃色直線距離)相加，<span>再</span>平均。<br/>
 <p style="display: flex; justify-content: flex-start;"><span class="katex"><span class="katex-mathml"><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>MAE</mtext><mo>=</mo><mfrac><mn>1</mn><mi>n</mi></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mrow><mo fence="true">∣</mo><msub><mtext>真實值</mtext><mi>i</mi></msub><mo>−</mo><msub><mtext>預測值</mtext><mi>i</mi></msub><mo fence="true">∣</mo></mrow></mrow><annotation encoding="application/x-tex">\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} \left| \text{真實值}_i - \text{預測值}_i \right|</annotation></semantics></math></span></span></p>
@@ -258,73 +258,146 @@ void loop() {
 }</pre>
 <p><strong>Result</strong></p>
 <p><strong><a href="/downloads/servo_angle_ADC.txt">/downloads/servo_angle_ADC.txt</a></strong></p>
+<p><strong><a href="/downloads/find_data.txt">/downloads/find_data.txt</a></strong></p>
 <p><strong>Matlab find avarge</strong></p>
-<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">clc
-clear
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">%{
+2026/03/17
+用來找servo ADC對應到servo的角度 並用測試資料驗證
+用MAE RMSE R² 來推測模型好不好
+結論 :
+一次曲線就夠用,但有些角度跟測試資料差很多 看原始資料發現他原本ADC就會亂飄
+模型大概+-5°
+%}
 
-data = readmatrix('C:\Users\light\Desktop\servo_angle_ADC.txt', 'Delimiter', ',');
-angle = data(:,1);
-ADC   = data(:,2);
+clc; clear; close all;
 
-target_angles = 30:10:150;
+figPos = [100 100 900 600];   % 視窗大小，可調
+offset = 30;                  % 每個視窗偏移，避免完全重疊
+%% 讀取校正資料
+org_data = readmatrix('servo_angle_ADC.txt', 'Delimiter', ',');
+angle_raw = org_data(:,1);
+adc_raw   = org_data(:,2);
 
-% 初始化
-mean_ADC = zeros(size(target_angles));
-count    = zeros(size(target_angles));
-
-for i = 1:length(target_angles)
-    tgt = target_angles(i);
-    
-    % 直接用邏輯索引取出符合的 ADC
-    this_ADC = ADC(angle == tgt);
-    
-    % 如果有資料
-    if ~isempty(this_ADC)
-        % 移除可能的 NaN（
-        this_ADC = this_ADC(~isnan(this_ADC));
-        
-        if ~isempty(this_ADC)
-            mean_ADC(i) = mean(this_ADC);
-            count(i)    = length(this_ADC);
-            
-            % 顯示原始資料
-            fprintf('\n角度 %d° 的資料（共 %d 筆）：\n', tgt, count(i));
-            fprintf('angle = %g, ADC = %g\n', [tgt*ones(count(i),1) this_ADC]');
-        end
-    else
-        fprintf('角度 %d° 無資料\n', tgt);
-    end
+%% 先按角度平均（去除重複影響）
+unique_angles = unique(angle_raw);%unique();把()中的矩陣的每個元素小到大排列
+adc_avg = zeros(size(unique_angles));
+count    = zeros(size(unique_angles));%用來計算每個角度有幾筆數據
+for i = 1:length(unique_angles)
+    mask = (angle_raw == unique_angles(i));%這個角度出現的所有位置 回傳true ...
+    % 讓mask變成一邏輯矩陣 EX[0 ,1 ,0 ,0]
+    adc_avg(i) = mean(adc_raw(mask));%把這個角度出現的raw 給ADC用
+    count(i)    = sum( mask);
 end
 
-% 顯示平均結果
+angle = unique_angles';   % 轉成列向量（ polyfit 喜歡列向量）
+adc   = adc_avg';
+%% 顯示平均結果
 fprintf('\n=== 平均結果 ===\n');
 fprintf('角度\t筆數\t平均 ADC\n');
-for i = 1:length(target_angles)
-    if count(i) &gt; 0
-        fprintf('%d°\t%d\t%.2f\n', target_angles(i), count(i), mean_ADC(i));
-    else
-        fprintf('%d°\t0\t無資料\n', target_angles(i));
-    end
+for i = 1:length(unique_angles)
+    
+        fprintf('%d°\t%d\t%.2f\n', unique_angles(i), count(i), adc_avg(i));
+    
 end
-
-% 畫長條圖
-figure;
-bar(target_angles, mean_ADC, 'FaceColor', [0.3 0.7 0.9]);
+%% 畫長條圖
+figure('Name', '原始散佈圖','Position',figPos + [0 5*offset 0 0]);
+bar( unique_angles, adc_avg, 'FaceColor', [0.3 0.7 0.9]);
 xlabel('角度 (度)');
 ylabel('平均 ADC 值');
 title('各角度平均 ADC 值');
 grid on;
-set(gca, 'XTick', target_angles, 'XTickLabelRotation', 45);
+set(gca, 'XTick', unique_angles, 'XTickLabelRotation', 45);
 
+%% 讀取測試資料
+data = readmatrix('find_data.txt', 'Delimiter', ',');
+ADC_test = data(:,2);
+%% 畫原始散佈圖
+figure('Name','Angle vs ADC Calibration','Position',figPos + [0 4*offset 0 0]);
+scatter(adc, angle, 60, 'filled', 'MarkerFaceColor','b');
+xlabel('ADC value'); ylabel('Angle (deg)');
+title('Calibration Data: Angle vs ADC');
+set(gca, 'FontSize', 12);
 
-text(target_angles, mean_ADC, sprintfc('%.1f', mean_ADC), ...
-     'HorizontalAlignment', 'center', 'VerticalAlignment', 'bottom');</pre>
+%% 擬合模型：angle = f(ADC)
+p_lin = polyfit(adc, angle, 1);   % 一次曲線
+p_quad = polyfit(adc, angle, 2);  % 二次曲線
+
+%% 產生平滑曲線用
+x_fit = linspace(min(adc), max(adc), 300);
+y_lin  = polyval(p_lin,  x_fit);
+y_quad = polyval(p_quad, x_fit);
+
+hold on;
+plot(x_fit, y_lin,  'r-', 'LineWidth', 2.2, 'DisplayName', 'Linear fit');
+plot(x_fit, y_quad, 'g-', 'LineWidth', 2.2, 'DisplayName', 'Quadratic fit');
+legend('show', 'Location','northwest');
+hold off;
+
+%% 顯示擬合方程式（注意 polyfit 最高次在前）
+fprintf('=== 擬合結果 ===\n');
+fprintf('一次擬合： angle = %.6f × ADC + %.6f\n', p_lin(1), p_lin(2));
+fprintf('二次擬合： angle = %.6e × ADC² + %.6f × ADC + %.6f\n', ...
+        p_quad(1), p_quad(2), p_quad(3));
+
+%% 在校正點上計算預測角度 &amp; 誤差指標
+angle_pred_lin  = polyval(p_lin,  adc);
+angle_pred_quad = polyval(p_quad, adc);
+
+err_lin  = angle_pred_lin  - angle;
+err_quad = angle_pred_quad - angle;
+
+mae_lin  = mean(abs(err_lin));
+mae_quad = mean(abs(err_quad));
+
+rmse_lin  = sqrt(mean(err_lin.^2));
+rmse_quad = sqrt(mean(err_quad.^2));
+
+fprintf('\n=== 校正點上的誤差 (單位：度) ===\n');
+fprintf('一次擬合 → MAE = %.4f°   RMSE = %.4f°\n', mae_lin, rmse_lin);
+fprintf('二次擬合 → MAE = %.4f°   RMSE = %.4f°\n', mae_quad, rmse_quad);
+
+%% R² (決定係數) — 以角度為 y
+SS_tot = sum((angle - mean(angle)).^2);
+SS_res_lin  = sum(err_lin.^2);
+SS_res_quad = sum(err_quad.^2);
+R2_lin  = 1 - SS_res_lin  / SS_tot;
+R2_quad = 1 - SS_res_quad / SS_tot;
+
+fprintf('\nR² (linear)  = %.6f\n', R2_lin);
+fprintf('R² (quadratic) = %.6f\n', R2_quad);
+
+%% 對測試資料反推角度
+fprintf('\n=== 測試資料反推角度 ===\n');
+angle_test_lin  = polyval(p_lin,  ADC_test);
+angle_test_quad = polyval(p_quad, ADC_test);
+
+%% 看所有預測數據
+% 全部資料 (linear)
+disp('所有預測結果 (linear)：');
+disp('   ADC       預測角度 (線性)');
+disp([ADC_test angle_test_lin]);
+
+% 全部資料 (quadratic)
+disp(' ');
+disp('所有預測結果 (quadratic)：');
+disp('   ADC       預測角度 (二次)');
+disp([ADC_test angle_test_quad]);</pre>
 <p>Result</p>
-<p><img alt="" height="355" src="/images/image.png" width="719"/></p>
+<p><img caption="false" height="346" src="/images/image.png" width="700"/></p>
 <div class="rtcContent">
-<div class="SAF44E6B70"><span>=== 平均結果 ===<br/>角度 筆數 平均 ADC<br/>30° 10 216.40<br/>40° 21 266.29<br/>50° 21 322.38<br/>60° 21 349.71<br/>70° 21 401.43<br/>80° 21 457.38<br/>90° 21 502.48<br/>100° 21 541.10<br/>110° 21 588.48<br/>120° 21 635.43<br/>130° 21 687.71<br/>140° 20 729.90<br/>150° 10 771.20</span></div>
+<div class="SAF44E6B70">
+<div class="rtcContent">
+<div class="SE6FCCC670">
+<div class="rtcContent">
+<div class="SCD1BBB920"><span><img caption="false" height="504" src="/images/ANGle.png" width="700"/><br/>=== 平均結果 ===<br/>角度 筆數 平均 ADC<br/>30° 10 216.40<br/>40° 21 266.29<br/>50° 21 322.38<br/>60° 21 349.71<br/>70° 21 401.43<br/>80° 21 457.38<br/>90° 21 502.48<br/>100° 21 541.10<br/>110° 21 588.48<br/>120° 21 635.43<br/>130° 21 687.71<br/>140° 20 729.90<br/>150° 10 771.20<br/>=== 擬合結果 ===<br/>一次擬合： angle = 0.215894 × ADC + -17.446772<br/>二次擬合： angle = 7.954788e-06 × ADC² + 0.207995 × ADC + -15.724726<br/><br/>=== 校正點上的誤差 (單位：度) ===<br/>一次擬合 → MAE = 0.8755° RMSE = 1.0711°<br/>二次擬合 → MAE = 0.8704° RMSE = 1.0501°<br/><br/>R² (linear) = 0.999181<br/>R² (quadratic) = 0.999212<br/><br/>=== 測試資料反推角度 ===<br/>所有預測結果 (linear)：<br/> ADC 預測角度 (線性)<br/> 370.0000 62.4340<br/> 469.0000 83.8075<br/> 617.0000 115.7598<br/> 703.0000 134.3267<br/> 616.0000 115.5439<br/> 490.0000 88.3413<br/> 348.0000 57.6843<br/> 234.0000 33.0724<br/> 346.0000 57.2525<br/> 488.0000 87.9095<br/> 648.0000 122.4525<br/> 768.0000 148.3598<br/> 645.0000 121.8048<br/> 495.0000 89.4207<br/> 320.0000 51.6393<br/> 229.0000 31.9929<br/> 344.0000 56.8207<br/> 503.0000 91.1479<br/> 620.0000 116.4075<br/> 768.0000 148.3598<br/> 648.0000 122.4525<br/> 496.0000 89.6366<br/> 350.0000 58.1161<br/> 223.0000 30.6976<br/> 361.0000 60.4909<br/> 512.0000 93.0909<br/> 659.0000 124.8273<br/><br/> <br/>所有預測結果 (quadratic)：<br/> ADC 預測角度 (二次)<br/> 370.0000 62.3225<br/> 469.0000 83.5747<br/> 617.0000 115.6366<br/> 703.0000 134.4272<br/> 616.0000 115.4188<br/> 490.0000 88.1028<br/> 348.0000 57.6209<br/> 234.0000 33.3817<br/> 346.0000 57.1939<br/> 488.0000 87.6713<br/> 648.0000 122.3964<br/> 768.0000 148.7075<br/> 645.0000 121.7415<br/> 495.0000 89.1820<br/> 320.0000 51.6483<br/> 229.0000 32.3233<br/> 344.0000 56.7669<br/> 503.0000 90.9095<br/> 620.0000 116.2901<br/> 768.0000 148.7075<br/> 648.0000 122.3964<br/> 496.0000 89.3979<br/> 350.0000 58.0480<br/> 223.0000 31.0538<br/> 361.0000 60.3982<br/> 512.0000 92.8541<br/> 659.0000 124.7987</span></div>
+<div class="SCD1BBB920"><!-- [if mso]><br><![endif]--><span></span></div>
+<div class="SCD1BBB920"><span> </span></div>
 </div>
-<h1>Brython</h1>
+</div>
+<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div>
+</div>
+</div>
+</div><h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>
