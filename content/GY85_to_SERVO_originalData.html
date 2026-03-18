@@ -2,6 +2,7 @@
         <head>
         <title>cmsimde_site</title>
         <meta charset="utf-8">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
@@ -95,6 +96,7 @@ img.add_border {
 </head>
 <body>
 <div class='container'><nav>
+        
     <div class="site-wrap">
 
     <div class="site-mobile-menu">
@@ -140,4 +142,175 @@ img.add_border {
           </div>
           
         </header>
-    </nav><section><h1>SMap</h1><div id="tipue_search_content"></div><ul><li><a href='About.html'>About</a><li><a href='How to do data analysis.html'>How to do data analysis</a><ul><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><ul><li><a href='PTZ.html'>PTZ</a><ul><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='GY85_to_SERVO_originalData.html'>GY85_to_SERVO_originalData</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li></ul></section></div></body></html>
+    <div id="tipue_search_content">angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>GY85_to_SERVO_originalData</h1>
+<p><a href="./../downloads/gy85_servo_data.txt">/downloads/gy85_servo_data.txt</a></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Wire.h&gt;
+#include&lt;Servo.h&gt;
+
+Servo myServo;
+
+unsigned long lastTime = 0;
+
+
+#define ADXL345 0x53
+
+int16_t offset_x =0;
+int16_t offset_y =0;
+int16_t offset_z =0;
+
+
+
+int16_t readAxis(byte );
+void cailbrate();
+
+void setup(){
+  Serial.begin(115200);
+
+  Wire.setSCL(PB8);
+  Wire.setSDA(PB9);
+  Wire.begin();
+  delay(1000);
+
+  Wire.beginTransmission(ADXL345);
+  Wire.write(0x2D);
+  Wire.write(0x08);
+  Wire.endTransmission();
+
+  Wire.beginTransmission(ADXL345);
+  Wire.write(0x31);
+  Wire.write(0x00);
+  Wire.endTransmission();
+
+  Serial.println("ADXL345 ready");
+
+  delay(100);
+  
+  myServo.attach(PA0);
+  myServo.write(90);
+  Serial.println("Servo ready");
+  delay(1000);
+
+  cailbrate();
+  Serial.println("millis  GY_TO_servo_angle   ADC  ");
+  delay(100);
+}
+
+
+void loop() {
+   if(micros() - lastTime &gt;= 10000){ // 10000us = 10ms
+  lastTime += 10000;
+    
+    // 讀取三軸並減去偏移
+    float x = readAxis(0x32) - offset_x;
+    float y = readAxis(0x34) - offset_y;
+    float z = readAxis(0x36) - offset_z;
+
+    // 換算成 g（±2g 量程，256 LSB/g）
+    float x_g = x / 256.0;
+    float y_g = y / 256.0;
+    float z_g = z / 256.0;
+
+    // 計算 Pitch 和 Roll
+    // Pitch：前後傾斜角度
+    // Roll ：左右傾斜角度
+    float pitch = atan2(x_g, sqrt(y_g * y_g + z_g * z_g)) * 180.0 / PI;
+    float roll  = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
+
+    int GY_TO_servo_angle = map(constrain((int)roll,-90,90),-90,90 ,30,150);
+// constrain (輸入值, 最小, 最大)     EX:輸入值&lt;最小 ,輸入值=最小
+// map (輸入值, 輸入最小值, 輸入最大值, 輸入最小值對應到的輸出最小值, 輸入最大值對應到的輸出最大值)
+myServo.write(GY_TO_servo_angle);
+
+Serial.print(millis());
+Serial.print(",");
+Serial.print(GY_TO_servo_angle);
+Serial.print(",");
+Serial.println(analogRead(PA7));
+
+    }
+}
+////////////////////////////////////////////////////////////////////////////
+int16_t readAxis(byte reg){
+  Wire.beginTransmission(ADXL345);
+  Wire.write(reg);
+  Wire.endTransmission(false);
+  Wire.requestFrom(ADXL345,2);
+  if(Wire.available()&gt;=2){
+    byte lsb =Wire.read();
+    byte msb =Wire.read();
+    return (int16_t)((msb &lt;&lt; 8) | lsb); 
+  }else
+    return 0;
+}
+
+void cailbrate(){
+  Serial.print("校正中 保持靜止");
+  long sum_x=0,sum_y=0,sum_z=0;
+
+  for(int i=0;i&lt;500;i++){
+    sum_x += readAxis(0x32);
+    sum_y += readAxis(0x34);
+    sum_z += readAxis(0x36);
+    delay(10);
+  }
+  offset_x =sum_x /500;
+  offset_y =sum_y /500;
+  offset_z =sum_z /500 - 256;//水平時Z為256(1g)
+
+  Serial.println("校正完成");
+}</pre>
+<p></p>
+<p></p>
+<div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
+<div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
+<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div><br />angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        
+<!-- 啟用 LaTeX equations 編輯 -->
+  <!-- <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\(', '\)']]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>-->
+    </body></html>
+        
