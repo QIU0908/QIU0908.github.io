@@ -145,9 +145,19 @@ img.add_border {
     <div id="tipue_search_content">cameraSistyem << <a href='cameraSistyem.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data<br /><h1>PTZ</h1>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
 <p><strong>實驗順序</strong></p>
-<p dir="auto">1.Servo 角度對應到的ADC值</p>
-<p dir="auto">2.GY85給SERVO的原始數值</p>
-<p dir="auto">3.此時Servo的ADC值 就夠matlab判斷低通率波alpha值</p><br />cameraSistyem << <a href='cameraSistyem.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data</div>
+<ol>
+<li dir="auto">Servo 角度對應到的ADC值</li>
+<li dir="auto">GY85給SERVO的原始數值，此時Servo的ADC值</li>
+<li dir="auto">用matlab判斷低通率波alpha值</li>
+</ol>
+<p><strong>日誌</strong></p>
+<ul>
+<li>2026-03-15 完成順序1.</li>
+<li><span>2026-03-16 完成順序2. 但發現數值抖動太多</span></li>
+<li><span>2026-03-17 完成順序3.但alpha值 RMAS有19.多</span></li>
+<li><span>2026-03-18 懷疑是順序1 ployfit太爛，回去改</span></li>
+<li><span>2026-03-19 發現不是順序1 ployfit沒問題應該是順序2要濾波</span></li>
+</ul><br />cameraSistyem << <a href='cameraSistyem.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data</div>
         
     <!-- footer -->
       <div class="container">

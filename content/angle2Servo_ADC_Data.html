@@ -149,10 +149,15 @@ img.add_border {
 <div bis_skin_checked="1" class="line number5 index4 alt2"><code class="cpp plain">結論 :</code></div>
 <div bis_skin_checked="1" class="line number6 index5 alt1"><code class="cpp plain">一次曲線就夠用,但有些角度跟測試資料差很多 看原始資料發現他原本ADC就會亂飄</code></div>
 <div bis_skin_checked="1" class="line number7 index6 alt2"><code class="cpp plain">導致模型大概+-5°</code></div>
-<p></p>
+<div bis_skin_checked="1" class="line number7 index6 alt2"><code class="cpp plain">所以接下來加入"中位數濾波"看會不會好點</code></div>
+<div class="rtcContent">
+<div class="lineNode">但我已經 mean 了應該沒問題了阿，換median也差不多</div>
+<div class="lineNode">問題應該不在這應該在GY85控制servo那要濾波</div>
+</div>
 <p></p>
 <p>divide SG90 and using a electric wire to contect Variable resistor</p>
 <p><img alt="" height="237" src="./../images/20260308_133616.jpg" width="448"/></p>
+<p></p>
 <p><strong>Code</strong></p>
 <pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Servo.h&gt;
 
@@ -197,6 +202,160 @@ void loop() {
 <p><strong>Result</strong></p>
 <p><strong><a href="./../downloads/servo_angle_ADC.txt">/downloads/servo_angle_ADC.txt</a></strong></p>
 <p><strong><a href="./../downloads/find_data.txt">/downloads/find_data.txt</a></strong></p>
+<p><strong>Matlab find avarge2(2026/03/19)</strong></p>
+<pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">%{
+2026/03/17
+用來找servo ADC對應到servo的角度 並用測試資料驗證
+用MAE RMSE R² 來推測模型好不好
+結論 :
+一次曲線就夠用,但有些角度跟測試資料差很多 看原始資料發現他原本ADC就會亂飄
+模型大概+-5°
+2026/03/19
+但我已經 mean 了應該沒問題了阿，換 median也差不多
+%}
+
+clc; clear; close all;
+
+figPos = [100 100 900 600];   % 視窗大小，可調
+offset = 30;                  % 每個視窗偏移，避免完全重疊
+%% 讀取校正資料
+org_data = readmatrix('servo_angle_ADC.txt', 'Delimiter', ',');
+angle_raw = org_data(:,1);
+adc_raw   = org_data(:,2);%這裡直接用原始 ADC，沒有濾波
+
+
+
+%% 先按角度平均（去除重複影響）
+unique_angles = unique(angle_raw);%unique();把()中的矩陣的每個元素小到大排列
+adc_avg = zeros(size(unique_angles));
+count    = zeros(size(unique_angles));%用來計算每個角度有幾筆數據
+for i = 1:length(unique_angles)
+    mask = (angle_raw == unique_angles(i));%這個角度出現的所有位置 回傳true ...
+    % 讓mask變成一邏輯矩陣 EX[0 ,1 ,0 ,0]
+    
+    adc_avg(i) = median(adc_raw(mask));      % 只對這個角度中位數濾波          
+    count(i)  = sum(mask);
+end
+
+angle = unique_angles';   % 轉成列向量（ polyfit 喜歡列向量）
+adc   = adc_avg';
+
+
+%% 顯示中位數結果
+fprintf('\n=== 中位數結果 ===\n');
+fprintf('角度\t筆數\t中位數 ADC\n');
+for i = 1:length(unique_angles)
+    
+        fprintf('%d°\t%d\t%.2f\n', unique_angles(i), count(i), adc_avg(i));
+    
+end
+
+%% 畫長條圖
+figure('Name', '原始散佈圖','Position',figPos + [0 5*offset 0 0]);
+b = bar(unique_angles, adc_avg, 'FaceColor', [0.3 0.7 0.9]);
+xlabel('角度 (度)');
+ylabel('平均 ADC 值');
+title('各角度平均 ADC 值');
+grid on;
+set(gca, 'XTick', unique_angles, 'XTickLabelRotation', 45);
+
+%新增：在每根柱子上方顯示 ADC 值
+xVal = b.XData;
+yVal = b.YData;
+for i = 1:length(xVal)
+    text(xVal(i), yVal(i) + 10, sprintf('%.0f', yVal(i)), ...
+        'HorizontalAlignment', 'center', ...
+        'FontSize', 9, ...
+        'FontWeight', 'bold');
+end
+
+%% 擬合模型：angle = f(ADC)
+p_lin = polyfit(adc, angle, 1);   % 一次曲線
+p_quad = polyfit(adc, angle, 2);  % 二次曲線
+%% 顯示擬合方程式（注意 polyfit 最高次在前）
+fprintf('=== 擬合結果 ===\n');
+fprintf('一次擬合： angle = %.6f × ADC + %.6f\n', p_lin(1), p_lin(2));
+fprintf('二次擬合： angle = %.6e × ADC² + %.6f × ADC + %.6f\n', ...
+        p_quad(1), p_quad(2), p_quad(3));
+
+%% 在原始數據上計算預測角度 &amp; 誤差指標
+% 每個角度濾波後的 adc 重新展開，對應回 angle_raw
+adc_filtered_full = zeros(size(adc_raw));
+for i = 1:length(unique_angles)
+    mask = (angle_raw == unique_angles(i));
+    adc_this = adc_raw(mask);
+    adc_this = medfilt1(adc_this, 7);
+    adc_filtered_full(mask) = adc_this;   % 存回對應位置
+end
+
+% 驗證時用濾波後的資料
+angle_pred_lin_raw  = polyval(p_lin,  adc_filtered_full);
+angle_pred_quad_raw = polyval(p_quad, adc_filtered_full);
+
+
+err_lin_raw  = angle_pred_lin_raw  - angle_raw;
+err_quad_raw = angle_pred_quad_raw - angle_raw;
+
+mae_lin  = mean(abs(err_lin_raw));
+mae_quad = mean(abs(err_quad_raw));
+
+rmse_lin  = sqrt(mean(err_lin_raw.^2));
+rmse_quad = sqrt(mean(err_quad_raw.^2));
+
+fprintf('\n=== 原始數據上的誤差 (單位：度) ===\n');
+fprintf('一次擬合 → MAE = %.4f°   RMSE = %.4f°\n', mae_lin, rmse_lin);
+fprintf('二次擬合 → MAE = %.4f°   RMSE = %.4f°\n', mae_quad, rmse_quad);
+
+%% R²
+SS_tot       = sum((angle_raw - mean(angle_raw)).^2);
+SS_res_lin   = sum(err_lin_raw.^2);
+SS_res_quad  = sum(err_quad_raw.^2);
+R2_lin  = 1 - SS_res_lin  / SS_tot;
+R2_quad = 1 - SS_res_quad / SS_tot;
+
+fprintf('\nR² (linear)    = %.6f\n', R2_lin);
+fprintf('R² (quadratic) = %.6f\n', R2_quad);
+
+%% 讀取測試資料
+data = readmatrix('find_data.txt', 'Delimiter', ',');
+ADC_test = data(:,2);
+%% 畫原始散佈圖
+figure('Name','原始散佈圖','Position',figPos + [0 4*offset 0 0]);
+scatter(adc_raw, angle_raw, 60, 'filled', 'MarkerFaceColor','b');
+xlabel('ADC value'); ylabel('Angle (deg)');
+title('原始散佈圖與擬合模型');
+set(gca, 'FontSize', 12);
+
+
+%% 產生平滑曲線用
+x_fit = linspace(min(adc), max(adc), 300);
+y_lin  = polyval(p_lin,  x_fit);
+y_quad = polyval(p_quad, x_fit);
+
+hold on;
+plot(x_fit, y_lin,  'r-', 'LineWidth', 2.2, 'DisplayName', 'Linear fit');
+plot(x_fit, y_quad, 'g-', 'LineWidth', 2.2, 'DisplayName', 'Quadratic fit');
+legend('show', 'Location','northwest');
+hold off;
+
+
+
+%% 對測試資料反推角度
+fprintf('\n=== 測試資料反推角度 ===\n');
+angle_test_lin  = polyval(p_lin,  ADC_test);
+angle_test_quad = polyval(p_quad, ADC_test);
+
+%% 看所有預測數據
+% 全部資料 (linear)
+disp('所有預測結果 (linear)：');
+disp('   ADC       預測角度 (線性)');
+disp([ADC_test angle_test_lin]);
+
+% 全部資料 (quadratic)
+disp(' ');
+disp('所有預測結果 (quadratic)：');
+disp('   ADC       預測角度 (二次)');
+disp([ADC_test angle_test_quad]);</pre>
 <p><strong>Matlab find avarge</strong></p>
 <pre class="brush:py;auto-links:false;toolbar:false" contenteditable="false">%{
 2026/03/17
@@ -344,7 +503,13 @@ disp([ADC_test angle_test_quad]);</pre>
 <div class="SD6F594830"><span>=== 擬合結果 ===<br/>一次擬合： angle = 0.215583 × ADC + -18.501444<br/>二次擬合： angle = 6.319533e-06 × ADC² + 0.209235 × ADC + -17.097761<br/><br/>=== 校正點上的誤差 (單位：度) ===<br/>一次擬合 → MAE = 0.6768° RMSE = 0.8215°<br/>二次擬合 → MAE = 0.6736° RMSE = 0.8041°<br/><br/>R² (linear) = 0.999518<br/>R² (quadratic) = 0.999538<br/><br/>=== 測試資料反推角度 ===</span></div>
 <div class="SD6F594831"><span>所有預測結果 (linear)：<br/> ADC 預測角度 (線性)<br/> 370.0000 61.2642<br/> 469.0000 82.6069<br/> 617.0000 114.5132<br/> 703.0000 133.0533<br/> 616.0000 114.2976<br/> 490.0000 87.1341<br/> 348.0000 56.5214<br/> 234.0000 31.9449<br/> 346.0000 56.0902<br/> 488.0000 86.7030<br/> 648.0000 121.1962<br/> 768.0000 147.0662<br/> 645.0000 120.5495<br/> 495.0000 88.2121<br/> 320.0000 50.4851<br/> 229.0000 30.8670<br/> 344.0000 55.6590<br/> 503.0000 89.9367<br/> 620.0000 115.1599<br/> 768.0000 147.0662<br/> 648.0000 121.1962<br/> 496.0000 88.4276<br/> 350.0000 56.9525<br/> 223.0000 29.5735<br/> 361.0000 59.3240<br/> 512.0000 91.8770<br/> 659.0000 123.5676<br/><br/> <br/>所有預測結果 (quadratic)：<br/> ADC 預測角度 (二次)<br/> 370.0000 61.1844<br/> 469.0000 82.4236<br/> 617.0000 114.4061<br/> 703.0000 133.1177<br/> 616.0000 114.1891<br/> 490.0000 86.9448<br/> 348.0000 56.4814<br/> 234.0000 32.2093<br/> 346.0000 56.0542<br/> 488.0000 86.5140<br/> 648.0000 121.1402<br/> 768.0000 147.3223<br/> 645.0000 120.4880<br/> 495.0000 88.0221<br/> 320.0000 50.5046<br/> 229.0000 31.1485<br/> 344.0000 55.6270<br/> 503.0000 89.7464<br/> 620.0000 115.0573<br/> 768.0000 147.3223<br/> 648.0000 121.1402<br/> 496.0000 88.2376<br/> 350.0000 56.9087<br/> 223.0000 29.8760<br/> 361.0000 59.2597<br/> 512.0000 91.6873<br/> 659.0000 123.5327</span></div>
 <div class="SD6F594831"><span></span></div>
-<br />PTZ << <a href='PTZ.html'>Previous</a> <a href='GY85_to_SERVO_originalData.html'>Next</a> >> GY85_to_SERVO_originalData</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><br />PTZ << <a href='PTZ.html'>Previous</a> <a href='GY85_to_SERVO_originalData.html'>Next</a> >> GY85_to_SERVO_originalData</div>
         
     <!-- footer -->
       <div class="container">
