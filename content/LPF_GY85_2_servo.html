@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='GY85_to_SERVO_originalData.html'>GY85_to_SERVO_originalData</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo.html'>LPF_GY85_2_servo</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,128 +142,161 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>GY85_to_SERVO_originalData</h1>
-<p><a href="./../downloads/gy85_servo_data.txt">/downloads/gy85_servo_data.txt</a></p>
-<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Wire.h&gt;
-#include&lt;Servo.h&gt;
+    <div id="tipue_search_content">angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='discard_GY85_2_SERVO_original_data.html'>Next</a> >> discard_GY85_2_SERVO_original_data<br /><h1>LPF_GY85_2_servo</h1>
+<div class="SD6F594831"><span></span></div>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;Wire.h&gt;
+#include &lt;Servo.h&gt;
 
 Servo myServo;
 
 unsigned long lastTime = 0;
 
-
 #define ADXL345 0x53
 
-int16_t offset_x =0;
-int16_t offset_y =0;
-int16_t offset_z =0;
+int16_t offset_x = 0, offset_y = 0, offset_z = 0;
 
+// ================== 濾波相關變數 ==================
+float filtered_roll = 0.0;        // EMA 濾波後的 roll
+float alpha_roll = 0.24;          // 指令端 alpha（可調）
 
+// Servo ADC 濾波
+const int median_size = 5;
+int adc_buffer[median_size] = {0};//等於0矩陣
+int buffer_idx = 0;
+float filtered_adc_angle = 90.0;
+float alpha_adc = 0.10;           // ADC 端 alpha 為了讓實際角度讀值平滑，去除馬達負載造成的凸波（spike）和雜訊（主要用在 MATLAB 分析）
 
-int16_t readAxis(byte );
+// =================================================
+
+int16_t readAxis(byte reg);
 void cailbrate();
 
-void setup(){
+void setup() {
   Serial.begin(115200);
-
   Wire.setSCL(PB8);
   Wire.setSDA(PB9);
   Wire.begin();
   delay(1000);
 
+  // 初始化 ADXL345
   Wire.beginTransmission(ADXL345);
-  Wire.write(0x2D);
-  Wire.write(0x08);
-  Wire.endTransmission();
-
+  Wire.write(0x2D); Wire.write(0x08); Wire.endTransmission();
   Wire.beginTransmission(ADXL345);
-  Wire.write(0x31);
-  Wire.write(0x00);
-  Wire.endTransmission();
+  Wire.write(0x31); Wire.write(0x00); Wire.endTransmission();
 
   Serial.println("ADXL345 ready");
 
-  delay(100);
-  
   myServo.attach(PA0);
   myServo.write(90);
   Serial.println("Servo ready");
-  delay(1000);
 
   cailbrate();
-  Serial.println("millis  GY_TO_servo_angle   ADC  ");
-  delay(100);
+  
+  // 輸出標題
+  Serial.println("millis,GY_TO_servo_angle,ADC_raw,ADC_filtered,filtered_roll,raw_roll");
+  
+  delay(500);
+  lastTime = micros();
 }
 
-
 void loop() {
-   if(micros() - lastTime &gt;= 10000){ // 10000us = 10ms
-  lastTime += 10000;
-    
-    // 讀取三軸並減去偏移
+  if (micros() - lastTime &gt;= 10000) {   // 100Hz (10ms)
+    lastTime += 10000;
+
+    // 讀取三軸資料
     float x = readAxis(0x32) - offset_x;
     float y = readAxis(0x34) - offset_y;
     float z = readAxis(0x36) - offset_z;
 
-    // 換算成 g（±2g 量程，256 LSB/g）
     float x_g = x / 256.0;
     float y_g = y / 256.0;
     float z_g = z / 256.0;
 
-    // 計算 Pitch 和 Roll
-    // Pitch：前後傾斜角度
-    // Roll ：左右傾斜角度
-    float pitch = atan2(x_g, sqrt(y_g * y_g + z_g * z_g)) * 180.0 / PI;
-    float roll  = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
+    // 計算原始 roll（未濾波）
+    float raw_roll = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
 
-    int GY_TO_servo_angle = map(constrain((int)roll,-90,90),-90,90 ,30,150);
-// constrain (輸入值, 最小, 最大)     EX:輸入值&lt;最小 ,輸入值=最小
-// map (輸入值, 輸入最小值, 輸入最大值, 輸入最小值對應到的輸出最小值, 輸入最大值對應到的輸出最大值)
-myServo.write(GY_TO_servo_angle);
+    // 1. 對 GY85 指令端做 EMA 濾波
+    filtered_roll = alpha_roll * raw_roll + (1 - alpha_roll) * filtered_roll;
 
-Serial.print(millis());
-Serial.print(",");
-Serial.print(GY_TO_servo_angle);
-Serial.print(",");
-Serial.println(analogRead(PA7));
+    // 轉成 servo 角度（建議範圍 30~150，避免撞極限）
+    int GY_TO_servo_angle = map(constrain((int)filtered_roll, -60, 60), -60, 60, 30, 150);
 
-    }
+    // 2. 對 Servo ADC 做 中位數 + EMA 濾波
+    int raw_adc = analogRead(PA7);
+    adc_buffer[buffer_idx] = raw_adc;
+    buffer_idx = (buffer_idx + 1) % median_size;
+
+    // 取中位數去凸波
+    int temp[median_size];
+    for (int i = 0; i &lt; median_size; i++) temp[i] = adc_buffer[i];
+    sort(temp, median_size);
+    int median_adc = temp[median_size / 2];
+
+    // ADC 轉角度 + EMA 平滑
+    float adc_angle = 0.215583 * median_adc - 18.501444;
+    filtered_adc_angle = alpha_adc * adc_angle + (1 - alpha_adc) * filtered_adc_angle;
+
+    // 驅動伺服
+    myServo.write(GY_TO_servo_angle);
+
+    // ================== 輸出給 MATLAB（重要！！！！） ==================
+    Serial.print(millis());
+    Serial.print(",");
+    Serial.print(GY_TO_servo_angle);           // 指令角度
+    Serial.print(",");
+    Serial.print(raw_adc);                     // 原始 ADC（觀察凸波）
+    Serial.print(",");
+    Serial.print((int)filtered_adc_angle);     // 濾波後實際角度
+    Serial.print(",");
+    Serial.print(filtered_roll, 3);            // 濾波後的 roll
+    Serial.print(",");
+    Serial.println(raw_roll, 3);               // 原始 roll（未濾波）
+
+  }
 }
-////////////////////////////////////////////////////////////////////////////
-int16_t readAxis(byte reg){
+
+// ================== 輔助函式 ==================
+int16_t readAxis(byte reg) {
   Wire.beginTransmission(ADXL345);
   Wire.write(reg);
   Wire.endTransmission(false);
-  Wire.requestFrom(ADXL345,2);
-  if(Wire.available()&gt;=2){
-    byte lsb =Wire.read();
-    byte msb =Wire.read();
-    return (int16_t)((msb &lt;&lt; 8) | lsb); 
-  }else
-    return 0;
+  Wire.requestFrom(ADXL345, 2);
+  if (Wire.available() &gt;= 2) {
+    byte lsb = Wire.read();
+    byte msb = Wire.read();
+    return (int16_t)((msb &lt;&lt; 8) | lsb);
+  }
+  return 0;
 }
 
-void cailbrate(){
-  Serial.print("校正中 保持靜止");
-  long sum_x=0,sum_y=0,sum_z=0;
-
-  for(int i=0;i&lt;500;i++){
+void cailbrate() {
+  Serial.print("校正中 保持靜止...");
+  long sum_x = 0, sum_y = 0, sum_z = 0;
+  for (int i = 0; i &lt; 500; i++) {
     sum_x += readAxis(0x32);
     sum_y += readAxis(0x34);
     sum_z += readAxis(0x36);
     delay(10);
   }
-  offset_x =sum_x /500;
-  offset_y =sum_y /500;
-  offset_z =sum_z /500 - 256;//水平時Z為256(1g)
-
+  offset_x = sum_x / 500;
+  offset_y = sum_y / 500;
+  offset_z = sum_z / 500 - 256;
   Serial.println("校正完成");
+}
+
+// 小排序函式（用於中位數濾波）
+void sort(int arr[], int n) {
+  for (int i = 0; i &lt; n - 1; i++) {
+    for (int j = 0; j &lt; n - i - 1; j++) {
+      if (arr[j] &gt; arr[j + 1]) {
+        int temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
 }</pre>
-<p></p>
-<p></p>
-<div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
-<div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
-<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div><br />angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
+<p><br/><br/></p><br />angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='discard_GY85_2_SERVO_original_data.html'>Next</a> >> discard_GY85_2_SERVO_original_data</div>
         
     <!-- footer -->
       <div class="container">

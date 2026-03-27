@@ -215,16 +215,22 @@
 <p><strong>實驗順序</strong></p>
 <ol>
 <li dir="auto">Servo 角度對應到的ADC值</li>
-<li dir="auto">GY85給SERVO的原始數值，此時Servo的ADC值</li>
-<li dir="auto">用matlab判斷低通率波alpha值</li>
+<li dir="auto"><span style="text-decoration: line-through;">GY85給SERVO的原始數值，此時Servo的ADC值</span></li>
+<li dir="auto"><span style="text-decoration: line-through;">用matlab判斷低通率波alpha值</span></li>
+<li dir="auto"><span>GY85給SERVO的數值低通</span><span>濾波</span></li>
+<li dir="auto"><span>驗證角度精確度</span><span></span></li>
 </ol>
+<p><span></span></p>
+<p><span>順序2 發現數值抖動太多且雜訊太大，所以變成， 順序4 GY85給SERVO的數值低通</span>濾波</p>
+<p>順序3.因為順序2是濾波後的<span>數值，</span>所以用matlab找alpha就沒意義了</p>
 <p><strong>日誌</strong></p>
 <ul>
-<li>2026-03-15 完成順序1.</li>
-<li><span>2026-03-16 完成順序2. 但發現數值抖動太多</span></li>
+<li>2026-03-13 完成順序1.</li>
+<li><span>2026-03-15 完成順序2. 但發現數值抖動太多</span></li>
 <li><span>2026-03-17 完成順序3.但alpha值 RMAS有19.多</span></li>
 <li><span>2026-03-18 懷疑是順序1 ployfit太爛，回去改</span></li>
 <li><span>2026-03-19 發現不是順序1 ployfit沒問題應該是順序2要濾波</span></li>
+<li><span>2026-03-27 做完順序4.GY85濾波後運作速度跟得上且震盪我可以接受，接下來驗證角度精確度就好</span></li>
 </ul><h3>angle2Servo_ADC_Data</h3>
 <p></p>
 <div bis_skin_checked="1" class="line number3 index2 alt2"><code class="cpp plain">這裡是用來找servo ADC對應到servo的角度 並用測試資料驗證</code></div>
@@ -586,13 +592,16 @@ disp([ADC_test angle_test_quad]);</pre>
 <div class="SD6F594830"><span>=== 擬合結果 ===<br/>一次擬合： angle = 0.215583 × ADC + -18.501444<br/>二次擬合： angle = 6.319533e-06 × ADC² + 0.209235 × ADC + -17.097761<br/><br/>=== 校正點上的誤差 (單位：度) ===<br/>一次擬合 → MAE = 0.6768° RMSE = 0.8215°<br/>二次擬合 → MAE = 0.6736° RMSE = 0.8041°<br/><br/>R² (linear) = 0.999518<br/>R² (quadratic) = 0.999538<br/><br/>=== 測試資料反推角度 ===</span></div>
 <div class="SD6F594831"><span>所有預測結果 (linear)：<br/> ADC 預測角度 (線性)<br/> 370.0000 61.2642<br/> 469.0000 82.6069<br/> 617.0000 114.5132<br/> 703.0000 133.0533<br/> 616.0000 114.2976<br/> 490.0000 87.1341<br/> 348.0000 56.5214<br/> 234.0000 31.9449<br/> 346.0000 56.0902<br/> 488.0000 86.7030<br/> 648.0000 121.1962<br/> 768.0000 147.0662<br/> 645.0000 120.5495<br/> 495.0000 88.2121<br/> 320.0000 50.4851<br/> 229.0000 30.8670<br/> 344.0000 55.6590<br/> 503.0000 89.9367<br/> 620.0000 115.1599<br/> 768.0000 147.0662<br/> 648.0000 121.1962<br/> 496.0000 88.4276<br/> 350.0000 56.9525<br/> 223.0000 29.5735<br/> 361.0000 59.3240<br/> 512.0000 91.8770<br/> 659.0000 123.5676<br/><br/> <br/>所有預測結果 (quadratic)：<br/> ADC 預測角度 (二次)<br/> 370.0000 61.1844<br/> 469.0000 82.4236<br/> 617.0000 114.4061<br/> 703.0000 133.1177<br/> 616.0000 114.1891<br/> 490.0000 86.9448<br/> 348.0000 56.4814<br/> 234.0000 32.2093<br/> 346.0000 56.0542<br/> 488.0000 86.5140<br/> 648.0000 121.1402<br/> 768.0000 147.3223<br/> 645.0000 120.4880<br/> 495.0000 88.0221<br/> 320.0000 50.5046<br/> 229.0000 31.1485<br/> 344.0000 55.6270<br/> 503.0000 89.7464<br/> 620.0000 115.0573<br/> 768.0000 147.3223<br/> 648.0000 121.1402<br/> 496.0000 88.2376<br/> 350.0000 56.9087<br/> 223.0000 29.8760<br/> 361.0000 59.2597<br/> 512.0000 91.6873<br/> 659.0000 123.5327</span></div>
 <div class="SD6F594831"><span></span></div>
+<div class="SD6F594831"><span></span></div>
+<h3>LPF_GY85_2_servo</h3>
+<div class="SD6F594831"><span></span></div>
+<span></span></div>
 </div>
 </div>
 </div>
 </div>
 </div>
-</div>
-</div><h3>GY85_to_SERVO_originalData</h3>
+</div><h3><span style="text-decoration: line-through;">discard_GY85_2_SERVO_original_data</span></h3>
 <p><a href="/downloads/gy85_servo_data.txt">/downloads/gy85_servo_data.txt</a></p>
 <pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Wire.h&gt;
 #include&lt;Servo.h&gt;
