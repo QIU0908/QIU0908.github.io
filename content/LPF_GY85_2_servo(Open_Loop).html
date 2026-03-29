@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo.html'>LPF_GY85_2_servo</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li class='has-children'><a href='cameraSistyem.html'>cameraSistyem</a><ul class='dropdown'><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,8 +142,16 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='discard_GY85_2_SERVO_original_data.html'>Next</a> >> discard_GY85_2_SERVO_original_data<br /><h1>LPF_GY85_2_servo</h1>
+    <div id="tipue_search_content">angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='discard_GY85_2_SERVO_original_data.html'>Next</a> >> discard_GY85_2_SERVO_original_data<br /><h1>LPF_GY85_2_servo(Open_Loop)</h1>
+<p></p>
+<p><strong>matlab每次重新跑偏移值都會變，所以接下來就是把它改成閉迴路。</strong></p>
+<p></p>
+<p></p>
+<p></p>
+<p>開迴路系統：GY-85 → 低通濾波 → 轉 Servo 指令角 → Servo 動作 → ADC 回授 → 中位數 + 低通濾波 → 轉實際角度 → MATLAB 分析誤差 → 加補償</p>
+<p></p>
 <div class="SD6F594831"><span></span></div>
+<div class="SD6F594831"><span>ARDUINO CODE</span></div>
 <pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;Wire.h&gt;
 #include &lt;Servo.h&gt;
 
@@ -166,8 +174,11 @@ int buffer_idx = 0;
 float filtered_adc_angle = 90.0;
 float alpha_adc = 0.10;           // ADC 端 alpha 為了讓實際角度讀值平滑，去除馬達負載造成的凸波（spike）和雜訊（主要用在 MATLAB 分析）
 
-// =================================================
 
+// ================== 新增：Servo 偏移補償 ==================
+float servo_offset = 25.01;     // 這裡填入 MATLAB 算出的平均偏移值
+
+// =================================================
 int16_t readAxis(byte reg);
 void cailbrate();
 
@@ -178,7 +189,7 @@ void setup() {
   Wire.begin();
   delay(1000);
 
-  // 初始化 ADXL345
+  // ================== 初始化 ADXL345 ================== 
   Wire.beginTransmission(ADXL345);
   Wire.write(0x2D); Wire.write(0x08); Wire.endTransmission();
   Wire.beginTransmission(ADXL345);
@@ -192,18 +203,20 @@ void setup() {
 
   cailbrate();
   
-  // 輸出標題
-  Serial.println("millis,GY_TO_servo_angle,ADC_raw,ADC_filtered,filtered_roll,raw_roll");
+  // ================== 輸出標題 ================== 
+  //GY_TO_servo_angle vs ADC_filtered → 可以看指令角度和實際角度的差距（追蹤誤差）
+  //filtered_roll vs raw_roll → 可以看低通濾波的效果
+  //ADC_raw vs ADC_filtered → 可以看中位數濾波去凸波的效果
+  Serial.println("millis, GY_TO_servo_angle, compensated_angle,  ADC_raw,ADC_filtered, filtered_roll,  raw_roll");
   
   delay(500);
   lastTime = micros();
 }
-
 void loop() {
-  if (micros() - lastTime &gt;= 10000) {   // 100Hz (10ms)
-    lastTime += 10000;
+   if(micros() - lastTime &gt;= 10000){ // 10000us = 10ms
+  lastTime += 10000;
 
-    // 讀取三軸資料
+    // ================== 讀取三軸資料 ================== 
     float x = readAxis(0x32) - offset_x;
     float y = readAxis(0x34) - offset_y;
     float z = readAxis(0x36) - offset_z;
@@ -212,37 +225,43 @@ void loop() {
     float y_g = y / 256.0;
     float z_g = z / 256.0;
 
-    // 計算原始 roll（未濾波）
+    // ================== 計算原始 roll（未濾波） ================== 
     float raw_roll = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
 
-    // 1. 對 GY85 指令端做 EMA 濾波
+    // ================== 對 GY85 指令端做 低通 濾波 ================== 
     filtered_roll = alpha_roll * raw_roll + (1 - alpha_roll) * filtered_roll;
 
-    // 轉成 servo 角度（建議範圍 30~150，避免撞極限）
+    // ================== 轉成 servo 角度（建議範圍 30~150，避免撞極限） ================== 
     int GY_TO_servo_angle = map(constrain((int)filtered_roll, -60, 60), -60, 60, 30, 150);
 
-    // 2. 對 Servo ADC 做 中位數 + EMA 濾波
+    // ================== 新增補償：加上 servo_offset ==================
+    int compensated_angle = GY_TO_servo_angle + (int)servo_offset;   // 四捨五入轉 int
+    compensated_angle = constrain(compensated_angle, 30, 150);       // 限制範圍避免撞極限
+
+    // ================== 對 Servo ADC 做 中位數 + 低通 濾波 ================== 
     int raw_adc = analogRead(PA7);
     adc_buffer[buffer_idx] = raw_adc;
-    buffer_idx = (buffer_idx + 1) % median_size;
+    buffer_idx = (buffer_idx + 1) % median_size;//更新索引，讓下一次寫入時指向下一個位置。索引 到達 4 的時候，下一次就會回到 0。
 
-    // 取中位數去凸波
+    // ================== 取中位數去凸波 ================== 
     int temp[median_size];
     for (int i = 0; i &lt; median_size; i++) temp[i] = adc_buffer[i];
-    sort(temp, median_size);
-    int median_adc = temp[median_size / 2];
+    sort(temp, median_size);// 排序副程式在最下面
+    int median_adc = temp[median_size / 2];// 第 3 個值就是中位數（最中間的）
 
-    // ADC 轉角度 + EMA 平滑
+    // ================== ADC 轉角度 + 低通 平滑 ================== 
     float adc_angle = 0.215583 * median_adc - 18.501444;
     filtered_adc_angle = alpha_adc * adc_angle + (1 - alpha_adc) * filtered_adc_angle;
 
-    // 驅動伺服
-    myServo.write(GY_TO_servo_angle);
+    // ================== 驅動伺服 ================== 
+    myServo.write(compensated_angle);//改成補償後的指令角度
 
-    // ================== 輸出給 MATLAB（重要！！！！） ==================
+    // ================== 輸出 ==================
     Serial.print(millis());
     Serial.print(",");
     Serial.print(GY_TO_servo_angle);           // 指令角度
+    Serial.print(",");
+    Serial.print(compensated_angle);           //補償後的指令角度
     Serial.print(",");
     Serial.print(raw_adc);                     // 原始 ADC（觀察凸波）
     Serial.print(",");
@@ -257,18 +276,32 @@ void loop() {
 
 // ================== 輔助函式 ==================
 int16_t readAxis(byte reg) {
-  Wire.beginTransmission(ADXL345);
-  Wire.write(reg);
-  Wire.endTransmission(false);
+  Wire.beginTransmission(ADXL345); 
+  Wire.write(reg);  // 指向 DATAX0 暫存器（X 軸低位元組）
+  Wire.endTransmission(false);// 保持連線，準備讀取
   Wire.requestFrom(ADXL345, 2);
-  if (Wire.available() &gt;= 2) {
-    byte lsb = Wire.read();
-    byte msb = Wire.read();
+    // 請求 2 個位元組（LSB + MSB）
+    // I2C 每次只能傳 8 位元，所以 16 位元的 X 軸數值
+    // 被 ADXL345 拆成兩個暫存器分兩次傳送
+  if (Wire.available() &gt;= 2) {// 確認 2 個位元組都已收到
+    byte lsb = Wire.read();// 第一次讀 → DATAX0 低位元組
+    byte msb = Wire.read();// 第二次讀 → DATAX1 高位元組
+    // 將兩個位元組重新拼合成完整的 16 位元數值
+    // 為什麼要拆開又合起來？
+    // 因為 I2C 硬體限制每次只能傳 8 位元
+    // ADXL345 被迫把 16 位元數值拆成兩半分兩次送出
+    // 所以我們收到後必須自己拼回來：
+    //
+    // msb      = 00000010          （高 8 位元）
+    // msb &lt;&lt; 8 = 00000010 00000000 （推到高位）
+    // | lsb    = 00000010 00000001 （填入低 8 位元）
+    // 結果     = 513    
     return (int16_t)((msb &lt;&lt; 8) | lsb);
   }
   return 0;
 }
 
+//校正階段 找offset
 void cailbrate() {
   Serial.print("校正中 保持靜止...");
   long sum_x = 0, sum_y = 0, sum_z = 0;
@@ -296,7 +329,124 @@ void sort(int arr[], int n) {
     }
   }
 }</pre>
-<p><br/><br/></p><br />angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='discard_GY85_2_SERVO_original_data.html'>Next</a> >> discard_GY85_2_SERVO_original_data</div>
+<p><br/><br/></p>
+<p>MATLAB CODE</p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">clc; clear; close all;
+%% 1. 讀取資料 用 MATLAB 錄製序列埠資料
+s = serialport("COM3", 115200);  
+configureTerminator(s, "LF");
+
+data = [];
+disp("開始錄製，按 Ctrl+C 停止...");
+
+for i = 1:2000  % 錄 2000 筆 = 約 20 秒
+    line = readline(s);
+    nums = str2double(split(line, ","));
+    if length(nums) == 7
+        data = [data; nums'];
+    end
+end
+
+save("servo_data.mat", "data");
+disp("錄製完成");
+
+load("servo_data.mat");
+
+t               = data(:,1) / 1000;  % ms 轉成秒
+GY_TO_servo_angle  = data(:,2);      % 指令角度
+compensated_angle  = data(:,3);      % 補償後指令角度
+ADC_raw         = data(:,4);         % 原始 ADC
+ADC_filtered    = data(:,5);         % 濾波後實際角度
+filtered_roll   = data(:,6);         % 濾波後 roll
+raw_roll        = data(:,7);         % 原始 roll
+
+%% 2. 確認濾波效果
+figure('Name','濾波效果');
+subplot(2,1,1);
+plot(t, raw_roll, 'r', t, filtered_roll, 'b', 'LineWidth', 1.5);
+legend('raw roll', 'filtered roll');
+title('Roll 濾波效果');
+xlabel('時間 (s)'); ylabel('角度 (°)');
+grid on;
+
+subplot(2,1,2);
+plot(t, ADC_raw, 'r', t, ADC_filtered, 'b', 'LineWidth', 1.5);
+legend('ADC raw', 'ADC filtered');
+title('ADC 濾波效果');
+xlabel('時間 (s)'); ylabel('ADC 值');
+grid on;
+
+%% 3. 指令 vs 實際角度 + 平均偏移計算（專為補償用）
+figure('Name','指令 vs 實際角度 - 偏移補償');
+
+plot(t, GY_TO_servo_angle, 'b', 'LineWidth', 1.5);   
+hold on;
+plot(t, ADC_filtered, 'r', 'LineWidth', 1.5);
+
+error = ADC_filtered - GY_TO_servo_angle  ;        % 實際 - 指令
+mean_offset = mean(error);                       % ← 你最需要的補償值
+rmse = sqrt(mean(error.^2));
+max_error = max(abs(error));
+
+yline(mean_offset, 'k--', 'LineWidth', 1.2);
+
+legend('指令角度 (GY→Servo)', '實際角度 (ADC)', ...
+       ['平均偏移 = ' num2str(mean_offset, '%.3f') ' °']);
+
+title('指令 vs 實際角度（建議補償值）');
+xlabel('時間 (s)'); ylabel('角度 (°)');
+grid on;
+
+% 在 Command Window 顯示結果
+fprintf('\n=== Servo 偏移補償建議 ===\n');
+fprintf('平均偏移 (Mean Bias)     : %.3f 度\n', mean_offset);
+fprintf('均方根誤差 (RMSE)        : %.3f 度\n', rmse);
+fprintf('最大絕對誤差             : %.3f 度\n', max_error);
+
+%% 4.指令 vs 實際角度（改用 compensated_angle 來分析補償效果）
+figure('Name','補償後 指令 vs 實際角度');
+
+plot(t, compensated_angle, 'b', 'LineWidth', 1.5);   % 使用補償後的角度
+hold on;
+plot(t, ADC_filtered, 'r', 'LineWidth', 1.5);
+
+error = ADC_filtered - compensated_angle ; 
+mean_offset = mean(error);
+rmse = sqrt(mean(error.^2));
+max_error = max(abs(error));
+
+yline(mean_offset, 'k--', 'LineWidth', 1.2);
+
+legend('補償後指令角度', '實際角度 (ADC)', ...
+       ['平均偏移 = ' num2str(mean_offset, '%.3f') ' °']);
+
+title('補償後 指令 vs 實際角度');
+xlabel('時間 (s)'); ylabel('角度 (°)');
+grid on;
+
+fprintf('\n=== 補償後誤差統計 ===\n');
+fprintf('平均偏移     : %.3f 度\n', mean_offset);
+fprintf('RMSE         : %.3f 度\n', rmse);
+fprintf('最大絕對誤差 : %.3f 度\n', max_error);</pre>
+<p></p>
+<div><span><span>==================結果</span></span>==================</div>
+<div>開始錄製，按 Ctrl+C 停止...</div>
+<div>
+<div class="markup__75297 messageContent_c19a55">錄製完成</div>
+<div class="markup__75297 messageContent_c19a55"></div>
+<div class="markup__75297 messageContent_c19a55">=== Servo 偏移補償建議 ===</div>
+<div class="markup__75297 messageContent_c19a55">平均偏移 (Mean Bias) : 28.866 度</div>
+<div class="markup__75297 messageContent_c19a55">均方根誤差 (RMSE) : 39.191 度</div>
+<div class="markup__75297 messageContent_c19a55">最大絕對誤差 : 115.000 度</div>
+<div class="markup__75297 messageContent_c19a55"></div>
+<div class="markup__75297 messageContent_c19a55">=== 補償後誤差統計 ===</div>
+<div class="markup__75297 messageContent_c19a55">平均偏移 : 7.661 度</div>
+<div class="markup__75297 messageContent_c19a55">RMSE : 24.594 度</div>
+<div class="markup__75297 messageContent_c19a55">最大絕對誤差 : 90.000 度</div>
+<div class="markup__75297 messageContent_c19a55"><img alt="" height="455" src="./../images/濾波效果.png" width="700"/></div>
+<div class="markup__75297 messageContent_c19a55"><img caption="false" height="459" src="./../images/低一次補償.png" width="700"/></div>
+<div class="markup__75297 messageContent_c19a55"><img caption="false" height="459" src="./../images/補償後驗證.png" width="700"/></div>
+</div><br />angle2Servo_ADC_Data << <a href='angle2Servo_ADC_Data.html'>Previous</a> <a href='discard_GY85_2_SERVO_original_data.html'>Next</a> >> discard_GY85_2_SERVO_original_data</div>
         
     <!-- footer -->
       <div class="container">
