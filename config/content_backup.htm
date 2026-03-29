@@ -218,7 +218,8 @@
 <li dir="auto"><span style="text-decoration: line-through;">GY85給SERVO的原始數值，此時Servo的ADC值</span></li>
 <li dir="auto"><span style="text-decoration: line-through;">用matlab判斷低通率波alpha值</span></li>
 <li dir="auto"><span>GY85給SERVO的數值低通</span><span>濾波</span></li>
-<li dir="auto"><span>驗證角度精確度</span><span></span></li>
+<li dir="auto"><span>用matlab驗證角度精確度</span><span></span></li>
+<li dir="auto">把ARDUINO改成閉迴路。</li>
 </ol>
 <p><span></span></p>
 <p><span>順序2 發現數值抖動太多且雜訊太大，所以變成， 順序4 GY85給SERVO的數值低通</span>濾波</p>
@@ -231,6 +232,7 @@
 <li><span>2026-03-18 懷疑是順序1 ployfit太爛，回去改</span></li>
 <li><span>2026-03-19 發現不是順序1 ployfit沒問題應該是順序2要濾波</span></li>
 <li><span>2026-03-27 做完順序4.GY85濾波後運作速度跟得上且震盪我可以接受，接下來驗證角度精確度就好</span></li>
+<li><span>2026-03-29 做完順序5. </span>matlab每次重新跑偏移值都會變，所以接下來就是把ARDUINO改成閉迴路。</li>
 </ul><h3>angle2Servo_ADC_Data</h3>
 <p></p>
 <div bis_skin_checked="1" class="line number3 index2 alt2"><code class="cpp plain">這裡是用來找servo ADC對應到servo的角度 並用測試資料驗證</code></div>

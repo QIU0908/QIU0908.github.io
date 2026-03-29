@@ -837,7 +837,7 @@ hold on;
 plot(t, ADC_filtered, 'r', 'LineWidth', 1.5);
 
 error = ADC_filtered - GY_TO_servo_angle  ;        % 實際 - 指令
-mean_offset = mean(error);                       % ← 你最需要的補償值
+mean_offset = mean(error);                       % 補償值
 rmse = sqrt(mean(error.^2));
 max_error = max(abs(error));
 
