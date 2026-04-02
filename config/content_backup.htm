@@ -210,7 +210,7 @@
 <p dir="auto"></p>
 <p dir="auto"></p>
 <p></p><h1>cameraSistyem</h1>
-<h2>PTZ</h2>
+<h1>PTZ</h1>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
 <p><strong>實驗順序</strong></p>
 <ol>
@@ -233,7 +233,17 @@
 <li><span>2026-03-19 發現不是順序1 ployfit沒問題應該是順序2要濾波</span></li>
 <li><span>2026-03-27 做完順序4.GY85濾波後運作速度跟得上且震盪我可以接受，接下來驗證角度精確度就好</span></li>
 <li><span>2026-03-29 做完順序5. </span>matlab每次重新跑偏移值都會變，所以接下來就是把ARDUINO改成閉迴路。</li>
-</ul><h3>angle2Servo_ADC_Data</h3>
+<li>2026-04-02 完成<span>順序6 但PID 始終調不好</span></li>
+</ul><h2>fail</h2>
+<p>這裡的思路是把servo 對應到的ADC 找出來用線性擬合，找到每個角度對應到的ADC值，但問題就在這裡，數據中</p>
+<p dir="auto">顯示Servo 內建電位計在高角度區嚴重劣化，低角度區（30~90度）追蹤還算可以，但高角度區（&gt;110度）ADC值嚴重偏差EX:150°：883、929、865、891 → 平均約 892，波動 ±32 導致偏移5度左右(死區5.)。</p>
+<p dir="auto">讓線性擬合在高角度區徹底失效，導致後面調PID時一到<span>高角度區就會需要很長時間才回正，且有太多係數相關連導致調整有難度，所以一直卡在，</span>高角度區追蹤不良 、調參困難這個死循環。</p>
+<p dir="auto"><span style="background-color: #ffff99;"><strong>解決方法</strong></span></p>
+<p dir="auto">A:換一顆好 Servo，外接角度感測器</p>
+<p dir="auto">B:<span>線性擬合變分段線性擬合</span></p>
+<p dir="auto">C:直接用 ADXL345 量到的角度直接 myServo.write()，放棄Servo ADC</p>
+<p dir="auto"></p>
+<p dir="auto">我這裡選 C 因為我對角度準確度沒有很要求，且我希望反應速度快，不震盪。</p><h3>angle2Servo_ADC_Data</h3>
 <p></p>
 <div bis_skin_checked="1" class="line number3 index2 alt2"><code class="cpp plain">這裡是用來找servo ADC對應到servo的角度 並用測試資料驗證</code></div>
 <div bis_skin_checked="1" class="line number4 index3 alt1"><code class="cpp plain">用MAE RMSE R² 來推測模型好不好</code></div>
@@ -595,7 +605,13 @@ disp([ADC_test angle_test_quad]);</pre>
 <div class="SD6F594831"><span>所有預測結果 (linear)：<br/> ADC 預測角度 (線性)<br/> 370.0000 61.2642<br/> 469.0000 82.6069<br/> 617.0000 114.5132<br/> 703.0000 133.0533<br/> 616.0000 114.2976<br/> 490.0000 87.1341<br/> 348.0000 56.5214<br/> 234.0000 31.9449<br/> 346.0000 56.0902<br/> 488.0000 86.7030<br/> 648.0000 121.1962<br/> 768.0000 147.0662<br/> 645.0000 120.5495<br/> 495.0000 88.2121<br/> 320.0000 50.4851<br/> 229.0000 30.8670<br/> 344.0000 55.6590<br/> 503.0000 89.9367<br/> 620.0000 115.1599<br/> 768.0000 147.0662<br/> 648.0000 121.1962<br/> 496.0000 88.4276<br/> 350.0000 56.9525<br/> 223.0000 29.5735<br/> 361.0000 59.3240<br/> 512.0000 91.8770<br/> 659.0000 123.5676<br/><br/> <br/>所有預測結果 (quadratic)：<br/> ADC 預測角度 (二次)<br/> 370.0000 61.1844<br/> 469.0000 82.4236<br/> 617.0000 114.4061<br/> 703.0000 133.1177<br/> 616.0000 114.1891<br/> 490.0000 86.9448<br/> 348.0000 56.4814<br/> 234.0000 32.2093<br/> 346.0000 56.0542<br/> 488.0000 86.5140<br/> 648.0000 121.1402<br/> 768.0000 147.3223<br/> 645.0000 120.4880<br/> 495.0000 88.0221<br/> 320.0000 50.5046<br/> 229.0000 31.1485<br/> 344.0000 55.6270<br/> 503.0000 89.7464<br/> 620.0000 115.0573<br/> 768.0000 147.3223<br/> 648.0000 121.1402<br/> 496.0000 88.2376<br/> 350.0000 56.9087<br/> 223.0000 29.8760<br/> 361.0000 59.2597<br/> 512.0000 91.6873<br/> 659.0000 123.5327</span></div>
 <div class="SD6F594831"><span></span></div>
 <div class="SD6F594831"><span></span></div>
-<h3>LPF_GY85_2_servo(Open_Loop)</h3>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><h3>LPF_GY85_2_servo(Open_Loop)</h3>
 <p></p>
 <p><strong>matlab每次重新跑偏移值都會變，所以接下來就是把它改成閉迴路。</strong></p>
 <p></p>
@@ -837,7 +853,7 @@ hold on;
 plot(t, ADC_filtered, 'r', 'LineWidth', 1.5);
 
 error = ADC_filtered - GY_TO_servo_angle  ;        % 實際 - 指令
-mean_offset = mean(error);                       % ← 你最需要的補償值
+mean_offset = mean(error);                       % 補償值
 rmse = sqrt(mean(error.^2));
 max_error = max(abs(error));
 
@@ -1017,6 +1033,215 @@ void cailbrate(){
   Serial.println("校正完成");
 }</pre>
 <p></p>
+<h3>LPF_GY85_2_servo(close_loop)</h3>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;Wire.h&gt;
+#include &lt;Servo.h&gt;
+
+Servo myServo;
+
+unsigned long lastTime = 0;
+
+#define ADXL345 0x53
+
+int16_t offset_x = 0, offset_y = 0, offset_z = 0;
+
+// ================== 濾波相關變數 ==================
+float filtered_roll = 0.0;        // 濾波後的 roll
+float alpha_roll = 0.25;          // 指令端 alpha（可調）
+
+// ================== Servo ADC 濾波 ==================
+const int median_size = 9;
+int adc_buffer[median_size] = {0};//等於0矩陣
+int buffer_idx = 0;
+float filtered_adc_angle = 90.0;
+float alpha_adc = 0.18;           // ADC 端 alpha 為了讓實際角度讀值平滑，去除馬達負載造成的凸波（spike）和雜訊（主要用在分析）
+//越小  濾波越強，越大 減少延遲
+
+// ================== PID 控制變數 ==================
+float Kp = 2.;     //  P 值
+float Ki = 0.003;    // 積分增益
+float Kd = 0.0;     // 微分增益 但 alpha_adc 已有率波功能所以這裡先不用
+
+float integral = 0.0;         // 積分項累積
+float last_error = 0.0;       // 上一次誤差（用於微分）
+float error_deadband = 5.;   // 死區 之前 角度 to ADC 誤差差不多5度
+
+float prev_target = 0;        // 偵測目標角度有沒有變化
+
+// =================================================
+int16_t readAxis(byte reg);
+void cailbrate();
+
+void setup() {
+  Serial.begin(115200);
+  Wire.setSCL(PB8);
+  Wire.setSDA(PB9);
+  Wire.begin();
+  delay(1000);
+
+  // ================== 初始化 ADXL345 ================== 
+  Wire.beginTransmission(ADXL345);
+  Wire.write(0x2D); Wire.write(0x08); Wire.endTransmission();
+  Wire.beginTransmission(ADXL345);
+  Wire.write(0x31); Wire.write(0x00); Wire.endTransmission();
+
+  Serial.println("ADXL345 ready");
+
+  myServo.attach(PA0);
+  myServo.write(90);
+  Serial.println("Servo ready");
+
+  cailbrate();
+
+  delay(500);
+  lastTime = micros();
+}
+void loop() {
+  if(micros() - lastTime &gt;= 20000){   // 20ms 一次 SG90 更新 ≈ 50Hz
+    lastTime += 20000;
+
+    // ================== 讀取 ADXL345 ==================
+    float x = readAxis(0x32) - offset_x;
+    float y = readAxis(0x34) - offset_y;
+    float z = readAxis(0x36) - offset_z;
+
+    float x_g = x / 256.0;
+    float y_g = y / 256.0;
+    float z_g = z / 256.0;
+
+    float raw_roll = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
+
+    // ==================濾波==================
+    filtered_roll = alpha_roll * raw_roll + (1 - alpha_roll) * filtered_roll;
+
+    // ==================開迴路指令角度==================
+    filtered_roll = constrain(filtered_roll, -60, 60);//filtered_roll範圍±60 
+
+    float GY_TO_servo_angle =
+        (filtered_roll + 60.0) * (150.0 - 30.0) / 120.0 + 30.0;//把filtered_roll範圍改成0~120
+        //線性映射公式y = (x - xmin) * (ymax - ymin) / (xmax - xmin) + ymin
+        //(x - xmin)/ (xmax - xmin)把 x 壓到0~1
+        //× (ymax - ymin)放大到新範圍
+        //+ ymin +平移
+        GY_TO_servo_angle = constrain(GY_TO_servo_angle, 30, 150);
+
+    // ================== ADC 讀取與濾波 ==================
+    int raw_adc = analogRead(PA7);
+    adc_buffer[buffer_idx] = raw_adc;
+    buffer_idx = (buffer_idx + 1) % median_size;
+
+    int temp[median_size];
+    for (int i = 0; i &lt; median_size; i++) temp[i] = adc_buffer[i];
+    sort(temp, median_size);
+    int median_adc = temp[median_size / 2];
+    
+    float adc_angle = 0.215583 * median_adc - 18.501444 -8.; //加上offset 偏移
+
+    filtered_adc_angle = alpha_adc * adc_angle + (1 - alpha_adc) * filtered_adc_angle;
+
+    // ================== 誤差計算 ==================
+
+    if (abs(GY_TO_servo_angle - prev_target) &gt; 2.0) {
+      integral = 0;  // 目標變了，清掉積分
+      }
+      prev_target = GY_TO_servo_angle;
+
+    float error = GY_TO_servo_angle - filtered_adc_angle;     // 誤差 = 指令角度 - 濾波後實際角度
+
+    if(abs(error) &lt; error_deadband){ //防小誤差一直積分
+      error = 0;
+      integral *= 0.85;  // 死區內積分衰減
+      }
+    else{
+      error -= (error &gt; 0 ? error_deadband : -error_deadband);
+      }
+
+    // ================== PID 計算 ==================
+    integral += error * 0.02;                    // 0.02 秒 = 20ms
+    float derivative = (error - last_error) / 0.02;
+
+    // 限制積分項（抗積分飽和）
+    integral = constrain(integral, -15, 15);
+
+    float pid_output = Kp * error + Ki * integral + Kd * derivative;
+
+   // ================== 最終輸出 ==================
+    int compensated_angle = (int)(GY_TO_servo_angle + pid_output);
+    compensated_angle = constrain(compensated_angle, 25, 155);                       
+    
+
+    // ==================驅動 Servo==================
+    myServo.write(compensated_angle);
+   
+
+    // ================== 序列埠輸出（方便調參） ==================
+    Serial.print(GY_TO_servo_angle, 1);           // 指令角度
+    Serial.print(",");
+    Serial.print(filtered_adc_angle, 1);          // 實際角度
+    Serial.print(",");
+    Serial.print(error, 2);                       // 誤差
+    Serial.print(",");
+    Serial.print(pid_output, 2);                  // PID 輸出值
+    Serial.print(",");
+    Serial.println(compensated_angle);            // 最終送給 servo 的角度
+
+    last_error = error;
+  }
+}
+
+// ================== 輔助函式 ==================
+int16_t readAxis(byte reg) {
+  Wire.beginTransmission(ADXL345); 
+  Wire.write(reg);  // 指向 DATAX0 暫存器（X 軸低位元組）
+  Wire.endTransmission(false);// 保持連線，準備讀取
+  Wire.requestFrom(ADXL345, 2);
+    // 請求 2 個位元組（LSB + MSB）
+    // I2C 每次只能傳 8 位元，所以 16 位元的 X 軸數值
+    // 被 ADXL345 拆成兩個暫存器分兩次傳送
+  if (Wire.available() &gt;= 2) {// 確認 2 個位元組都已收到
+    byte lsb = Wire.read();// 第一次讀 → DATAX0 低位元組
+    byte msb = Wire.read();// 第二次讀 → DATAX1 高位元組
+    // 將兩個位元組重新拼合成完整的 16 位元數值
+    // 為什麼要拆開又合起來？
+    // 因為 I2C 硬體限制每次只能傳 8 位元
+    // ADXL345 被迫把 16 位元數值拆成兩半分兩次送出
+    // 所以我們收到後必須自己拼回來：
+    //
+    return (int16_t)((msb &lt;&lt; 8) | lsb);
+  }
+  return 0;
+}
+
+//校正階段 找offset
+void cailbrate() {
+  Serial.print("校正中 保持靜止...");
+  long sum_x = 0, sum_y = 0, sum_z = 0;
+  for (int i = 0; i &lt; 500; i++) {
+    sum_x += readAxis(0x32);
+    sum_y += readAxis(0x34);
+    sum_z += readAxis(0x36);
+    delay(10);
+  }
+  offset_x = sum_x / 500;
+  offset_y = sum_y / 500;
+  offset_z = sum_z / 500 - 256;
+  Serial.println("校正完成");
+}
+
+// 小排序函式（用於中位數濾波）
+void sort(int arr[], int n) {
+  for (int i = 0; i &lt; n - 1; i++) {
+    for (int j = 0; j &lt; n - i - 1; j++) {
+      if (arr[j] &gt; arr[j + 1]) {
+        int temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+      }
+    }
+  }
+}</pre>
+<p></p>
+<h2>success</h2>
 <p></p>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
@@ -1302,4 +1527,4 @@ doc["threejsblock"].bind("click", threejsblock.do)
 <!-- editor2 結束 --><hr/>
 <p>
 <script src="https://unpkg.com/three@0.144.0/build/three.js" type="text/javascript"></script>
-</p></div></div></div></div></div></div></div>
+</p>
