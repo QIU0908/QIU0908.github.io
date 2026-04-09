@@ -46,7 +46,7 @@
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function() {
       renderMathInElement(document.body, {
         delimiters: [
           {left: "$$", right: "$$", display: true},
@@ -57,7 +57,6 @@
         throwOnError: false
       });
     });
-  
 </script>
 <h2>regression error metric</h2>
 <p></p>
@@ -209,8 +208,9 @@
 <p></p>
 <p dir="auto"></p>
 <p dir="auto"></p>
-<p></p><h1>cameraSistyem</h1>
-<h1>PTZ</h1>
+<p></p>
+<h1>cameraSistyem</h1>
+<h1>Single_Board_PTZ</h1>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
 <p><strong>實驗順序</strong></p>
 <ol>
@@ -234,7 +234,8 @@
 <li><span>2026-03-27 做完順序4.GY85濾波後運作速度跟得上且震盪我可以接受，接下來驗證角度精確度就好</span></li>
 <li><span>2026-03-29 做完順序5. </span>matlab每次重新跑偏移值都會變，所以接下來就是把ARDUINO改成閉迴路。</li>
 <li>2026-04-02 完成<span>順序6 但PID 始終調不好</span></li>
-</ul><h2>fail</h2>
+</ul>
+<h2>fail</h2>
 <p>這裡的思路是把servo 對應到的ADC 找出來用線性擬合，找到每個角度對應到的ADC值，但問題就在這裡，數據中</p>
 <p dir="auto">顯示Servo 內建電位計在高角度區嚴重劣化，低角度區（30~90度）追蹤還算可以，但高角度區（&gt;110度）ADC值嚴重偏差EX:150°：883、929、865、891 → 平均約 892，波動 ±32 導致偏移5度左右(死區5.)。</p>
 <p dir="auto">讓線性擬合在高角度區徹底失效，導致後面調PID時一到<span>高角度區就會需要很長時間才回正，且有太多係數相關連導致調整有難度，所以一直卡在，</span>高角度區追蹤不良 、調參困難這個死循環。</p>
@@ -243,7 +244,8 @@
 <p dir="auto">B:<span>線性擬合變分段線性擬合</span></p>
 <p dir="auto">C:直接用 ADXL345 量到的角度直接 myServo.write()，放棄Servo ADC</p>
 <p dir="auto"></p>
-<p dir="auto">我這裡選 C 因為我對角度準確度沒有很要求，且我希望反應速度快，不震盪。</p><h3>angle2Servo_ADC_Data</h3>
+<p dir="auto">我這裡選 C 因為我對角度準確度沒有很要求，且我希望反應速度快，不震盪。</p>
+<h3>angle2Servo_ADC_Data</h3>
 <p></p>
 <div bis_skin_checked="1" class="line number3 index2 alt2"><code class="cpp plain">這裡是用來找servo ADC對應到servo的角度 並用測試資料驗證</code></div>
 <div bis_skin_checked="1" class="line number4 index3 alt1"><code class="cpp plain">用MAE RMSE R² 來推測模型好不好</code></div>
@@ -611,7 +613,8 @@ disp([ADC_test angle_test_quad]);</pre>
 </div>
 </div>
 </div>
-</div><h3>LPF_GY85_2_servo(Open_Loop)</h3>
+</div>
+<h3>LPF_GY85_2_servo(Open_Loop)</h3>
 <p></p>
 <p><strong>matlab每次重新跑偏移值都會變，所以接下來就是把它改成閉迴路。</strong></p>
 <p></p>
@@ -915,7 +918,8 @@ fprintf('最大絕對誤差 : %.3f 度\n', max_error);</pre>
 <div class="markup__75297 messageContent_c19a55"><img alt="" height="455" src="/images/濾波效果.png" width="700"/></div>
 <div class="markup__75297 messageContent_c19a55"><img caption="false" height="459" src="/images/低一次補償.png" width="700"/></div>
 <div class="markup__75297 messageContent_c19a55"><img caption="false" height="459" src="/images/補償後驗證.png" width="700"/></div>
-</div><h3>discard_GY85_2_SERVO_original_data</h3>
+</div>
+<h3>discard_GY85_2_SERVO_original_data</h3>
 <p><a href="/downloads/gy85_servo_data.txt">/downloads/gy85_servo_data.txt</a></p>
 <pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include&lt;Wire.h&gt;
 #include&lt;Servo.h&gt;
@@ -1243,9 +1247,474 @@ void sort(int arr[], int n) {
 <p></p>
 <h2>success</h2>
 <p></p>
+<h3>raw</h3>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;Wire.h&gt;
+#include &lt;Servo.h&gt;
+
+Servo myServo;
+
+unsigned long lastTime = 0;
+
+#define ADXL345 0x53
+
+int16_t offset_x = 0, offset_y = 0, offset_z = 0;
+
+// ================== 濾波相關變數 ==================
+float filtered_roll = 0.0;
+float alpha_roll = 0.35;   //alpha 越小 濾波越強 延遲越大 反之
+
+void setup() {
+  Serial.begin(115200);
+  Wire.setSCL(PB8);
+  Wire.setSDA(PB9);
+  Wire.begin();
+  delay(1000);
+
+  //==================初始化 ADXL345==================
+  Wire.beginTransmission(ADXL345);
+  Wire.write(0x2D); Wire.write(0x08); Wire.endTransmission();
+  Wire.beginTransmission(ADXL345);
+  Wire.write(0x31); Wire.write(0x00); Wire.endTransmission();
+
+  Serial.println("ADXL345 ready");
+
+  myServo.attach(PA0);
+  myServo.write(90);
+  Serial.println("Servo ready");
+
+  cailbrate();   
+  delay(500);
+  lastTime = micros();
+}
+
+void loop() {
+  if (micros() - lastTime &gt;= 20000) {   // 50Hz 更新
+    lastTime += 20000;
+
+    //==================讀取 ADXL345==================
+    float x = readAxis(0x32) - offset_x;
+    float y = readAxis(0x34) - offset_y;
+    float z = readAxis(0x36) - offset_z;
+
+    float x_g = x / 256.0;
+    float y_g = y / 256.0;
+    float z_g = z / 256.0;
+
+    float raw_roll = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
+
+    //==================低通濾波==================
+    filtered_roll = alpha_roll * raw_roll + (1 - alpha_roll) * filtered_roll;
+
+    //==================限制範圍==================
+    filtered_roll = constrain(filtered_roll, -60, 60);
+
+    //================== 映射到 Servo 可動範圍（30~150度）==================
+    int servo_angle = (int)((filtered_roll + 60.0) * (150.0 - 30.0) / 120.0 + 30.0);
+    servo_angle = constrain(servo_angle, 30, 150);
+
+    // ================== 驅動 Servo ==================
+    myServo.write(servo_angle);
+
+    //================== 序列埠輸出 ==================
+    Serial.print("Raw: ");
+    Serial.print(raw_roll, 1);
+    Serial.print("  Filtered: ");
+    Serial.print(filtered_roll, 1);
+    Serial.print("  Servo: ");
+    Serial.println(servo_angle);
+  }
+}
+
+// ================== 輔助函式 ==================
+int16_t readAxis(byte reg) {
+  Wire.beginTransmission(ADXL345); 
+  Wire.write(reg);  // 指向 DATAX0 暫存器（X 軸低位元組）
+  Wire.endTransmission(false);// 保持連線，準備讀取
+  Wire.requestFrom(ADXL345, 2);
+    // 請求 2 個位元組（LSB + MSB）
+    // I2C 每次只能傳 8 位元，所以 16 位元的 X 軸數值
+    // 被 ADXL345 拆成兩個暫存器分兩次傳送
+  if (Wire.available() &gt;= 2) {// 確認 2 個位元組都已收到
+    byte lsb = Wire.read();// 第一次讀 → DATAX0 低位元組
+    byte msb = Wire.read();// 第二次讀 → DATAX1 高位元組
+    // 將兩個位元組重新拼合成完整的 16 位元數值
+    // 為什麼要拆開又合起來？
+    // 因為 I2C 硬體限制每次只能傳 8 位元
+    // ADXL345 被迫把 16 位元數值拆成兩半分兩次送出
+    // 所以我們收到後必須自己拼回來：
+    //
+    return (int16_t)((msb &lt;&lt; 8) | lsb);
+  }
+  return 0;
+}
+
+//==================校正階段 找offset==================
+void cailbrate() {
+  Serial.print("校正中 保持靜止...");
+  long sum_x = 0, sum_y = 0, sum_z = 0;
+  for (int i = 0; i &lt; 500; i++) {
+    sum_x += readAxis(0x32);
+    sum_y += readAxis(0x34);
+    sum_z += readAxis(0x36);
+    delay(10);
+  }
+  offset_x = sum_x / 500;
+  offset_y = sum_y / 500;
+  offset_z = sum_z / 500 - 256;
+  Serial.println("校正完成");
+}</pre>
+<h3>pitch_yaw</h3>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;Wire.h&gt;
+#include &lt;Servo.h&gt;
+#include &lt;math.h&gt;
+
+// ================== Servo 定義 ==================
+Servo pitchServo;   // PA0
+Servo yawServo;     // PA6
+
+unsigned long lastTime = 0;
+
+#define ADXL345_ADDR  0x53
+#define HMC5883L_ADDR 0x1E
+
+// ================== 校正偏移 ==================
+int16_t accel_offset_x = 0, accel_offset_y = 0, accel_offset_z = 0;
+float mag_offset_x = 0, mag_offset_y = 0;
+
+// ================== 零點誤差 ==================
+float pitch_zero_offset = 0.0;
+float yaw_zero_offset   = 0.0;
+
+// ================== 狀態控制 ==================
+bool servo_active = false;
+
+// ================== 濾波變數 ==================
+float filtered_pitch = 0.0;
+float filtered_roll  = 0.0;
+float filtered_yaw   = 0.0;
+float alpha_pitch = 0.35;
+float alpha_roll  = 0.35;
+float alpha_yaw   = 0.35;
+
+// ==========================================
+//              函式宣告
+// ==========================================
+void initADXL345();
+void initHMC5883L();
+int16_t readAxisLSB(byte addr, byte reg);
+void readAccel(float &amp;x_g, float &amp;y_g, float &amp;z_g);
+void readMag(float &amp;mx, float &amp;my, float &amp;mz);
+void calibrateAccel();
+void calibrateMag();
+void recordZeroPoint();
+int mapAngle(float angle);
+
+// ==========================================
+//              Setup
+// ==========================================
+void setup() {
+  Serial.begin(115200);
+  Wire.setSCL(PB8);
+  Wire.setSDA(PB9);
+  Wire.begin();
+  delay(1000);
+
+  initADXL345();
+  initHMC5883L();
+
+  pitchServo.attach(PA0);
+  yawServo.attach(PA6);
+  pitchServo.write(90);
+  yawServo.write(90);
+  Serial.println("Servo ready (PA0=Pitch, PA6=Yaw)");
+
+  calibrateAccel();
+  calibrateMag();
+
+  Serial.println("=========================================");
+  Serial.println("指令：L = 鎖定Servo / S = 記錄零點並開始");
+  Serial.println("=========================================");
+
+  delay(500);
+  lastTime = micros();
+}
+
+// ==========================================
+//              Loop
+// ==========================================
+void loop() {
+
+  // ================== 鍵盤輸入 ==================
+  if (Serial.available()) {
+    char cmd = Serial.read();
+
+    // L：鎖定 Servo 在 90 度
+    if (cmd == 'L' || cmd == 'l') {
+      servo_active = false;
+      pitchServo.write(90);
+      yawServo.write(90);
+      Serial.println("&gt;&gt; Servo 已停在 90 度，請將頭擺正後輸入 'S'");
+    }
+
+    // S：記錄零點並開始
+    if (cmd == 'S' || cmd == 's') {
+      recordZeroPoint();
+    }
+  }
+
+  // ================== 主迴圈 20ms ==================
+  if (micros() - lastTime &gt;= 20000) {
+    lastTime += 20000;
+
+    // 讀取加速度計
+    float x_g, y_g, z_g;
+    readAccel(x_g, y_g, z_g);
+
+    // Pitch &amp; Roll
+    float raw_pitch = atan2(-x_g, sqrt(y_g*y_g + z_g*z_g)) * 180.0 / PI;
+    float raw_roll  = atan2(y_g, z_g) * 180.0 / PI;
+
+    filtered_pitch = alpha_pitch * raw_pitch + (1.0 - alpha_pitch) * filtered_pitch;
+   filtered_roll  = alpha_roll  * raw_roll  + (1.0 - alpha_roll)  * filtered_roll;
+
+    // 讀取磁力計
+    float mx, my, mz;
+    readMag(mx, my, mz);
+
+    // 傾斜補償（含 Roll）
+    float pitch_rad = filtered_pitch * PI / 180.0;
+    float roll_rad  = filtered_roll  * PI / 180.0;
+
+    float mx_h = mx * cos(pitch_rad)
+               + my * sin(roll_rad) * sin(pitch_rad)
+               - mz * cos(roll_rad) * sin(pitch_rad);
+    float my_h = my * cos(roll_rad)
+               + mz * sin(roll_rad);
+
+    float raw_yaw = atan2(-my_h, mx_h) * 180.0 / PI;
+    filtered_yaw  = alpha_yaw * raw_yaw + (1.0 - alpha_yaw) * filtered_yaw;
+
+    // 套用零點誤差
+    float corrected_pitch = filtered_pitch - pitch_zero_offset;
+    float corrected_yaw   = filtered_yaw   - yaw_zero_offset;
+
+    corrected_pitch = constrain(corrected_pitch, -60, 60);
+    corrected_yaw   = constrain(corrected_yaw,   -60, 60);
+
+    // 只有 active 才驅動 Servo
+    if (servo_active) {
+      pitchServo.write(mapAngle(corrected_pitch));
+      yawServo.write(mapAngle(corrected_yaw));
+    }
+
+    // 序列埠輸出
+    Serial.print("Pitch: "); Serial.print(corrected_pitch, 1);
+    Serial.print("  Yaw: "); Serial.print(corrected_yaw, 1);
+    Serial.print("  PS: ");  Serial.print(servo_active ? mapAngle(corrected_pitch) : 90);
+    Serial.print("  YS: ");  Serial.print(servo_active ? mapAngle(corrected_yaw)   : 90);
+    Serial.print("  [");     Serial.print(servo_active ? "RUN" : "LOCK");
+    Serial.println("]");
+  }
+}
+
+// ==========================================
+//              初始化
+// ==========================================
+void initADXL345() {
+  Wire.beginTransmission(ADXL345_ADDR);
+  Wire.write(0x2D); Wire.write(0x08);
+  Wire.endTransmission();
+
+  Wire.beginTransmission(ADXL345_ADDR);
+  Wire.write(0x31); Wire.write(0x00);
+  Wire.endTransmission();
+  Serial.println("ADXL345 ready");
+}
+
+void initHMC5883L() {
+  Wire.beginTransmission(HMC5883L_ADDR);
+  Wire.write(0x00); Wire.write(0x70); // 8avg, 15Hz
+  Wire.endTransmission();
+
+  Wire.beginTransmission(HMC5883L_ADDR);
+  Wire.write(0x01); Wire.write(0x20); // Gain=1（±1.3 Ga）
+  Wire.endTransmission();
+
+  Wire.beginTransmission(HMC5883L_ADDR);
+  Wire.write(0x02); Wire.write(0x00); // Continuous mode
+  Wire.endTransmission();
+  Serial.println("HMC5883L ready");
+}
+
+// ==========================================
+//              讀取
+// ==========================================
+
+// ADXL345：LSB first
+int16_t readAxisLSB(byte addr, byte reg) {
+  Wire.beginTransmission(addr);
+  Wire.write(reg);
+  Wire.endTransmission(false);
+  Wire.requestFrom(addr, (uint8_t)2);
+  if (Wire.available() &gt;= 2) {
+    byte lsb = Wire.read();
+    byte msb = Wire.read();
+    return (int16_t)((msb &lt;&lt; 8) | lsb);
+  }
+  return 0;
+}
+
+void readAccel(float &amp;x_g, float &amp;y_g, float &amp;z_g) {
+  x_g = (readAxisLSB(ADXL345_ADDR, 0x32) - accel_offset_x) / 256.0;
+  y_g = (readAxisLSB(ADXL345_ADDR, 0x34) - accel_offset_y) / 256.0;
+  z_g = (readAxisLSB(ADXL345_ADDR, 0x36) - accel_offset_z) / 256.0;
+}
+
+// HMC5883L：一次讀完 6 bytes，避免資料不同步
+// 暫存器順序：X(0x03), Z(0x05), Y(0x07)
+void readMag(float &amp;mx, float &amp;my, float &amp;mz) {
+  Wire.beginTransmission(HMC5883L_ADDR);
+  Wire.write(0x03);
+  Wire.endTransmission(false);
+  Wire.requestFrom(HMC5883L_ADDR, (uint8_t)6);
+
+  if (Wire.available() &gt;= 6) {
+    int16_t raw_mx = (Wire.read() &lt;&lt; 8) | Wire.read();
+    int16_t raw_mz = (Wire.read() &lt;&lt; 8) | Wire.read(); // Z 在 Y 前面！
+    int16_t raw_my = (Wire.read() &lt;&lt; 8) | Wire.read();
+
+    mx = raw_mx - mag_offset_x;
+    my = raw_my - mag_offset_y;
+    mz = raw_mz;//Z 軸通常偏差較小，所以保留原始值
+  }
+}
+
+// ==========================================
+//              校正
+// ==========================================
+void calibrateAccel() {
+  Serial.println("加速度計校正中，保持靜止...");
+  long sum_x = 0, sum_y = 0, sum_z = 0;
+  for (int i = 0; i &lt; 500; i++) {
+    sum_x += readAxisLSB(ADXL345_ADDR, 0x32);
+    sum_y += readAxisLSB(ADXL345_ADDR, 0x34);
+    sum_z += readAxisLSB(ADXL345_ADDR, 0x36);
+    delay(10);
+  }
+  accel_offset_x = sum_x / 500;
+  accel_offset_y = sum_y / 500;
+  accel_offset_z = sum_z / 500 - 256;
+  Serial.println("加速度計校正完成");
+}
+
+void calibrateMag() {
+  float mx_max = -99999, mx_min = 99999;
+  float my_max = -99999, my_min = 99999;//一開始設極大/極小值，確保第一次更新一定會改變
+
+  // 第一步：等待開始
+  Serial.println("磁力計校正：輸入任意鍵開始擺頭 5 次 ...");
+  while (!Serial.available());
+  Serial.read();
+
+  Serial.println("開始擺頭 5 次！完成後再按任意鍵結束...");
+
+  // 第二步：持續收資料，直到再按一次鍵
+  while (true) {
+    // 有按鍵就結束
+    if (Serial.available()) {
+      Serial.read();
+      break;
+    }
+
+    Wire.beginTransmission(HMC5883L_ADDR);
+    Wire.write(0x03);
+    Wire.endTransmission(false);
+    Wire.requestFrom(HMC5883L_ADDR, (uint8_t)6);
+
+    if (Wire.available() &gt;= 6) {
+      float raw_mx = (int16_t)((Wire.read() &lt;&lt; 8) | Wire.read());
+      (void)((Wire.read() &lt;&lt; 8) | Wire.read()); // skip Z
+      float raw_my = (int16_t)((Wire.read() &lt;&lt; 8) | Wire.read());
+
+      mx_max = max(mx_max, raw_mx); mx_min = min(mx_min, raw_mx);//max(a, b) 是 Arduino 內建函式，會回傳 a 和 b 中較大的那一個。
+      my_max = max(my_max, raw_my); my_min = min(my_min, raw_my);//min(a, b) 回傳兩個數中較小的那一個。
+    }
+
+    delay(30);
+  }
+
+  // 範圍檢查
+  float mx_range = mx_max - mx_min;
+  float my_range = my_max - my_min;
+  Serial.print("mx 範圍: "); Serial.print(mx_range);
+  Serial.print("  my 範圍: "); Serial.println(my_range);
+
+  if (mx_range &lt; 50 || my_range &lt; 50) {
+    Serial.println("警告：擺頭角度可能不足，建議重新校正！");
+  }
+
+  mag_offset_x = (mx_max + mx_min) / 2.0;
+  mag_offset_y = (my_max + my_min) / 2.0;
+
+  Serial.print("Mag offset X: "); Serial.print(mag_offset_x);
+  Serial.print("  Y: ");          Serial.println(mag_offset_y);
+  Serial.println("磁力計校正完成");
+}
+
+// ==========================================
+//              零點記錄
+// ==========================================
+void recordZeroPoint() {
+  // 讀取當前角度作為零點
+  float x_g, y_g, z_g;
+  readAccel(x_g, y_g, z_g);
+
+  float mx, my, mz;
+  readMag(mx, my, mz);
+
+  pitch_zero_offset = atan2(-x_g, sqrt(y_g*y_g + z_g*z_g)) * 180.0 / PI;
+
+  float pitch_rad = pitch_zero_offset * PI / 180.0;
+  float roll_rad  = atan2(y_g, z_g);
+
+  float mx_h = mx * cos(pitch_rad)
+             + my * sin(roll_rad) * sin(pitch_rad)
+             - mz * cos(roll_rad) * sin(pitch_rad);
+
+  float my_h = my * cos(roll_rad)
+             + mz * sin(roll_rad);
+             
+  yaw_zero_offset = atan2(-my_h, mx_h) * 180.0 / PI;
+
+  // 濾波初始值歸零，避免開始時突然跳動
+  filtered_pitch = 0.0;
+  filtered_roll  = 0.0;
+  filtered_yaw   = 0.0;
+
+  servo_active = true;
+
+  Serial.print("&gt;&gt; 零點記錄完成 — pitch_offset: ");
+  Serial.print(pitch_zero_offset, 1);
+  Serial.print("  yaw_offset: ");
+  Serial.println(yaw_zero_offset, 1);
+  Serial.println("&gt;&gt; Servo 開始跟隨頭部動作");
+}
+
+// ==========================================
+//              工具函式
+// ==========================================
+int mapAngle(float angle) {
+  return constrain((int)(angle + 90.0), 30, 150);
+}</pre>
+<p></p>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
-<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div><h1>Brython</h1>
+<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div>
+<h1>Tx _ Rx_PTZ</h1>
+<p dir="auto">使用兩塊 STM32，分別作為 發射端（Tx） 和 接收端（Rx），透過 NRF24L01 實現無線頭部姿態跟隨。</p>
+<p></p>
+<h2>example_NRF24L01</h2>
+<h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>

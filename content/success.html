@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li class='has-children'><a href='fail.html'>fail</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li><a href='success.html'>success</a></li></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li class='has-children'><a href='Single_Board_PTZ.html'>Single_Board_PTZ</a><ul class='dropdown'><li class='has-children'><a href='fail.html'>fail</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li class='has-children'><a href='success.html'>success</a><ul class='dropdown'><li><a href='raw.html'>raw</a><li><a href='pitch_yaw.html'>pitch_yaw</a></li></li></ul></ul><li class='has-children'><a href='Tx _ Rx_PTZ.html'>Tx _ Rx_PTZ</a><ul class='dropdown'><li><a href='example_NRF24L01.html'>example_NRF24L01</a></li></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,126 +142,9 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">LPF_GY85_2_servo(close_loop) << <a href='LPF_GY85_2_servo(close_loop).html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>success</h1>
-<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;Wire.h&gt;
-#include &lt;Servo.h&gt;
-
-Servo myServo;
-
-unsigned long lastTime = 0;
-
-#define ADXL345 0x53
-
-int16_t offset_x = 0, offset_y = 0, offset_z = 0;
-
-// ================== 濾波相關變數 ==================
-float filtered_roll = 0.0;
-float alpha_roll = 0.35;   //alpha 越小 濾波越強 延遲越大 反之
-
-void setup() {
-  Serial.begin(115200);
-  Wire.setSCL(PB8);
-  Wire.setSDA(PB9);
-  Wire.begin();
-  delay(1000);
-
-  //==================初始化 ADXL345==================
-  Wire.beginTransmission(ADXL345);
-  Wire.write(0x2D); Wire.write(0x08); Wire.endTransmission();
-  Wire.beginTransmission(ADXL345);
-  Wire.write(0x31); Wire.write(0x00); Wire.endTransmission();
-
-  Serial.println("ADXL345 ready");
-
-  myServo.attach(PA0);
-  myServo.write(90);
-  Serial.println("Servo ready");
-
-  cailbrate();   
-  delay(500);
-  lastTime = micros();
-}
-
-void loop() {
-  if (micros() - lastTime &gt;= 20000) {   // 50Hz 更新
-    lastTime += 20000;
-
-    //==================讀取 ADXL345==================
-    float x = readAxis(0x32) - offset_x;
-    float y = readAxis(0x34) - offset_y;
-    float z = readAxis(0x36) - offset_z;
-
-    float x_g = x / 256.0;
-    float y_g = y / 256.0;
-    float z_g = z / 256.0;
-
-    float raw_roll = atan2(y_g, sqrt(x_g * x_g + z_g * z_g)) * 180.0 / PI;
-
-    //==================低通濾波==================
-    filtered_roll = alpha_roll * raw_roll + (1 - alpha_roll) * filtered_roll;
-
-    //==================限制範圍==================
-    filtered_roll = constrain(filtered_roll, -60, 60);
-
-    //================== 映射到 Servo 可動範圍（30~150度）==================
-    int servo_angle = (int)((filtered_roll + 60.0) * (150.0 - 30.0) / 120.0 + 30.0);
-    servo_angle = constrain(servo_angle, 30, 150);
-
-    // ================== 驅動 Servo ==================
-    myServo.write(servo_angle);
-
-    //================== 序列埠輸出 ==================
-    Serial.print("Raw: ");
-    Serial.print(raw_roll, 1);
-    Serial.print("  Filtered: ");
-    Serial.print(filtered_roll, 1);
-    Serial.print("  Servo: ");
-    Serial.println(servo_angle);
-  }
-}
-
-// ================== 輔助函式 ==================
-int16_t readAxis(byte reg) {
-  Wire.beginTransmission(ADXL345); 
-  Wire.write(reg);  // 指向 DATAX0 暫存器（X 軸低位元組）
-  Wire.endTransmission(false);// 保持連線，準備讀取
-  Wire.requestFrom(ADXL345, 2);
-    // 請求 2 個位元組（LSB + MSB）
-    // I2C 每次只能傳 8 位元，所以 16 位元的 X 軸數值
-    // 被 ADXL345 拆成兩個暫存器分兩次傳送
-  if (Wire.available() &gt;= 2) {// 確認 2 個位元組都已收到
-    byte lsb = Wire.read();// 第一次讀 → DATAX0 低位元組
-    byte msb = Wire.read();// 第二次讀 → DATAX1 高位元組
-    // 將兩個位元組重新拼合成完整的 16 位元數值
-    // 為什麼要拆開又合起來？
-    // 因為 I2C 硬體限制每次只能傳 8 位元
-    // ADXL345 被迫把 16 位元數值拆成兩半分兩次送出
-    // 所以我們收到後必須自己拼回來：
-    //
-    return (int16_t)((msb &lt;&lt; 8) | lsb);
-  }
-  return 0;
-}
-
-//==================校正階段 找offset==================
-void cailbrate() {
-  Serial.print("校正中 保持靜止...");
-  long sum_x = 0, sum_y = 0, sum_z = 0;
-  for (int i = 0; i &lt; 500; i++) {
-    sum_x += readAxis(0x32);
-    sum_y += readAxis(0x34);
-    sum_z += readAxis(0x36);
-    delay(10);
-  }
-  offset_x = sum_x / 500;
-  offset_y = sum_y / 500;
-  offset_z = sum_z / 500 - 256;
-  Serial.println("校正完成");
-}</pre>
+    <div id="tipue_search_content">LPF_GY85_2_servo(close_loop) << <a href='LPF_GY85_2_servo(close_loop).html'>Previous</a> <a href='raw.html'>Next</a> >> raw<br /><h1>success</h1>
 <p></p>
-<div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
-<div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
-<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div><br />LPF_GY85_2_servo(close_loop) << <a href='LPF_GY85_2_servo(close_loop).html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
+<br />LPF_GY85_2_servo(close_loop) << <a href='LPF_GY85_2_servo(close_loop).html'>Previous</a> <a href='raw.html'>Next</a> >> raw</div>
         
     <!-- footer -->
       <div class="container">

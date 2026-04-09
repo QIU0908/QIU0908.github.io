@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li class='has-children'><a href='PTZ.html'>PTZ</a><ul class='dropdown'><li class='has-children'><a href='fail.html'>fail</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li><a href='success.html'>success</a></li></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li class='has-children'><a href='Single_Board_PTZ.html'>Single_Board_PTZ</a><ul class='dropdown'><li class='has-children'><a href='fail.html'>fail</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li class='has-children'><a href='success.html'>success</a><ul class='dropdown'><li><a href='raw.html'>raw</a><li><a href='pitch_yaw.html'>pitch_yaw</a></li></li></ul></ul><li class='has-children'><a href='Tx _ Rx_PTZ.html'>Tx _ Rx_PTZ</a><ul class='dropdown'><li><a href='example_NRF24L01.html'>example_NRF24L01</a></li></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,7 +142,7 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">PTZ << <a href='PTZ.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data<br /><h1>fail</h1>
+    <div id="tipue_search_content">Single_Board_PTZ << <a href='Single_Board_PTZ.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data<br /><h1>fail</h1>
 <p>這裡的思路是把servo 對應到的ADC 找出來用線性擬合，找到每個角度對應到的ADC值，但問題就在這裡，數據中</p>
 <p dir="auto">顯示Servo 內建電位計在高角度區嚴重劣化，低角度區（30~90度）追蹤還算可以，但高角度區（&gt;110度）ADC值嚴重偏差EX:150°：883、929、865、891 → 平均約 892，波動 ±32 導致偏移5度左右(死區5.)。</p>
 <p dir="auto">讓線性擬合在高角度區徹底失效，導致後面調PID時一到<span>高角度區就會需要很長時間才回正，且有太多係數相關連導致調整有難度，所以一直卡在，</span>高角度區追蹤不良 、調參困難這個死循環。</p>
@@ -151,7 +151,8 @@ img.add_border {
 <p dir="auto">B:<span>線性擬合變分段線性擬合</span></p>
 <p dir="auto">C:直接用 ADXL345 量到的角度直接 myServo.write()，放棄Servo ADC</p>
 <p dir="auto"></p>
-<p dir="auto">我這裡選 C 因為我對角度準確度沒有很要求，且我希望反應速度快，不震盪。</p><br />PTZ << <a href='PTZ.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data</div>
+<p dir="auto">我這裡選 C 因為我對角度準確度沒有很要求，且我希望反應速度快，不震盪。</p>
+<br />Single_Board_PTZ << <a href='Single_Board_PTZ.html'>Previous</a> <a href='angle2Servo_ADC_Data.html'>Next</a> >> angle2Servo_ADC_Data</div>
         
     <!-- footer -->
       <div class="container">
