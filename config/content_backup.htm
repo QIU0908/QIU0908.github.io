@@ -1711,10 +1711,202 @@ int mapAngle(float angle) {
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
 <div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div>
 <h1>Tx _ Rx_PTZ</h1>
-<p dir="auto">使用兩塊 STM32，分別作為 發射端（Tx） 和 接收端（Rx），透過 NRF24L01 實現無線頭部姿態跟隨。</p>
+<p dir="auto">使用兩塊 STM32，分別作為 發射端（Tx） 和 接收端（Rx），透過 NRF24L01(2.4GHz) 實現無線頭部姿態跟隨。</p>
+<p></p><h2>example_NRF24L01</h2>
+<h3>STM32F411 ESP8266 發送端程式與接收端程式</h3>
+<h4>STM32F411發送端程式</h4>
+<p>這段程式利用 STM32F411 搭配 nRF24L01 無線模組，透過按鈕控制訊號的發送。訊號會被另一端的接收器 ( ESP8266) 接收，用來驅動伺服馬達。</p>
+<p><strong>STM32F411 與 nRF24L01</strong></p>
+<ul>
+<li>
+<p><span>CE → PA1</span></p>
+</li>
+<li>
+<p><span>CSN → PA4</span></p>
+</li>
+<li>
+<p><span>SCK → PA5</span></p>
+</li>
+<li>
+<p><span>MISO → PA6</span></p>
+</li>
+<li>
+<p><span>MOSI → PA7</span></p>
+</li>
+<li>
+<p><span> 3.3V → 3.3V</span></p>
+</li>
+<li>
+<p><span>GND → GND</span></p>
+</li>
+</ul>
+<p><span></span><strong>按鈕</strong>： PA0，使用內建上拉電阻。</p>
 <p></p>
-<h2>example_NRF24L01</h2>
-<h1>Brython</h1>
+<p><span><strong></strong></span></p>
+<p></p>
+<p><span><strong>LED</strong>：</span><span>PC13，作為狀態指示。</span></p>
+<p><span></span></p>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;SPI.h&gt;          // 引入 SPI 通訊函式庫
+#include &lt;nRF24L01.h&gt;     // 引入 nRF24L01 無線模組定義
+#include &lt;RF24.h&gt;         // 引入 RF24 函式庫，方便操作 nRF24L01
+
+// 建立 RF24 物件，指定 CE 與 CSN 腳位
+RF24 radio(PA1, PA4);
+
+// 無線通訊管道地址，必須與接收端一致
+const byte address[6] = "00001";
+
+// 按鈕與 LED 腳位
+const int buttonPin = PA0;
+const int ledPin    = PC13;
+
+void setup() {
+  Serial.begin(115200);   // 初始化序列埠，方便除錯
+  delay(2000);            // 延遲 2 秒，確保系統穩定
+
+  pinMode(buttonPin, INPUT_PULLUP); // 設定按鈕腳位，使用內建上拉電阻
+  pinMode(ledPin, OUTPUT);          // 設定 LED 腳位為輸出
+  digitalWrite(ledPin, HIGH);       // 預設 LED 亮起
+
+  // 指定 SPI 腳位 (STM32F411 的硬體 SPI 腳位)
+  SPI.setMOSI(PA7);
+  SPI.setMISO(PA6);
+  SPI.setSCLK(PA5);
+  SPI.begin();                      // 啟動 SPI
+  Serial.println("SPI 完成");
+
+  // 初始化 nRF24L01 無線模組
+  if (!radio.begin()) {
+    Serial.println("nRF24 初始化失敗！檢查接線");
+    while (1); // 停止程式，等待修正
+  }
+ 
+  // 確認晶片是否連線成功
+  if (radio.isChipConnected()) {
+    Serial.println("nRF24 晶片連線成功");
+  } else {
+    Serial.println("nRF24 晶片未偵測到");
+  }
+
+  // 設定無線模組參數
+  radio.openWritingPipe(address);   // 開啟發送管道
+  radio.setPALevel(RF24_PA_LOW);    // 設定功率等級 (低功率)
+  radio.setDataRate(RF24_1MBPS);    // 設定傳輸速率 (1Mbps)
+  radio.setChannel(76);             // 設定頻道 (必須與接收端一致)
+  radio.stopListening();            // 停止接收，進入發送模式
+
+  Serial.println("STM32F411 發送端啟動 - 按鈕準備好");
+}
+
+void loop() {
+  // 讀取按鈕狀態，按下時為 LOW → trigger = true
+  bool trigger = (digitalRead(buttonPin) == LOW);
+
+  // 嘗試發送 trigger 狀態到接收端
+  bool success = radio.write(&amp;trigger, sizeof(trigger));
+
+  // 根據發送結果輸出訊息
+  if (success) {
+    Serial.println(trigger ? "正在發送：開始擺動" : "正在發送：停止擺動");
+  } else {
+    Serial.println("發送失敗...");
+  }
+
+  delay(50); // 每 50ms 更新一次狀態，避免過快
+}
+</pre>
+<p><span> </span></p><h4>ESP8266 接收端程式</h4>
+<p>透過 ESP8266 搭配 nRF24L01 無線模組，接收來自 STM32F411 發送端的按鈕訊號，當接收到「開始擺動」訊號時，控制伺服馬達持續左右擺動，接收到「停止擺動」訊號時，伺服馬達停止更新角度。</p><h4>ESP8266 與 nRF24L01</h4>
+<ul>
+<li>
+<p>CE → D4 (GPIO2)</p>
+</li>
+<li>
+<p>CSN → D8 (GPIO15)</p>
+</li>
+<li>
+<p>SCK → D5 (GPIO14)</p>
+</li>
+<li>
+<p>MISO → D6 (GPIO12)</p>
+</li>
+<li>
+<p>MOSI → D7 (GPIO13)</p>
+</li>
+<li>
+<p>VCC → 3.3V (必須穩定供電，不能用 5V)</p>
+</li>
+<li>
+<p>GND → GND</p>
+</li>
+</ul><h3>ESP8266 與伺服馬達</h3>
+<ul>
+<li>
+<p>訊號線 → D1 (GPIO5)</p>
+</li>
+<li>
+<p>VCC → 外部 5V 電源 (建議獨立供電，避免 ESP8266 電壓掉落)</p>
+</li>
+<li>
+<p>GND → 外部電源 GND，<strong>並與 ESP8266 GND 共地</strong></p>
+</li>
+</ul>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;SPI.h&gt;          // 引入 SPI 通訊函式庫
+#include &lt;nRF24L01.h&gt;     // 引入 nRF24L01 無線模組定義
+#include &lt;RF24.h&gt;         // 引入 RF24 函式庫，方便操作 nRF24L01
+#include &lt;Servo.h&gt;        // 引入 Servo 函式庫，用來控制伺服馬達
+
+// 建立 RF24 物件，指定 CE 與 CSN 腳位 (ESP8266 的 D4 與 D8)
+RF24 radio(D4, D8);
+
+// 建立 Servo 物件
+Servo myServo;
+
+// 無線通訊管道地址，必須與發送端一致
+const byte address[6] = "00001";
+
+void setup() {
+  Serial.begin(115200);       // 初始化序列埠，方便除錯
+  myServo.attach(D1);         // 伺服訊號接 D1 (GPIO5)
+
+  // 初始化 nRF24L01 無線模組
+  radio.begin();
+  radio.openReadingPipe(0, address); // 開啟接收管道
+  radio.setPALevel(RF24_PA_LOW);     // 設定功率等級 (低功率)
+  radio.setDataRate(RF24_1MBPS);     // 設定傳輸速率 (1Mbps)
+  radio.setChannel(76);              // 設定頻道 (必須與發送端一致)
+  radio.startListening();            // 啟動接收模式
+
+  Serial.println("ESP8266 接收端啟動 - 等待按鈕訊號...");
+}
+
+// 用來存放接收到的按鈕狀態
+bool trigger = false;
+
+void loop() {
+  // 檢查是否有新的資料可讀取
+  if (radio.available()) {
+    radio.read(&amp;trigger, sizeof(trigger)); // 讀取 trigger 狀態
+    Serial.println(trigger ? "收到：開始擺動" : "收到：停止擺動");
+  }
+
+  if (trigger) {
+    // 當 trigger 為 true → 伺服持續左右擺動
+    static int pos = 0;   // 當前角度
+    static int step = 4;  // 每次移動的角度增量
+
+    myServo.write(pos);   // 設定伺服角度
+    pos += step;          // 更新角度
+
+    // 當角度到達邊界 (0 或 180) → 改變方向
+    if (pos &gt;= 180 || pos &lt;= 0) step = -step;
+
+    delay(15);            // 控制擺動速度
+  }
+}
+</pre>
+<p></p>
+<p></p><h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>
