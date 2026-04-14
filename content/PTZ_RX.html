@@ -2,6 +2,7 @@
         <head>
         <title>cmsimde_site</title>
         <meta charset="utf-8">
+<meta property="head" content="H2">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
@@ -95,6 +96,7 @@ img.add_border {
 </head>
 <body>
 <div class='container'><nav>
+        
     <div class="site-wrap">
 
     <div class="site-mobile-menu">
@@ -140,4 +142,121 @@ img.add_border {
           </div>
           
         </header>
-    </nav><section><h1>SMap</h1><div id="tipue_search_content"></div><ul><li><a href='About.html'>About</a><li><a href='How to do data analysis.html'>How to do data analysis</a><ul><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li><a href='Single_Board_PTZ.html'>Single_Board_PTZ</a><ul><li><a href='fail.html'>fail</a><ul><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li><a href='success.html'>success</a><ul><li><a href='raw.html'>raw</a><li><a href='pitch_yaw.html'>pitch_yaw</a></li></li></ul></ul><li><a href='Tx _ Rx_PTZ.html'>Tx _ Rx_PTZ</a><ul><li><a href='example_NRF24L01.html'>example_NRF24L01</a><ul><li><a href='STM32F411 ESP8266 發送端程式與接收端程式.html'>STM32F411 ESP8266 發送端程式與接收端程式</a></li></ul><li><a href='PTZ_TX.html'>PTZ_TX</a><ul><li><a href='code.html'>code</a></li></ul><li><a href='PTZ_RX.html'>PTZ_RX</a><ul><li><a href='code2.html'>code2</a></li></ul><li><a href='problem.html'>problem</a></li></ul><li><a href='Brython.html'>Brython</a></li></ul></section></div></body></html>
+    <div id="tipue_search_content">code << <a href='code.html'>Previous</a> <a href='code2.html'>Next</a> >> code2<br /><h1>PTZ_RX</h1>
+<p dir="auto"><strong>接收端：NodeMCU V3 ESP8266</strong></p>
+<table border="1">
+<thead>
+<tr>
+<th data-col-size="lg">元件</th>
+<th data-col-size="md">腳位</th>
+<th data-col-size="sm">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td data-col-size="lg">NRF24L01 VCC</td>
+<td data-col-size="md">3.3V</td>
+<td data-col-size="sm"><strong>加 100μF 電容</strong></td>
+</tr>
+<tr>
+<td data-col-size="lg">NRF24L01 GND</td>
+<td data-col-size="md">GND</td>
+<td data-col-size="sm">-</td>
+</tr>
+<tr>
+<td data-col-size="lg">NRF24L01 CE</td>
+<td data-col-size="md">D4 (GPIO2)</td>
+<td data-col-size="sm">-</td>
+</tr>
+<tr>
+<td data-col-size="lg">NRF24L01 CSN</td>
+<td data-col-size="md">D8 (GPIO15)</td>
+<td data-col-size="sm">-</td>
+</tr>
+<tr>
+<td data-col-size="lg">NRF24L01 SCK</td>
+<td data-col-size="md">D5 (GPIO14)</td>
+<td data-col-size="sm">-</td>
+</tr>
+<tr>
+<td data-col-size="lg">NRF24L01 MOSI</td>
+<td data-col-size="md">D7 (GPIO13)</td>
+<td data-col-size="sm">-</td>
+</tr>
+<tr>
+<td data-col-size="lg">NRF24L01 MISO</td>
+<td data-col-size="md">D6 (GPIO12)</td>
+<td data-col-size="sm">-</td>
+</tr>
+<tr>
+<td data-col-size="lg">Pitch Servo 訊號</td>
+<td data-col-size="md">D1 (GPIO5)</td>
+<td data-col-size="sm"><span>-</span></td>
+</tr>
+<tr>
+<td data-col-size="lg">Yaw Servo 訊號</td>
+<td data-col-size="md">D2 (GPIO4)</td>
+<td data-col-size="sm"><span>-</span></td>
+</tr>
+<tr>
+<td data-col-size="lg">Servo VCC（紅線）</td>
+<td data-col-size="md"><strong>獨立 5V</strong></td>
+<td data-col-size="sm"><strong>使用獨立電源</strong></td>
+</tr>
+<tr>
+<td data-col-size="lg">Servo GND（黑/棕線）</td>
+<td data-col-size="md">GND</td>
+<td data-col-size="sm"><strong>必須與 NodeMCU GND 共地</strong></td>
+</tr>
+</tbody>
+</table><br />code << <a href='code.html'>Previous</a> <a href='code2.html'>Next</a> >> code2</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        
+<!-- 啟用 LaTeX equations 編輯 -->
+  <!-- <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\(', '\)']]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>-->
+    </body></html>
+        

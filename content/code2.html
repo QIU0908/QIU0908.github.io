@@ -2,6 +2,7 @@
         <head>
         <title>cmsimde_site</title>
         <meta charset="utf-8">
+<meta property="head" content="H3">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/fonts/icomoon/style.css">
         <link rel="stylesheet" href="./../cmsimde/static/chimper/css/bootstrap.min.css">
@@ -95,6 +96,7 @@ img.add_border {
 </head>
 <body>
 <div class='container'><nav>
+        
     <div class="site-wrap">
 
     <div class="site-mobile-menu">
@@ -140,4 +142,150 @@ img.add_border {
           </div>
           
         </header>
-    </nav><section><h1>SMap</h1><div id="tipue_search_content"></div><ul><li><a href='About.html'>About</a><li><a href='How to do data analysis.html'>How to do data analysis</a><ul><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li><a href='Single_Board_PTZ.html'>Single_Board_PTZ</a><ul><li><a href='fail.html'>fail</a><ul><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li><a href='success.html'>success</a><ul><li><a href='raw.html'>raw</a><li><a href='pitch_yaw.html'>pitch_yaw</a></li></li></ul></ul><li><a href='Tx _ Rx_PTZ.html'>Tx _ Rx_PTZ</a><ul><li><a href='example_NRF24L01.html'>example_NRF24L01</a><ul><li><a href='STM32F411 ESP8266 發送端程式與接收端程式.html'>STM32F411 ESP8266 發送端程式與接收端程式</a></li></ul><li><a href='PTZ_TX.html'>PTZ_TX</a><ul><li><a href='code.html'>code</a></li></ul><li><a href='PTZ_RX.html'>PTZ_RX</a><ul><li><a href='code2.html'>code2</a></li></ul><li><a href='problem.html'>problem</a></li></ul><li><a href='Brython.html'>Brython</a></li></ul></section></div></body></html>
+    <div id="tipue_search_content">PTZ_RX << <a href='PTZ_RX.html'>Previous</a> <a href='problem.html'>Next</a> >> problem<br /><h1>code2</h1>
+<pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">// ==========================================
+// 接收端：NodeMCU ESP8266
+// 功能：透過 nRF24L01 接收 STM32 傳來的
+//       Pitch / Yaw 角度，控制兩個伺服馬達
+// ==========================================
+
+#include &lt;SPI.h&gt;
+#include &lt;nRF24L01.h&gt;
+#include &lt;RF24.h&gt;
+#include &lt;Servo.h&gt;
+
+// ================== nRF24L01 ==================
+// CE=D4(GPIO2), CSN=D8(GPIO15)
+// SCK=D5(GPIO14), MOSI=D7(GPIO13), MISO=D6(GPIO12)（SPI預設腳位，不需額外設定）
+RF24 radio(D4, D8);
+
+// 通訊管道位址，必須與發射端完全相同
+const byte address[6] = "00001";
+
+// ================== Servo ==================
+Servo pitchServo;  // 俯仰舵機，接 D1 (GPIO5)
+Servo yawServo;    // 偏航舵機，接 D2 (GPIO4)
+
+// ================== 傳輸封包結構 ==================
+// 必須與發射端（STM32）定義完全一致，共 8 bytes
+struct AnglePacket {
+  float pitch; // 俯仰角（-60 ~ +60 度）
+  float yaw;   // 偏航角（-60 ~ +60 度）
+};
+
+// ================== 接收端濾波變數 ==================
+// 對收到的角度再做一次低通濾波，補償無線傳輸偶發的跳值
+float last_pitch = 0.0;
+float last_yaw   = 0.0;
+const float alpha = 0.45; // 平滑係數：越大反應越快，越小越穩；建議範圍 0.3~0.6
+
+// ==========================================
+//              Setup
+// ==========================================
+void setup() {
+  Serial.begin(115200);
+
+  // ── Servo 初始化 ──
+  // 明確設定脈衝寬度範圍（500~2400us），相容大多數舵機
+  // ESP8266 預設 544~2400，部分舵機在 544us 會抖動，改 500 更穩
+  pitchServo.attach(D1, 500, 2400); // D1 = GPIO5
+  yawServo.attach(D2, 500, 2400);   // D2 = GPIO4
+  pitchServo.write(90);             // 上電先歸中，避免突然轉動
+  yawServo.write(90);
+  Serial.println("Servo ready (D1=Pitch, D2=Yaw)");
+
+  // ── nRF24L01 初始化 ──
+  radio.begin();
+  radio.setPALevel(RF24_PA_LOW);  // 發射功率，與發射端一致即可（接收端設定不影響收訊）
+  radio.setDataRate(RF24_1MBPS);  // 資料速率，必須與發射端相同
+  radio.setChannel(108);          // 頻道，必須與發射端相同（2.508GHz）
+  radio.setAutoAck(false);        // 關閉 ACK，與發射端一致（單向廣播模式）
+  radio.openReadingPipe(0, address); // 開啟接收管道 0，監聽指定位址
+  radio.startListening();            // 切換為接收模式（RX Mode）
+  Serial.println("nRF24L01 RX ready");
+}
+
+// ==========================================
+//              Loop
+// ==========================================
+void loop() {
+
+  // 檢查是否有新封包抵達（非阻塞，無資料直接跳過）
+  if (radio.available()) {
+    AnglePacket pkt;
+    radio.read(&amp;pkt, sizeof(pkt)); // 讀取 8 bytes 封包到 pkt
+
+    // ── 接收端二次低通濾波 ──
+    // 平滑封包中偶發的跳值（例如無線干擾造成的突波）
+    // filtered = alpha * new_value + (1 - alpha) * old_value
+    last_pitch = alpha * pkt.pitch + (1.0 - alpha) * last_pitch;
+    last_yaw   = alpha * pkt.yaw   + (1.0 - alpha) * last_yaw;
+
+    // ── 角度轉換為 Servo 角度 ──
+    // 輸入：-60 ~ +60 度（頭部偏移量）
+    // 輸出：45 ~ 135 度（Servo 行程，中心點 = 90 度）
+    // 使用 45~135 而非 0~180，保留機械緩衝，避免舵機撞到極限
+    int sp = map(constrain((int)last_pitch, -60, 60), -60, 60, 45, 135);
+    int sy = map(constrain((int)last_yaw,   -60, 60), -60, 60, 45, 135);
+
+    pitchServo.write(sp);
+    yawServo.write(sy);
+
+    // 序列埠監控輸出
+    Serial.print("Pitch: "); Serial.print(last_pitch, 1);
+    Serial.print("  Yaw: "); Serial.print(last_yaw, 1);
+    Serial.print("  SP: ");  Serial.print(sp);
+    Serial.print("  SY: ");  Serial.println(sy);
+  }
+}</pre>
+<br />PTZ_RX << <a href='PTZ_RX.html'>Previous</a> <a href='problem.html'>Next</a> >> problem</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../cmsimde/static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../cmsimde/static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery-ui.js"></script>
+            <script src="../cmsimde/static/chimper/js/popper.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../cmsimde/static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../cmsimde/static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../cmsimde/static/chimper/js/main.js"></script>
+        
+<!-- 啟用 LaTeX equations 編輯 -->
+  <!-- <script>
+  MathJax = {
+    tex: {inlineMath: [['$', '$'], ['\(', '\)']]}
+  };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>-->
+    </body></html>
+        

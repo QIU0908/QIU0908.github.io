@@ -131,7 +131,7 @@ img.add_border {
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li class='has-children'><a href='Single_Board_PTZ.html'>Single_Board_PTZ</a><ul class='dropdown'><li class='has-children'><a href='fail.html'>fail</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li class='has-children'><a href='success.html'>success</a><ul class='dropdown'><li><a href='raw.html'>raw</a><li><a href='pitch_yaw.html'>pitch_yaw</a></li></li></ul></ul><li class='has-children'><a href='Tx _ Rx_PTZ.html'>Tx _ Rx_PTZ</a><ul class='dropdown'><li class='has-children'><a href='example_NRF24L01.html'>example_NRF24L01</a><ul class='dropdown'><li><a href='STM32F411 ESP8266 發送端程式與接收端程式.html'>STM32F411 ESP8266 發送端程式與接收端程式</a></li></li></ul></ul><li><a href='Brython.html'>Brython</a></li>
+                     <li><a href='About.html'>About</a><li class='has-children'><a href='How to do data analysis.html'>How to do data analysis</a><ul class='dropdown'><li><a href='regression error metric.html'>regression error metric</a></li></ul><li><a href='cameraSistyem.html'>cameraSistyem</a><li class='has-children'><a href='Single_Board_PTZ.html'>Single_Board_PTZ</a><ul class='dropdown'><li class='has-children'><a href='fail.html'>fail</a><ul class='dropdown'><li><a href='angle2Servo_ADC_Data.html'>angle2Servo_ADC_Data</a><li><a href='LPF_GY85_2_servo(Open_Loop).html'>LPF_GY85_2_servo(Open_Loop)</a><li><a href='discard_GY85_2_SERVO_original_data.html'>discard_GY85_2_SERVO_original_data</a><li><a href='LPF_GY85_2_servo(close_loop).html'>LPF_GY85_2_servo(close_loop)</a></li></ul><li class='has-children'><a href='success.html'>success</a><ul class='dropdown'><li><a href='raw.html'>raw</a><li><a href='pitch_yaw.html'>pitch_yaw</a></li></li></ul></ul><li class='has-children'><a href='Tx _ Rx_PTZ.html'>Tx _ Rx_PTZ</a><ul class='dropdown'><li class='has-children'><a href='example_NRF24L01.html'>example_NRF24L01</a><ul class='dropdown'><li><a href='STM32F411 ESP8266 發送端程式與接收端程式.html'>STM32F411 ESP8266 發送端程式與接收端程式</a></li></ul><li class='has-children'><a href='PTZ_TX.html'>PTZ_TX</a><ul class='dropdown'><li><a href='code.html'>code</a></li></ul><li class='has-children'><a href='PTZ_RX.html'>PTZ_RX</a><ul class='dropdown'><li><a href='code2.html'>code2</a></li></ul><li><a href='problem.html'>problem</a></li></ul><li><a href='Brython.html'>Brython</a></li>
                       </ul>
                 </nav>
               </div>
@@ -142,7 +142,7 @@ img.add_border {
           </div>
           
         </header>
-    <div id="tipue_search_content">example_NRF24L01 << <a href='example_NRF24L01.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython<br /><h1>STM32F411 ESP8266 發送端程式與接收端程式</h1>
+    <div id="tipue_search_content">example_NRF24L01 << <a href='example_NRF24L01.html'>Previous</a> <a href='PTZ_TX.html'>Next</a> >> PTZ_TX<br /><h1>STM32F411 ESP8266 發送端程式與接收端程式</h1>
 <h4>STM32F411發送端程式</h4>
 <p>這段程式利用 STM32F411 搭配 nRF24L01 無線模組，透過按鈕控制訊號的發送。訊號會被另一端的接收器 ( ESP8266) 接收，用來驅動伺服馬達。</p>
 <p><strong>STM32F411 與 nRF24L01</strong></p>
@@ -170,10 +170,8 @@ img.add_border {
 </li>
 </ul>
 <p><span></span><strong>按鈕</strong>： PA0，使用內建上拉電阻。</p>
-<p></p>
-<p><span><strong></strong></span></p>
-<p></p>
 <p><span><strong>LED</strong>：</span><span>PC13，作為狀態指示。</span></p>
+<p><span><strong>其他</strong>:STM32F411 3.3v GND 並聯一47uF電解電容，改善電源穩定性。</span></p>
 <p><span></span></p>
 <pre class="brush:cpp;auto-links:false;toolbar:false" contenteditable="false">#include &lt;SPI.h&gt;          // 引入 SPI 通訊函式庫
 #include &lt;nRF24L01.h&gt;     // 引入 nRF24L01 無線模組定義
@@ -244,8 +242,10 @@ void loop() {
   delay(50); // 每 50ms 更新一次狀態，避免過快
 }
 </pre>
-<p><span> </span></p><h4>ESP8266 接收端程式</h4>
-<p>透過 ESP8266 搭配 nRF24L01 無線模組，接收來自 STM32F411 發送端的按鈕訊號，當接收到「開始擺動」訊號時，控制伺服馬達持續左右擺動，接收到「停止擺動」訊號時，伺服馬達停止更新角度。</p><h4>ESP8266 與 nRF24L01</h4>
+<p><span> </span></p>
+<h4>ESP8266 接收端程式</h4>
+<p>透過 ESP8266 搭配 nRF24L01 無線模組，接收來自 STM32F411 發送端的按鈕訊號，當接收到「開始擺動」訊號時，控制伺服馬達持續左右擺動，接收到「停止擺動」訊號時，伺服馬達停止更新角度。</p>
+<h4>ESP8266 與 nRF24L01</h4>
 <ul>
 <li>
 <p>CE → D4 (GPIO2)</p>
@@ -268,7 +268,8 @@ void loop() {
 <li>
 <p>GND → GND</p>
 </li>
-</ul><h4>ESP8266 與伺服馬達</h4>
+</ul>
+<h4>ESP8266 與伺服馬達</h4>
 <ul>
 <li>
 <p>訊號線 → D1 (GPIO5)</p>
@@ -335,7 +336,7 @@ void loop() {
 }
 </pre>
 <p></p>
-<p></p><br />example_NRF24L01 << <a href='example_NRF24L01.html'>Previous</a> <a href='Brython.html'>Next</a> >> Brython</div>
+<br />example_NRF24L01 << <a href='example_NRF24L01.html'>Previous</a> <a href='PTZ_TX.html'>Next</a> >> PTZ_TX</div>
         
     <!-- footer -->
       <div class="container">
