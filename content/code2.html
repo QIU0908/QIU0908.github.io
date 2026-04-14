@@ -149,6 +149,7 @@ img.add_border {
 //       Pitch / Yaw 角度，控制兩個伺服馬達
 // ==========================================
 
+
 #include &lt;SPI.h&gt;
 #include &lt;nRF24L01.h&gt;
 #include &lt;RF24.h&gt;
@@ -156,28 +157,26 @@ img.add_border {
 
 // ================== nRF24L01 ==================
 // CE=D4(GPIO2), CSN=D8(GPIO15)
-// SCK=D5(GPIO14), MOSI=D7(GPIO13), MISO=D6(GPIO12)（SPI預設腳位，不需額外設定）
+// SCK=D5(GPIO14), MOSI=D7(GPIO13), MISO=D6(GPIO12)
 RF24 radio(D4, D8);
-
-// 通訊管道位址，必須與發射端完全相同
-const byte address[6] = "00001";
+const byte address[6] = "00001";  // 必須與發射端完全相同
 
 // ================== Servo ==================
-Servo pitchServo;  // 俯仰舵機，接 D1 (GPIO5)
-Servo yawServo;    // 偏航舵機，接 D2 (GPIO4)
+Servo pitchServo;  // D1 (GPIO5)
+Servo yawServo;    // D2 (GPIO4)
 
-// ================== 傳輸封包結構 ==================
-// 必須與發射端（STM32）定義完全一致，共 8 bytes
+// ================== 傳輸封包 ==================
+// 必須與發射端結構完全一致，共 8 bytes
 struct AnglePacket {
-  float pitch; // 俯仰角（-60 ~ +60 度）
-  float yaw;   // 偏航角（-60 ~ +60 度）
+  float pitch;  // 俯仰角 -60~+60 度
+  float yaw;    // 偏航角 -60~+60 度
 };
 
-// ================== 接收端濾波變數 ==================
-// 對收到的角度再做一次低通濾波，補償無線傳輸偶發的跳值
+// ================== 接收端濾波 ==================
+// 補償無線偶發跳值，alpha 與發射端獨立
 float last_pitch = 0.0;
 float last_yaw   = 0.0;
-const float alpha = 0.45; // 平滑係數：越大反應越快，越小越穩；建議範圍 0.3~0.6
+const float alpha = 0.5;  // 0.3~0.6，越大反應越快
 
 // ==========================================
 //              Setup
@@ -185,24 +184,27 @@ const float alpha = 0.45; // 平滑係數：越大反應越快，越小越穩；
 void setup() {
   Serial.begin(115200);
 
-  // ── Servo 初始化 ──
-  // 明確設定脈衝寬度範圍（500~2400us），相容大多數舵機
-  // ESP8266 預設 544~2400，部分舵機在 544us 會抖動，改 500 更穩
-  pitchServo.attach(D1, 500, 2400); // D1 = GPIO5
-  yawServo.attach(D2, 500, 2400);   // D2 = GPIO4
-  pitchServo.write(90);             // 上電先歸中，避免突然轉動
+
+
+  // Servo 初始化
+  // 500~2400us 脈衝範圍，相容大多數舵機
+  pitchServo.attach(D1, 500, 2400);  // GPIO5
+  yawServo.attach(D2, 500, 2400);    // GPIO4
+  pitchServo.write(90);              // 上電歸中
   yawServo.write(90);
   Serial.println("Servo ready (D1=Pitch, D2=Yaw)");
 
-  // ── nRF24L01 初始化 ──
-  radio.begin();
-  radio.setPALevel(RF24_PA_LOW);  // 發射功率，與發射端一致即可（接收端設定不影響收訊）
-  radio.setDataRate(RF24_1MBPS);  // 資料速率，必須與發射端相同
-  radio.setChannel(108);          // 頻道，必須與發射端相同（2.508GHz）
-  radio.setAutoAck(false);        // 關閉 ACK，與發射端一致（單向廣播模式）
-  radio.openReadingPipe(0, address); // 開啟接收管道 0，監聽指定位址
-  radio.startListening();            // 切換為接收模式（RX Mode）
-  Serial.println("nRF24L01 RX ready");
+  // nRF24L01 初始化
+radio.begin();
+  radio.setPALevel(RF24_PA_HIGH);     // ← 與發送端一致
+  radio.setDataRate(RF24_1MBPS);      // ← 改成 1MBPS
+  radio.setChannel(108);
+  radio.setAutoAck(false);
+  radio.setPayloadSize(8);
+  radio.openReadingPipe(0, address);
+  radio.startListening();
+
+  Serial.println("nRF24L01 RX ready (HIGH + 1MBPS)");
 }
 
 // ==========================================
@@ -210,35 +212,35 @@ void setup() {
 // ==========================================
 void loop() {
 
-  // 檢查是否有新封包抵達（非阻塞，無資料直接跳過）
+  // 有封包就立即處理（非阻塞）
   if (radio.available()) {
     AnglePacket pkt;
-    radio.read(&amp;pkt, sizeof(pkt)); // 讀取 8 bytes 封包到 pkt
+    radio.read(&amp;pkt, sizeof(pkt));  // 讀取 8 bytes
 
-    // ── 接收端二次低通濾波 ──
-    // 平滑封包中偶發的跳值（例如無線干擾造成的突波）
-    // filtered = alpha * new_value + (1 - alpha) * old_value
+    // 低通濾波：平滑偶發跳值
     last_pitch = alpha * pkt.pitch + (1.0 - alpha) * last_pitch;
     last_yaw   = alpha * pkt.yaw   + (1.0 - alpha) * last_yaw;
 
-    // ── 角度轉換為 Servo 角度 ──
-    // 輸入：-60 ~ +60 度（頭部偏移量）
-    // 輸出：45 ~ 135 度（Servo 行程，中心點 = 90 度）
-    // 使用 45~135 而非 0~180，保留機械緩衝，避免舵機撞到極限
-    int sp = map(constrain((int)last_pitch, -60, 60), -60, 60, 45, 135);
-    int sy = map(constrain((int)last_yaw,   -60, 60), -60, 60, 45, 135);
+    // 角度映射：-60~+60 度 → Servo 45~135 度
+    // 保留機械緩衝，避免撞到極限位置
+    // 建議把 constrain 改成 float 版本，避免精度損失
+    int sp = map(constrain(last_pitch, -60.0f, 60.0f), -60, 60, 45, 135);
+    int sy = map(constrain(last_yaw,   -60.0f, 60.0f), -60, 60, 45, 135);
 
     pitchServo.write(sp);
     yawServo.write(sy);
 
-    // 序列埠監控輸出
-    Serial.print("Pitch: "); Serial.print(last_pitch, 1);
-    Serial.print("  Yaw: "); Serial.print(last_yaw, 1);
-    Serial.print("  SP: ");  Serial.print(sp);
-    Serial.print("  SY: ");  Serial.println(sy);
+    // Serial 節流：每 50ms 輸出一次
+    static uint32_t lastPrint = 0;
+    if (millis() - lastPrint &gt;= 50) {
+      lastPrint = millis();
+      Serial.print("Pitch: "); Serial.print(last_pitch, 1);
+      Serial.print("  Yaw: "); Serial.print(last_yaw, 1);
+      Serial.print("  SP: ");  Serial.print(sp);
+      Serial.print("  SY: ");  Serial.println(sy);
+    }
   }
-}</pre>
-<br />PTZ_RX << <a href='PTZ_RX.html'>Previous</a> <a href='problem.html'>Next</a> >> problem</div>
+}</pre><br />PTZ_RX << <a href='PTZ_RX.html'>Previous</a> <a href='problem.html'>Next</a> >> problem</div>
         
     <!-- footer -->
       <div class="container">
