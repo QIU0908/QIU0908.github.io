@@ -209,7 +209,6 @@ document.addEventListener("DOMContentLoaded", function() {
 <p dir="auto"></p>
 <p dir="auto"></p>
 <p></p>
-<h1>cameraSistyem</h1>
 <h1>Single_Board_PTZ</h1>
 <p>i using ARDUINO IDE remeber stm32 PA10 connect to GND</p>
 <p><strong>實驗順序</strong></p>
@@ -2586,7 +2585,61 @@ void loop() {
       Serial.print("  SY: ");  Serial.println(sy);
     }
   }
-}</pre><h2>problem</h2><h1>Brython</h1>
+}</pre><h2>problem</h2><h1>3DP_tips</h1>
+<p>Here I will share my 3D printing experience.</p>
+<p></p><h2>internal and external thread fit</h2>
+<p>PLA usually shrinks when it cools down: about 0.20 mm on outer dimensions and 0.5 mm on holes.</p>
+<p>For 3D printing, the thread angle should be larger than 90°, so I use a square thread.</p>
+<p></p>
+<table border="2" height="189" style="border-color: #000000; width: 533px;"><caption><strong> external thread(in CAD)</strong></caption>
+<tbody>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">outer diameter</td>
+<td style="width: 303.109px; height: 13px; text-align: center;">11.0 mm</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">pitch</td>
+<td style="width: 303.109px; height: 13px; text-align: center;"> 4.0mm</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">thread height</td>
+<td style="width: 303.109px; height: 13px; text-align: center;"> 1.3mm</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">thread width</td>
+<td style="width: 303.109px; height: 13px; text-align: center;"> 1.8mm</td>
+</tr>
+</tbody>
+</table>
+<p><img alt="" height="307" src="/images/bar.png" width="251"/></p>
+<table border="2" height="189" style="border-color: #000000; width: 533px;"><caption><strong>internal thread(in CAD)</strong></caption>
+<tbody>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">inner diameter</td>
+<td style="width: 303.109px; height: 13px; text-align: center;">9.8 mm</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">pitch</td>
+<td style="width: 303.109px; height: 13px; text-align: center;"> 4.0mm</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">thread height</td>
+<td style="width: 303.109px; height: 13px; text-align: center;"> 1.3mm</td>
+</tr>
+<tr style="height: 13px;">
+<td style="width: 210.891px; height: 13px; text-align: center;">thread width</td>
+<td style="width: 303.109px; height: 13px; text-align: center;">2.6mm</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Because PLA material shrinks by about 0.5 mm around the hole, the thread width needs to be about 0.8 mm (0.4 mm on each side). When the thread width increases, the pitch should be reduced so that the internal and external threads can mate.</strong></p>
+<p><strong><img alt="" height="260" src="/images/bar_rose.png" width="457"/></strong></p>
+<p><strong>RESULT</strong></p>
+<p><strong><img alt="" height="1021" src="/images/rose.jpg" width="437"/></strong></p><h2>thread-forming screw for plastic</h2>
+<p><span>PLA usually shrinks when it cools down 0.5 mm on holes.</span></p>
+<p><strong> </strong>In CAD software, I typically model a hole with the same diameter as the screw’s external thread. I use a <strong>woodworking screw</strong> with an outer thread diameter of 4.0 mm<strong>.</strong></p>
+<p><span class="Y2IQFc" lang="en"><img alt="" height="935" src="/images/rose_hole.jpg" width="400"/></span></p>
+<p><span class="Y2IQFc" lang="en"></span></p><h1>Brython</h1>
 <p><a href="https://brython.info/">https://brython.info/</a> </p>
 <p>從 1 累加到 100:</p>
 <p><button id="add1to100">1 add to 100</button><button id="roc_flag">ROC Flag</button><button id="proc_flag">PROC flag</button><button id="usa_flag">USA Flag</button><button id="gd_in_brython">GD in Brython</button></p>
