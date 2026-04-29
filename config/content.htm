@@ -1705,11 +1705,14 @@ void recordZeroPoint() {
 int mapAngle(float angle) {
   return constrain((int)(angle + 90.0), 30, 150);
 }</pre>
-<p></p>
+<h2>problem01</h2>
+<p>問題 1：Yaw 讓servo ±60° 瞬間跳轉<span>∓60°</span></p>
+<p>問題 2：Pitch 死點影響 Yaw</p>
+<p>問題 3：Pitch 死點附近 raw 動一點 servo 轉到底</p>
+<p>問題 4：校正完後 pitch 往後仰時 yaw 被帶跑</p>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
-<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div>
-<h1>Tx _ Rx_PTZ</h1>
+<div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div><h1>Tx _ Rx_PTZ</h1>
 <p dir="auto">使用兩塊 STM32，分別作為 發射端（Tx） 和 接收端（Rx），透過 NRF24L01(2.4GHz) 實現無線頭部姿態跟隨。</p>
 <p><img alt="" height="482" src="/images/Video Project 2.gif" width="482"/></p><h2>example_NRF24L01</h2>
 <p></p>
