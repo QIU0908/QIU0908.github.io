@@ -1706,6 +1706,17 @@ int mapAngle(float angle) {
   return constrain((int)(angle + 90.0), 30, 150);
 }</pre>
 <h2>problem01</h2>
+<p>問題 1：Yaw 讓servo ±60° 瞬間跳轉<span>∓60°</span></p>
+<p>問題 2：Pitch 死點影響 Yaw</p>
+<p>問題 3：Pitch 死點附近 raw 動一點 servo 轉到底</p>
+<p>問題 4：校正完後 pitch 往後仰時 yaw 被帶跑</p>
+<p></p>
+<p>A1:這是因為我程式，把servo限制在30~150但我感測並沒有物理上的限制所以360度回到0度時才會出現跳轉</p>
+<p>解決方法:?</p>
+<p>A2、A3:完全是由 Gimbal Lock 造成的。</p>
+<p><span>解決方法:改成選轉矩陣，或四元數，或把歐拉角順序把最不可能90度的軸放在中間順序。</span></p>
+<p><span>A4:未知</span></p>
+<p></p>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--><span></span></div>
 <div class="SD6F594831"><!-- [if mso]><br><![endif]--></div>
 <div class="SE6FCCC670"><!-- [if mso]><br><![endif]--></div><h1>Tx _ Rx_PTZ</h1>
