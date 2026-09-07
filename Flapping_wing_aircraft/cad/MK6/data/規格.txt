@@ -1,0 +1,7 @@
+Gx_opt =  5.;
+Gy_opt = -0.5;
+rG_opt = 20.8;
+Bx_opt =  10.0;
+By_opt =  1.;
+rd_opt =  16.5;
+rk_opt =  9.8;
